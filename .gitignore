@@ -1,8 +1,8 @@
 .worktrees/
 node_modules/
 .next/
-my-app\node_modules\
-my-app\.next\
+my-app/node_modules/
+my-app/.next/
 .env
 .env.*
 !.env.example
