@@ -8,3 +8,4 @@ my-app/.next/
 !.env.example
 dist/
 coverage/
+docs/

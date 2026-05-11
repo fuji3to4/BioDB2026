@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>BioDB2026 Next.js Exercise</h1>
+      <h1>BioDB Next.js Exercise</h1>
       <ul>
         <li>
           <a href="/api/health">GET /api/health</a>
