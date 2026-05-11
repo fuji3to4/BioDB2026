@@ -13,5 +13,16 @@ services:
       POSTGRES_DB: postgres
     restart: always
 
+  php:
+    build: ./docker/php
+    container_name: biodb2026-php
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/html
+    depends_on:
+      - postgres
+    restart: always
+
 volumes:
   pgdata:
