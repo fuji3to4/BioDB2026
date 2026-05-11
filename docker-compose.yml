@@ -17,7 +17,7 @@ services:
     build: ./docker/php
     container_name: biodb2026-php
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
     volumes:
       - ./html:/html
     depends_on:
@@ -29,7 +29,7 @@ services:
     container_name: biodb2026-nextjs
     working_dir: /app
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
       - ./my-app:/app
       - /app/node_modules

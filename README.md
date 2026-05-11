@@ -11,8 +11,8 @@ docker compose up -d
 This starts:
 
 - PostgreSQL on `127.0.0.1:5432` (host loopback only)
-- PHP/Apache on `http://localhost/`
-- the `nextjs` container with port `3000` published
+- PHP/Apache on `http://localhost/` (`127.0.0.1:80`, host loopback only)
+- the `nextjs` container with `127.0.0.1:3000` published (host loopback only)
 
 `docker compose up -d` does **not** start the Next.js development server. `http://localhost:3000/` stays unavailable until you attach to the running `nextjs` container and complete the manual Next.js steps below.
 
@@ -109,8 +109,8 @@ You can verify the app with `http://localhost:3000/api/health`.
 
 This project expects these host ports:
 
-- `80` for PHP
-- `3000` for Next.js
+- `127.0.0.1:80` for PHP
+- `127.0.0.1:3000` for Next.js
 - `127.0.0.1:5432` for PostgreSQL
 
 If `docker compose up -d` fails because a port is already in use, stop the other service using that port or update the published port mapping in `docker-compose.yml` before retrying.
