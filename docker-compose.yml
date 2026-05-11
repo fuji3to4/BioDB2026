@@ -1,0 +1,47 @@
+services:
+  postgres:
+    build: ./docker/postgres
+    container_name: biodb2026-postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./SQL:/home/user/SQL
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    restart: always
+
+  php:
+    build: ./docker/php
+    container_name: biodb2026-php
+    ports:
+      - "127.0.0.1:80:80"
+    volumes:
+      - ./html:/html
+    depends_on:
+      - postgres
+    restart: always
+
+  nextjs:
+    build: ./docker/nextjs
+    container_name: biodb2026-nextjs
+    working_dir: /app
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./my-app:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/demo
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    tty: true
+    restart: always
+
+volumes:
+  pgdata:
