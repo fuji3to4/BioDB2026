@@ -37,6 +37,7 @@ services:
     depends_on:
       - postgres
     environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/demo
       WATCHPACK_POLLING: "true"
       CHOKIDAR_USEPOLLING: "true"
     tty: true
