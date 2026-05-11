@@ -44,7 +44,7 @@ INSERT INTO PDB VALUES
 ('1CVS','X-ray','2.80','C/D','141-365','1999-08-24','Membrane','https://www.rcsb.org/structure/1CVS'),
 ('1A30','X-ray','2.00','A/B','489-587','1998-01-27','Enzyme','https://www.rcsb.org/structure/1A30'),
 ('1MBE','NMR',null,'A','38-89','1995-05-19','DNA-Binding','https://www.rcsb.org/structure/1MBE'),
-('1GUU','X-ray','1.60','A','38-89','2002-01-30','DNA-Binding','https://www.rcsb.org/structure/1A30'),
+('1GUU','X-ray','1.60','A','38-89','2002-01-30','DNA-Binding','https://www.rcsb.org/structure/1GUU'),
 ('1LMB','X-ray','1.80','C/D','2-93','1991-11-05','DNA-Binding','https://www.rcsb.org/structure/1LMB'),
 ('4RWF','X-ray','1.76','A','31-116','2014-12-03','Membrane','https://www.rcsb.org/structure/4RWF'),
 ('2AMA','X-ray','1.90','A','655-920','2005-08-09','Signaling Protein','https://www.rcsb.org/structure/2AMA'),
