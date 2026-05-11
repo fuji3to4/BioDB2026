@@ -10,7 +10,7 @@ docker compose up -d
 
 This starts:
 
-- PostgreSQL on `localhost:5432`
+- PostgreSQL on `127.0.0.1:5432` (host loopback only)
 - PHP/Apache on `http://localhost/`
 - the `nextjs` container with port `3000` published
 
@@ -108,6 +108,6 @@ This project expects these host ports:
 
 - `80` for PHP
 - `3000` for Next.js
-- `5432` for PostgreSQL
+- `127.0.0.1:5432` for PostgreSQL
 
 If `docker compose up -d` fails because a port is already in use, stop the other service using that port or update the published port mapping in `docker-compose.yml` before retrying.
