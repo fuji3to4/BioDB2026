@@ -27,8 +27,10 @@ docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/demo.sql
 docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.sql
 ```
 
+- The `user` role is intentionally limited to the exercise workflow (`CREATEDB`, no superuser privileges).
 - `demo.sql` recreates the `demo` database for the bioinformatics exercises.
 - `setting.sql` recreates the `database1` database for the SQL practice exercises.
+- If you already initialized PostgreSQL with an older image/volume, reset it with `docker compose down -v` before `docker compose up -d --build` so the narrowed `user` role is recreated correctly.
 
 ## PHP pages
 
@@ -91,6 +93,7 @@ Expected result:
 `demo.sql` and `setting.sql` are manual steps. If `demo` or `database1` does not exist, run the two `docker compose exec postgres ... -f /home/user/SQL/...` commands again.
 
 If you recreated the containers without removing the PostgreSQL volume, Docker will keep the old database state.
+That also includes the previous role definition, so after the privilege change you must either reset with `docker compose down -v` or manually re-apply the role settings in PostgreSQL.
 
 ### Next.js is not responding on port 3000
 
