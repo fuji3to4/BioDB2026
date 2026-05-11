@@ -5,7 +5,6 @@ This repository provides a training environment with PostgreSQL, PHP, and Next.j
 ## Start the containers
 
 ```powershell
-Set-Location 'E:\Data\App\BioDB2026\.worktrees\docker-training-environment'
 docker compose up -d
 ```
 
@@ -22,7 +21,6 @@ The mounted SQL files are **manual exercise setup steps**. They are not applied 
 Run these commands from the repository root when you need the sample databases:
 
 ```powershell
-Set-Location 'E:\Data\App\BioDB2026\.worktrees\docker-training-environment'
 docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/demo.sql
 docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.sql
 ```
@@ -64,7 +62,6 @@ Useful health check:
 After setup, run the final verification from the repository root:
 
 ```powershell
-Set-Location 'E:\Data\App\BioDB2026\.worktrees\docker-training-environment'
 docker compose ps
 (Invoke-WebRequest 'http://localhost/').StatusCode
 (Invoke-WebRequest 'http://localhost:3000/api/health').StatusCode
