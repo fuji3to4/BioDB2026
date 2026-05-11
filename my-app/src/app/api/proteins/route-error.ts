@@ -2,7 +2,6 @@ type ProteinErrorResponse = {
   status: number;
   body: {
     error: string;
-    details?: string;
   };
 };
 
@@ -25,7 +24,6 @@ export function buildProteinsErrorResponse(error: unknown): ProteinErrorResponse
       status: 503,
       body: {
         error: DEMO_NOT_READY_MESSAGE,
-        details: error.message,
       },
     };
   }
@@ -33,8 +31,7 @@ export function buildProteinsErrorResponse(error: unknown): ProteinErrorResponse
   return {
     status: 500,
     body: {
-      error: "Failed to query proteins.",
-      details: error instanceof Error ? error.message : "Unknown error",
+      error: "Failed to query proteins due to an internal server error.",
     },
   };
 }

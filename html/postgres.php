@@ -10,7 +10,8 @@ try {
     $result = $pdo->query('SELECT current_database() AS db_name')->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo 'Database connection failed: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    error_log('Database connection failed in html/postgres.php: ' . $e->getMessage());
+    echo 'Database connection failed. Check whether PostgreSQL is running and initialized.';
     exit;
 }
 ?>
