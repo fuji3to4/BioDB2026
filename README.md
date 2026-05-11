@@ -12,7 +12,9 @@ This starts:
 
 - PostgreSQL on `localhost:5432`
 - PHP/Apache on `http://localhost/`
-- Next.js container on `localhost:3000`
+- the `nextjs` container with port `3000` published
+
+`docker compose up -d` does **not** start the Next.js development server. `http://localhost:3000/` stays unavailable until you attach to the running `nextjs` container and complete the manual Next.js steps below.
 
 ## PostgreSQL manual setup
 
@@ -64,14 +66,23 @@ After setup, run the final verification from the repository root:
 ```powershell
 docker compose ps
 (Invoke-WebRequest 'http://localhost/').StatusCode
+(Invoke-WebRequest 'http://localhost/postgres.php').StatusCode
 (Invoke-WebRequest 'http://localhost:3000/api/health').StatusCode
+```
+
+After you load `demo.sql`, add this DB-backed Next.js check:
+
+```powershell
+(Invoke-WebRequest 'http://localhost:3000/api/proteins').StatusCode
 ```
 
 Expected result:
 
 - `docker compose ps` shows `postgres`, `php`, and `nextjs` running
 - `http://localhost/` returns `200`
+- `http://localhost/postgres.php` returns `200` and confirms PHP can reach PostgreSQL
 - `http://localhost:3000/api/health` returns `200`
+- after `demo.sql` is loaded, `http://localhost:3000/api/proteins` returns `200`
 
 ## Troubleshooting
 
