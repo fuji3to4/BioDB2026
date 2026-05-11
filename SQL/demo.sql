@@ -76,6 +76,12 @@ INSERT INTO Protein (proteinID, name, organism, len, fav) VALUES
 ('13','Major capsid protein','Salmonella phage P22','430','0'),
 ('14','Epidermal growth factor receptor','Human','1210','0');
 
+SELECT setval(
+    pg_get_serial_sequence('protein', 'proteinid'),
+    COALESCE(MAX(proteinID), 1)
+)
+FROM Protein;
+
 INSERT INTO PDB2Protein VALUES
 ('1AGW','1'),
 ('1CVS','1'),

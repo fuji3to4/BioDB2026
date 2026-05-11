@@ -5,7 +5,7 @@ import { buildProteinsErrorResponse } from "./route-error";
 export async function GET() {
   try {
     const result = await pool.query(
-      "SELECT proteinID, name, organism, len, fav FROM Protein ORDER BY proteinID LIMIT 10"
+      'SELECT proteinID AS "proteinID", name, organism, len, fav FROM Protein ORDER BY proteinID LIMIT 10'
     );
 
     return NextResponse.json({
