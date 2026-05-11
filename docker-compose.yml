@@ -24,5 +24,23 @@ services:
       - postgres
     restart: always
 
+  nextjs:
+    build: ./docker/nextjs
+    container_name: biodb2026-nextjs
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./my-app:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - postgres
+    environment:
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    tty: true
+    restart: always
+
 volumes:
   pgdata:
