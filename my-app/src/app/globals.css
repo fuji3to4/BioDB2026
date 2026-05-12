@@ -68,6 +68,68 @@ body {
   font-weight: 700;
 }
 
+.protein-form {
+  display: grid;
+  gap: 16px;
+}
+
+.protein-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.protein-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.protein-form input,
+.protein-form button,
+.protein-actions button {
+  min-height: 40px;
+  border: 1px solid #c7d2e2;
+  border-radius: 10px;
+  padding: 0 12px;
+  font: inherit;
+  background: #fff;
+}
+
+.protein-form button,
+.protein-actions button {
+  cursor: pointer;
+  background: #162033;
+  color: #fff;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.form-error {
+  margin: 0;
+  color: #b42318;
+}
+
+.proteins-table td {
+  vertical-align: middle;
+}
+
+.protein-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.protein-actions form {
+  margin: 0;
+}
+
+.danger-button {
+  background: #b42318 !important;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 560px);

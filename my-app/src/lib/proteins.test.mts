@@ -23,7 +23,15 @@ test("buildCreateProteinQuery inserts name organism len and default fav", () => 
   assert.deepEqual(query.values, ["Myoglobin", "Human", 154]);
 });
 
-test("buildIncrementFavQuery and buildDeleteProteinQuery target proteinid", () => {
+test("buildIncrementFavQuery targets proteinid", () => {
+  assert.match(
+    buildIncrementFavQuery(7).text,
+    /update protein set fav = fav \+ 1 where proteinid = \$1/i,
+  );
   assert.deepEqual(buildIncrementFavQuery(7).values, [7]);
+});
+
+test("buildDeleteProteinQuery targets proteinid", () => {
+  assert.match(buildDeleteProteinQuery(7).text, /delete from protein where proteinid = \$1/i);
   assert.deepEqual(buildDeleteProteinQuery(7).values, [7]);
 });

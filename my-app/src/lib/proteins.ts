@@ -1,6 +1,14 @@
 import { pool } from "./db.ts";
 import type { ProteinInput } from "./protein-form.ts";
 
+export type ProteinRow = {
+  proteinid: number;
+  name: string;
+  organism: string;
+  len: number;
+  fav: number;
+};
+
 export function buildProteinListQuery() {
   return { text: "select * from protein order by proteinid", values: [] };
 }
@@ -29,7 +37,7 @@ export function buildDeleteProteinQuery(proteinId: number) {
 export async function fetchProteins() {
   const query = buildProteinListQuery();
   const result = await pool.query(query);
-  return result.rows;
+  return result.rows as ProteinRow[];
 }
 
 export async function createProtein(input: ProteinInput) {
