@@ -43,3 +43,9 @@ export async function fetchPdbSearchResults(filters: SearchFilters) {
   const result = await pool.query(query);
   return result.rows;
 }
+
+export async function fetchPdbDetail(pdbid: string) {
+  const query = buildPdbDetailQuery(pdbid);
+  const result = await pool.query(query);
+  return result.rows[0] ?? null;
+}
