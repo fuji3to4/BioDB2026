@@ -1,5 +1,5 @@
-import { pool } from "./db.ts";
-import type { ProteinInput } from "./protein-form.ts";
+import { pool } from "./db";
+import type { ProteinInput } from "./protein-form";
 
 export function buildProteinListQuery() {
   return { text: "select * from protein order by proteinid", values: [] };
