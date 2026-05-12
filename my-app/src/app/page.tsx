@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 import { fetchPdbSearchResults } from "@/lib/pdb";
 import { normalizeSearchFilters } from "@/lib/search-filters";
 
@@ -29,7 +28,6 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className="page-shell">
-      <SiteHeader />
       <section className="card">
         <h1>Search Protein Database</h1>
         <form className="search-form">
