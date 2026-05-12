@@ -33,3 +33,23 @@ test("validateProteinInput rejects non-positive length", () => {
 
   assert.throws(() => validateProteinInput(formData), /Length must be a positive integer/);
 });
+
+test("validateProteinInput rejects blank length", () => {
+  const formData = new FormData();
+  formData.set("name", "Myoglobin");
+  formData.set("org", "Human");
+  formData.set("len", "");
+
+  // Implementation treats blank len as invalid (Number("") === 0), so expect same error
+  assert.throws(() => validateProteinInput(formData), /Length must be a positive integer/);
+});
+
+test("validateProteinInput rejects missing length", () => {
+  const formData = new FormData();
+  formData.set("name", "Myoglobin");
+  formData.set("org", "Human");
+  // len not set
+
+  // Missing len becomes Number(null) === 0, so expect same error
+  assert.throws(() => validateProteinInput(formData), /Length must be a positive integer/);
+});
