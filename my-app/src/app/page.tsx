@@ -59,8 +59,8 @@ export default async function Home({ searchParams }: HomeProps) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
-              <tr key={`${row.pdbid}-${row.name}`}>
+            {rows.map((row, index) => (
+              <tr key={`${row.pdbid}-${row.name}-${index}`}>
                 <td><Link href={`/pdb/${row.pdbid}`}>{row.pdbid}</Link></td>
                 <td>{row.method}</td>
                 <td>{row.resolution}</td>
