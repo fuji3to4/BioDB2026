@@ -21,11 +21,9 @@ function getPool(): Pool {
     throw new Error("DATABASE_URL is not set");
   }
 
-  poolInstance =
-    globalForDb.biodbPool ??
-    new Pool({
-      connectionString,
-    });
+  poolInstance = new Pool({
+    connectionString,
+  });
 
   if (process.env.NODE_ENV !== "production") {
     globalForDb.biodbPool = poolInstance;

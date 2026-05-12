@@ -29,6 +29,6 @@ test("buildPdbSearchQuery adds a resolution predicate only when provided", () =>
 
 test("buildPdbDetailQuery filters by pdbid", () => {
   const detail = buildPdbDetailQuery("1GUU");
-  assert.match(detail.text, /where \(pdb\.pdbid like \$1\)/i);
-  assert.deepEqual(detail.values, ["%1GUU%"]);
+  assert.match(detail.text, /where \(pdb\.pdbid = \$1\)/i);
+  assert.deepEqual(detail.values, ["1GUU"]);
 });

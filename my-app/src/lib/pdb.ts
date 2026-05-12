@@ -32,9 +32,9 @@ export function buildPdbDetailQuery(pdbid: string) {
       select pdb.pdbid, pdb.method, pdb.resolution, pdb.chain, pdb.positions,
              pdb.deposited, pdb.class, pdb.url, protein.name, protein.organism, protein.len
       from pdb natural join pdb2protein natural join protein
-      where (pdb.pdbid like $1)
+      where (pdb.pdbid = $1)
     `,
-    values: [`%${pdbid}%`],
+    values: [pdbid],
   };
 }
 
