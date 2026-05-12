@@ -18,7 +18,7 @@ function readRequiredText(formData: FormData, key: string, label: string): strin
 export function validateProteinInput(formData: FormData): ProteinInput {
   const name = readRequiredText(formData, "name", "Protein name");
   const organism = readRequiredText(formData, "org", "Organism");
-  const lengthValue = readRequiredText(formData, "len", "Length");
+  const lengthValue = formData.get("len");
   const length = Number(lengthValue);
 
   if (!Number.isInteger(length) || length <= 0) {
