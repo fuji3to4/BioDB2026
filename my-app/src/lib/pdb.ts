@@ -57,5 +57,5 @@ export function formatResolutionAngstrom(resolution: number | string | null | un
 }
 
 export function getPdbImagePath(pdbid: string) {
-  return `/pic/${pdbid}.jpeg`;
+  return `/pic/${pdbid.toLowerCase()}.jpeg`;
 }
