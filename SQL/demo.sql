@@ -10,8 +10,8 @@ CREATE DATABASE demo OWNER "user";
 \connect demo
 
 -- テーブルを作成する
-CREATE TABLE PDB(
-    PDBID CHAR(4) NOT NULL,
+CREATE TABLE pdb(
+    pdbid CHAR(4) NOT NULL,
     method CHAR(20) NOT NULL,
     resolution FLOAT,
     chain CHAR(20) NOT NULL,
@@ -19,27 +19,27 @@ CREATE TABLE PDB(
     deposited DATE NOT NULL,     -- date型という日付用の型。YYYY-MM-DD
     class CHAR(30),
     url TEXT,                    -- 長い文字列用にtext型。PostgreSQLではサイズ制限なし
-    PRIMARY KEY(PDBID)           -- 主キー(primary key)の設定
+    PRIMARY KEY(pdbid)           -- 主キー(primary key)の設定
 );
 
 
-CREATE TABLE Protein(
-    proteinID SERIAL NOT NULL,   -- SERIAL（自動番号付け）。MySQLのAUTO_INCREMENTに相当
+CREATE TABLE protein(
+    proteinid SERIAL NOT NULL,   -- SERIAL（自動番号付け）。MySQLのAUTO_INCREMENTに相当
     name CHAR(50) NOT NULL,
     organism CHAR(30) NOT NULL,
     len INT NOT NULL,
     fav INT NOT NULL,
-    PRIMARY KEY(proteinID)
+    PRIMARY KEY(proteinid)
 );
 
-CREATE TABLE PDB2Protein(
-    PDBID CHAR(4) NOT NULL,
-    proteinID INT NOT NULL,
-    PRIMARY KEY(PDBID, proteinID)  -- 主キーが複合キーの場合キーとなる属性を並べる
+CREATE TABLE pdb2protein(
+    pdbid CHAR(4) NOT NULL,
+    proteinid INT NOT NULL,
+    PRIMARY KEY(pdbid, proteinid)  -- 主キーが複合キーの場合キーとなる属性を並べる
 );
 
 
-INSERT INTO PDB VALUES
+INSERT INTO pdb VALUES
 ('1AGW','X-ray','2.40','A/B','456-765','1997-03-25','Enzyme','https://www.rcsb.org/structure/1AGW'),
 ('1CVS','X-ray','2.80','C/D','141-365','1999-08-24','Membrane','https://www.rcsb.org/structure/1CVS'),
 ('1A30','X-ray','2.00','A/B','489-587','1998-01-27','Enzyme','https://www.rcsb.org/structure/1A30'),
@@ -60,7 +60,7 @@ INSERT INTO PDB VALUES
 ('1Z9I','NMR',null,'A','669-721','2005-04-02','Signaling Protein','https://www.rcsb.org/structure/1Z9I'),
 ('1M14','X-ray','2.60','A','695-1022','2002-06-17','Signaling Protein','https://www.rcsb.org/structure/1M14');
 
-INSERT INTO Protein (proteinID, name, organism, len, fav) VALUES
+INSERT INTO protein (proteinid, name, organism, len, fav) VALUES
 ('1','Fibroblast growth factor receptor 1','Human','822','0'),
 ('2','Gag-Pol polyprotein','HIV-1','1435','0'),
 ('3','Transcriptional activator Myb','Mouse','636','0'),
@@ -76,13 +76,14 @@ INSERT INTO Protein (proteinID, name, organism, len, fav) VALUES
 ('13','Major capsid protein','Salmonella phage P22','430','0'),
 ('14','Epidermal growth factor receptor','Human','1210','0');
 
+-- SERIAL列（proteinid）のシーケンスを合わせる
 SELECT setval(
     pg_get_serial_sequence('protein', 'proteinid'),
-    COALESCE(MAX(proteinID), 1)
+    COALESCE(MAX(proteinid), 1)
 )
-FROM Protein;
+FROM protein;
 
-INSERT INTO PDB2Protein VALUES
+INSERT INTO pdb2protein VALUES
 ('1AGW','1'),
 ('1CVS','1'),
 ('1A30','2'),

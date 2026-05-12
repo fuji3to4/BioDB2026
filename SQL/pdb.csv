@@ -1,0 +1,20 @@
+pdbid,method,resolution,chain,positions,deposited,class,url
+1AGW,X-ray,2.40,A/B,456-765,1997-03-25,Enzyme,https://www.rcsb.org/structure/1AGW
+1CVS,X-ray,2.80,C/D,141-365,1999-08-24,Membrane,https://www.rcsb.org/structure/1CVS
+1A30,X-ray,2.00,A/B,489-587,1998-01-27,Enzyme,https://www.rcsb.org/structure/1A30
+1MBE,NMR,null,A,38-89,1995-05-19,DNA-Binding,https://www.rcsb.org/structure/1MBE
+1GUU,X-ray,1.60,A,38-89,2002-01-30,DNA-Binding,https://www.rcsb.org/structure/1GUU
+1LMB,X-ray,1.80,C/D,2-93,1991-11-05,DNA-Binding,https://www.rcsb.org/structure/1LMB
+4RWF,X-ray,1.76,A,31-116,2014-12-03,Membrane,https://www.rcsb.org/structure/4RWF
+2AMA,X-ray,1.90,A,655-920,2005-08-09,Signaling Protein,https://www.rcsb.org/structure/2AMA
+3EML,X-ray,2.60,A/B/C/D,1-297,2008-09-24,Membrene,https://www.rcsb.org/structure/3EML
+4HHB,X-ray,1.74,A/C,2-142,1984-03-07,Enzyme,https://www.rcsb.org/structure/4HHB
+5P21,X-ray,1.35,A,1-166,1990-10-15,Signaling Protein,https://www.rcsb.org/structure/5P21
+1UBQ,X-ray,1.80,A,1-76,1987-01-02,Protein Binding,https://www.rcsb.org/structure/1UBQ
+3LCK,X-ray,1.70,A,231-501,1997-04-08,Enzyme,https://www.rcsb.org/structure/3LCK
+2DN2,X-ray,1.25,A/C,2-142,2006-04-25,Enzyme,https://www.rcsb.org/structure/2DN2
+2XYZ,Electron Microscopy,4.00,A/B/C/D/E/F/G,1-430,2010-11-19,Enzyme,https://www.rcsb.org/structure/2XYZ
+3L3X,X-ray,1.55,A,671-919,2009-12-18,Signaling Protein,https://www.rcsb.org/structure/3L3X
+1IVO,X-ray,3.30,A/B,25-646,2002-03-28,Signaling Protein,https://www.rcsb.org/structure/1IVO
+1Z9I,NMR,null,A,669-721,2005-04-02,Signaling Protein,https://www.rcsb.org/structure/1Z9I
+1M14,X-ray,2.60,A,695-1022,2002-06-17,Signaling Protein,https://www.rcsb.org/structure/1M14
