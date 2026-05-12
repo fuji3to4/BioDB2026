@@ -1,5 +1,5 @@
-import { pool } from "./db";
-import type { SearchFilters } from "./search-filters";
+import { pool } from "./db.ts";
+import type { SearchFilters } from "./search-filters.ts";
 
 export function buildPdbSearchQuery(filters: SearchFilters) {
   const textParts = [
