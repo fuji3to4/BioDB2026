@@ -9,27 +9,21 @@ type HomeProps = {
 
 export default async function Home({ searchParams }: HomeProps) {
   const raw = await searchParams;
-  let filters;
+  let filters: ReturnType<typeof normalizeSearchFilters>;
+  const base = {
+    id: typeof raw.id === "string" ? raw.id : "",
+    name: typeof raw.name === "string" ? raw.name : "",
+    class: typeof raw.class === "string" ? raw.class : "",
+    org: typeof raw.org === "string" ? raw.org : "",
+  };
   try {
-    filters = normalizeSearchFilters({
-      id: typeof raw.id === "string" ? raw.id : "",
-      name: typeof raw.name === "string" ? raw.name : "",
-      class: typeof raw.class === "string" ? raw.class : "",
-      org: typeof raw.org === "string" ? raw.org : "",
-      res: typeof raw.res === "string" ? raw.res : "",
-    });
+    filters = normalizeSearchFilters({ ...base, res: typeof raw.res === "string" ? raw.res : "" });
   } catch (e) {
     // If parsing search params fails (e.g. invalid ?res=abc), ignore the resolution filter and continue.
     // This keeps the search page from crashing while preserving other filters and UI.
 
     console.warn("Invalid search parameters; ignoring resolution filter", e);
-    filters = normalizeSearchFilters({
-      id: typeof raw.id === "string" ? raw.id : "",
-      name: typeof raw.name === "string" ? raw.name : "",
-      class: typeof raw.class === "string" ? raw.class : "",
-      org: typeof raw.org === "string" ? raw.org : "",
-      res: "",
-    });
+    filters = normalizeSearchFilters({ ...base, res: "" });
   }
   const rows = await fetchPdbSearchResults(filters);
 
