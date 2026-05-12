@@ -27,8 +27,9 @@ test("buildPdbSearchQuery adds a resolution predicate only when provided", () =>
   assert.deepEqual(withoutResolution.values, ["%%", "%%", "%%", "%%"]);
 });
 
-test("buildPdbDetailQuery filters by pdbid", () => {
+test("buildPdbDetailQuery uses exact-match pdbid lookup", () => {
   const detail = buildPdbDetailQuery("1GUU");
   assert.match(detail.text, /where \(pdb\.pdbid = \$1\)/i);
+  assert.doesNotMatch(detail.text, /like/i);
   assert.deepEqual(detail.values, ["1GUU"]);
 });

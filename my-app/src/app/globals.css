@@ -67,3 +67,15 @@ body {
 .data-table th {
   font-weight: 700;
 }
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 560px);
+  gap: 24px;
+  align-items: start;
+}
+
+.detail-grid img {
+  max-width: 100%;
+  height: auto;
+}
