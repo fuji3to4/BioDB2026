@@ -51,6 +51,7 @@ export async function fetchPdbDetail(pdbid: string) {
 }
 
 export function formatResolutionAngstrom(resolution: number | string | null | undefined) {
+  if (resolution === null || resolution === undefined) return "";
   const n = Number(resolution);
   return Number.isFinite(n) ? `${n.toFixed(2)} Å` : "";
 }

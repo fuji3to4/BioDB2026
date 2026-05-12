@@ -41,3 +41,8 @@ test("formatResolutionAngstrom formats correctly", () => {
 test("getPdbImagePath returns path", () => {
   assert.equal(getPdbImagePath("1GUU"), "/pic/1GUU.jpeg");
 });
+
+test("formatResolutionAngstrom handles null and undefined", () => {
+  assert.equal(formatResolutionAngstrom(null), "");
+  assert.equal(formatResolutionAngstrom(undefined), "");
+});

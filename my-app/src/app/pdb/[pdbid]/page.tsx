@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { fetchPdbDetail, formatResolutionAngstrom, getPdbImagePath } from "@/lib/pdb";
-import { SiteHeader } from "@/components/site-header";
+
 
 type DetailProps = {
   params: Promise<{ pdbid: string }>;
@@ -19,7 +19,6 @@ export default async function PdbDetailPage({ params }: DetailProps) {
 
   return (
     <main className="page-shell">
-      <SiteHeader />
       <section className="card detail-grid">
         <div>
           <p><Link href="/">Back to search</Link></p>
