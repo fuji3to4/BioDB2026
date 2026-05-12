@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { fetchPdbDetail } from "@/lib/pdb";
+import { fetchPdbDetail, formatResolutionAngstrom, getPdbImagePath } from "@/lib/pdb";
+import { SiteHeader } from "@/components/site-header";
 
 type DetailProps = {
   params: Promise<{ pdbid: string }>;
@@ -18,6 +19,7 @@ export default async function PdbDetailPage({ params }: DetailProps) {
 
   return (
     <main className="page-shell">
+      <SiteHeader />
       <section className="card detail-grid">
         <div>
           <p><Link href="/">Back to search</Link></p>
@@ -30,13 +32,13 @@ export default async function PdbDetailPage({ params }: DetailProps) {
             <li><strong>Positions:</strong> {detail.positions}</li>
             <li><strong>Deposited:</strong> {detail.deposited}</li>
             <li><strong>Method:</strong> {detail.method}</li>
-            <li><strong>Resolution:</strong> {Number(detail.resolution).toFixed(2)} Å</li>
+            <li><strong>Resolution:</strong> {formatResolutionAngstrom(detail.resolution)}</li>
           </ul>
           <p><a href={detail.url} target="_blank" rel="noreferrer">Open PDB reference</a></p>
         </div>
         <div>
           <Image
-            src={`/pic/${detail.pdbid}.jpeg`}
+            src={getPdbImagePath(detail.pdbid)}
             alt={`${detail.pdbid} structure`}
             width={560}
             height={420}

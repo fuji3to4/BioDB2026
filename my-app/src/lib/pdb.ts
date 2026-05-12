@@ -49,3 +49,12 @@ export async function fetchPdbDetail(pdbid: string) {
   const result = await pool.query(query);
   return result.rows[0] ?? null;
 }
+
+export function formatResolutionAngstrom(resolution: number | string | null | undefined) {
+  const n = Number(resolution);
+  return Number.isFinite(n) ? `${n.toFixed(2)} Å` : "";
+}
+
+export function getPdbImagePath(pdbid: string) {
+  return `/pic/${pdbid}.jpeg`;
+}
