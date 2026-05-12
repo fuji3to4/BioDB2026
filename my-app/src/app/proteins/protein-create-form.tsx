@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { createProteinAction } from "./actions";
 
@@ -14,9 +14,25 @@ function SubmitButton() {
 
 export function ProteinCreateForm() {
   const [state, formAction] = useActionState(createProteinAction, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const submittedRef = useRef(false);
+
+  useEffect(() => {
+    if (submittedRef.current && state.error === null) {
+      formRef.current?.reset();
+      submittedRef.current = false;
+    }
+  }, [state.error]);
 
   return (
-    <form action={formAction} className="protein-form">
+    <form
+      ref={formRef}
+      action={formAction}
+      className="protein-form"
+      onSubmit={() => {
+        submittedRef.current = true;
+      }}
+    >
       <div className="protein-form-grid">
         <label>
           <span>Protein name</span>

@@ -40,6 +40,9 @@ export default async function Home({ searchParams }: HomeProps) {
             <option value="Enzyme">Enzyme</option>
             <option value="DNA-Binding">DNA-binding</option>
             <option value="Membrane">Membrane</option>
+            <option value="Signaling Protein">Signaling Protein</option>
+            <option value="Protein Binding">Protein Binding</option>
+            <option value="Membrene">Membrene</option>
           </select>
           <button type="submit">Search</button>
         </form>
