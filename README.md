@@ -1,51 +1,53 @@
-# BioDB2026 Docker Training Environment
+# BioDB2026 演習環境
 
-This repository provides a training environment with PostgreSQL, PHP, and Next.js running in Docker Compose.
+このリポジトリは、Docker Compose上でPostgreSQL、PHP、Next.jsを動かすための演習環境です。
 
-## Start the containers
+英語版は `README_en.md` を参照してください。
+
+## コンテナの起動
 
 ```powershell
 docker compose up -d
 ```
 
-This starts:
+これにより次が起動します。
 
-- PostgreSQL on `127.0.0.1:5432` (host loopback only)
-- PHP/Apache on `http://localhost/` (`127.0.0.1:80`, host loopback only)
-- the `nextjs` container with `127.0.0.1:3000` published (host loopback only)
+- PostgreSQL: `127.0.0.1:5432`（ホストのループバックのみ）
+- PHP/Apache: `http://localhost/`（`127.0.0.1:80`、ホストのループバックのみ）
+- `nextjs`コンテナ: `127.0.0.1:3000` を公開（ホストのループバックのみ）
 
-`docker compose up -d` does **not** start the Next.js development server. `http://localhost:3000/` stays unavailable until you attach to the running `nextjs` container and complete the manual Next.js steps below.
+`docker compose up -d` だけでは Next.js の開発サーバーは起動しません。実行中の `nextjs` コンテナに接続し、以下の手動手順を完了するまで `http://localhost:3000/` は利用できません。
 
-## PostgreSQL manual setup
+## PostgreSQL の手動セットアップ
 
-The mounted SQL files are **manual exercise setup steps**. They are not applied automatically by `docker compose up -d`.
+マウントされるSQLファイルは、**演習用の手動セットアップ手順**です。`docker compose up -d` では自動適用されません。
 
-Run these commands from the repository root when you need the sample databases:
+サンプルDBが必要なときは、リポジトリルートで次を実行してください。
 
 ```powershell
 docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/demo.sql
 docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.sql
 ```
 
-- The `user` role is intentionally limited to the exercise workflow (`CREATEDB`, no superuser privileges).
-- `demo.sql` recreates the `demo` database for the bioinformatics exercises.
-- `setting.sql` recreates the `database1` database for the SQL practice exercises.
-- If you already initialized PostgreSQL with an older image/volume, reset it with `docker compose down -v` before `docker compose up -d --build` so the narrowed `user` role is recreated correctly.
+- `user` ロールは演習フロー向けに意図的に権限を制限しています（`CREATEDB` のみ、スーパーユーザー権限なし）。
+- `demo.sql` はバイオインフォマティクス演習用の `demo` データベースを再作成します。
+- `setting.sql` はSQL演習用の `database1` データベースを再作成します。
+- 旧イメージや旧ボリュームでPostgreSQLを初期化済みの場合は、`docker compose up -d --build` の前に `docker compose down -v` でリセットし、権限を絞った `user` ロールを正しく再作成してください。
 
-## PHP pages
+## PHPページ
 
-After the containers are running, open:
+コンテナ起動後、次を開いてください。
 
 - `http://localhost/`
 - `http://localhost/postgres.php`
 
-The top page links to the PostgreSQL sample page, and `postgres.php` confirms PHP can connect to PostgreSQL.
+トップページから PostgreSQL サンプルページへ遷移でき、`postgres.php` で PHP から PostgreSQL へ接続できることを確認できます。
 
-## Next.js workflow
+## Next.js の作業フロー
 
-The `nextjs` container is prepared as a development container. Use VS Code Remote / Dev Containers to attach to the running `nextjs` container, then work in `/app`.
+`nextjs` コンテナは開発コンテナとして用意されています。VS Code Remote / Dev Containers で実行中の `nextjs` コンテナに接続し、`/app` で作業してください。
 
-Inside the container:
+コンテナ内で次を実行します。
 
 ```powershell
 cp .env.example .env
@@ -53,17 +55,17 @@ npm install
 npm run dev
 ```
 
-Then open:
+その後、次を開いてください。
 
 - `http://localhost:3000/`
 
-Useful health check:
+ヘルスチェック:
 
 - `http://localhost:3000/api/health`
 
-## Smoke test
+## スモークテスト
 
-After setup, run the final verification from the repository root:
+セットアップ後、リポジトリルートで最終確認を実行します。
 
 ```powershell
 docker compose ps
@@ -72,45 +74,45 @@ docker compose ps
 (Invoke-WebRequest 'http://localhost:3000/api/health').StatusCode
 ```
 
-After you load `demo.sql`, add this DB-backed Next.js check:
+`demo.sql` を読み込んだ後は、次のDB連携チェックも追加してください。
 
 ```powershell
 (Invoke-WebRequest 'http://localhost:3000/api/proteins').StatusCode
 ```
 
-Expected result:
+期待結果:
 
-- `docker compose ps` shows `postgres`, `php`, and `nextjs` running
-- `http://localhost/` returns `200`
-- `http://localhost/postgres.php` returns `200` and confirms PHP can reach PostgreSQL
-- `http://localhost:3000/api/health` returns `200`
-- after `demo.sql` is loaded, `http://localhost:3000/api/proteins` returns `200`
+- `docker compose ps` で `postgres`、`php`、`nextjs` が `running`
+- `http://localhost/` が `200`
+- `http://localhost/postgres.php` が `200`（PHP から PostgreSQL に到達可能）
+- `http://localhost:3000/api/health` が `200`
+- `demo.sql` 読み込み後、`http://localhost:3000/api/proteins` が `200`
 
-## Troubleshooting
+## トラブルシューティング
 
-### PostgreSQL is running but the exercise databases are missing
+### PostgreSQL は起動しているが演習用DBがない
 
-`demo.sql` and `setting.sql` are manual steps. If `demo` or `database1` does not exist, run the two `docker compose exec postgres ... -f /home/user/SQL/...` commands again.
+`demo.sql` と `setting.sql` は手動手順です。`demo` または `database1` が存在しない場合は、`docker compose exec postgres ... -f /home/user/SQL/...` の2コマンドを再実行してください。
 
-If you recreated the containers without removing the PostgreSQL volume, Docker will keep the old database state.
-That also includes the previous role definition, so after the privilege change you must either reset with `docker compose down -v` or manually re-apply the role settings in PostgreSQL.
+PostgreSQLボリュームを削除せずにコンテナだけ再作成した場合、Dockerは旧DB状態を保持します。
+これには旧ロール定義も含まれるため、権限変更後は `docker compose down -v` でリセットするか、PostgreSQL上でロール設定を手動で再適用してください。
 
-### Next.js is not responding on port 3000
+### 3000番ポートで Next.js が応答しない
 
-The `nextjs` container starts and waits for development work, but the app only responds after you attach with VS Code Remote, create `.env`, install packages, and run:
+`nextjs` コンテナは起動して待機しますが、VS Code Remote で接続して `.env` 作成、パッケージインストール、次の実行を行うまでアプリは応答しません。
 
 ```powershell
 npm run dev
 ```
 
-You can verify the app with `http://localhost:3000/api/health`.
+`http://localhost:3000/api/health` で確認できます。
 
-### Port conflict errors
+### ポート競合エラー
 
-This project expects these host ports:
+このプロジェクトは次のホストポートを前提にしています。
 
-- `127.0.0.1:80` for PHP
-- `127.0.0.1:3000` for Next.js
-- `127.0.0.1:5432` for PostgreSQL
+- PHP: `127.0.0.1:80`
+- Next.js: `127.0.0.1:3000`
+- PostgreSQL: `127.0.0.1:5432`
 
-If `docker compose up -d` fails because a port is already in use, stop the other service using that port or update the published port mapping in `docker-compose.yml` before retrying.
+`docker compose up -d` がポート使用中で失敗する場合は、そのポートを使っている別サービスを停止するか、`docker-compose.yml` の公開ポート設定を変更してから再実行してください。
