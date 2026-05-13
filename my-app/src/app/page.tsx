@@ -25,12 +25,14 @@ export default async function Home({ searchParams }: HomeProps) {
     filters = normalizeSearchFilters({ ...base, res: "" });
   }
   const rows = await fetchPdbSearchResults(filters);
+  // console.log("Search filters:", filters);
+  // console.log("Search results:", rows);
 
   return (
     <main className="page-shell">
       <section className="card">
         <h1>Search Protein Database</h1>
-        <form className="search-form">
+        <form className="search-form" method="get" action="">
           <input name="id" defaultValue={filters.id} placeholder="PDBID" />
           <input name="name" defaultValue={filters.name} placeholder="Protein Name" />
           <input name="org" defaultValue={filters.organism} placeholder="Organism" />

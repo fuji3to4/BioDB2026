@@ -10,7 +10,7 @@ export type ProteinRow = {
 };
 
 export function buildProteinListQuery() {
-  return { text: "select * from protein order by proteinid", values: [] };
+  return { text: "select proteinid, name, organism, len, fav from protein order by proteinid", values: [] };
 }
 
 export function buildCreateProteinQuery(input: ProteinInput) {

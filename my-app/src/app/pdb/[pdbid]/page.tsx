@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { fetchPdbDetail, formatResolutionAngstrom, getPdbImagePath } from "@/lib/pdb";
+import { fetchPdbDetail, formatResolutionAngstrom } from "@/lib/pdb";
 
 
 type DetailProps = {
@@ -12,7 +12,7 @@ type DetailProps = {
 export default async function PdbDetailPage({ params }: DetailProps) {
   const { pdbid } = await params;
   const detail = await fetchPdbDetail(pdbid);
-
+  // console.log("PDB Detail:", detail)
   if (!detail) {
     notFound();
   }
@@ -37,10 +37,12 @@ export default async function PdbDetailPage({ params }: DetailProps) {
         </div>
         <div>
           <Image
-            src={getPdbImagePath(detail.pdbid)}
+            src={`/pic/${detail.pdbid.toLowerCase()}.jpeg`}
             alt={`${detail.pdbid} structure`}
-            width={560}
-            height={420}
+            width={500}
+            height={500}
+            loading="eager"
+            style={{ width: "100%", height: "auto" }}
           />
         </div>
       </section>

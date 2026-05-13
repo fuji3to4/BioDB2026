@@ -30,7 +30,8 @@ export function buildPdbDetailQuery(pdbid: string) {
   return {
     text: `
       select pdb.pdbid, pdb.method, pdb.resolution, pdb.chain, pdb.positions,
-             pdb.deposited, pdb.class, pdb.url, protein.name, protein.organism, protein.len
+             to_char(pdb.deposited, 'YYYY-MM-DD') as deposited, pdb.class, pdb.url, 
+             protein.name, protein.organism, protein.len
       from pdb natural join pdb2protein natural join protein
       where (pdb.pdbid = $1)
     `,
@@ -56,6 +57,3 @@ export function formatResolutionAngstrom(resolution: number | string | null | un
   return Number.isFinite(n) ? `${n.toFixed(2)} Å` : "";
 }
 
-export function getPdbImagePath(pdbid: string) {
-  return `/pic/${pdbid.toLowerCase()}.jpeg`;
-}
