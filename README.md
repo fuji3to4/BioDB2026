@@ -41,9 +41,9 @@ docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.
 コンテナ起動後、次を開いてください。
 
 - [`http://localhost/`](http://localhost/)
-- [`http://localhost/postgres.php`](http://localhost/postgres.php)
+- [`http://localhost/sample.php`](http://localhost/sample.php)
 
-トップページから PostgreSQL サンプルページへ遷移でき、`postgres.php` で PHP から PostgreSQL へ接続できることを確認できます。
+トップページから PostgreSQL サンプルページへ遷移でき、`sample.php` で PHP から PostgreSQL へ接続できることを確認できます。
 
 ## Next.js の作業フロー
 

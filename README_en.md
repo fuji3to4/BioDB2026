@@ -37,9 +37,9 @@ docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.
 After the containers are running, open:
 
 - [`http://localhost/`](http://localhost/)
-- [`http://localhost/postgres.php`](http://localhost/postgres.php)
+- [`http://localhost/sample.php`](http://localhost/sample.php)
 
-The top page links to the PostgreSQL sample page, and `postgres.php` confirms PHP can connect to PostgreSQL.
+The top page links to the PostgreSQL sample page, and `sample.php` confirms PHP can connect to PostgreSQL.
 
 ## Next.js workflow
 
