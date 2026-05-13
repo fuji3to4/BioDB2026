@@ -36,8 +36,8 @@ docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.
 
 After the containers are running, open:
 
-- `http://localhost/`
-- `http://localhost/postgres.php`
+- [`http://localhost/`](http://localhost/)
+- [`http://localhost/postgres.php`](http://localhost/postgres.php)
 
 The top page links to the PostgreSQL sample page, and `postgres.php` confirms PHP can connect to PostgreSQL.
 
@@ -55,36 +55,9 @@ npm run dev
 
 Then open:
 
-- `http://localhost:3000/`
+- [`http://localhost:3000/`](http://localhost:3000/)
 
-Useful health check:
-
-- `http://localhost:3000/api/health`
-
-## Smoke test
-
-After setup, run the final verification from the repository root:
-
-```powershell
-docker compose ps
-(Invoke-WebRequest 'http://localhost/').StatusCode
-(Invoke-WebRequest 'http://localhost/postgres.php').StatusCode
-(Invoke-WebRequest 'http://localhost:3000/api/health').StatusCode
-```
-
-After you load `demo.sql`, add this DB-backed Next.js check:
-
-```powershell
-(Invoke-WebRequest 'http://localhost:3000/api/proteins').StatusCode
-```
-
-Expected result:
-
-- `docker compose ps` shows `postgres`, `php`, and `nextjs` running
-- `http://localhost/` returns `200`
-- `http://localhost/postgres.php` returns `200` and confirms PHP can reach PostgreSQL
-- `http://localhost:3000/api/health` returns `200`
-- after `demo.sql` is loaded, `http://localhost:3000/api/proteins` returns `200`
+U
 
 ## Troubleshooting
 
@@ -103,7 +76,6 @@ The `nextjs` container starts and waits for development work, but the app only r
 npm run dev
 ```
 
-You can verify the app with `http://localhost:3000/api/health`.
 
 ### Port conflict errors
 
