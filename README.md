@@ -62,6 +62,22 @@ npm run dev
 - [`http://localhost:3000/`](http://localhost:3000/)
 
 
+## (Optional) Next.js のローカル開発環境での実行
+
+- Next.js をローカルで実行したい場合は、次の手順を実行してください。
+
+[Node.js公式サイト](https://nodejs.org/)からVoltaによりLTSバージョンをインストールする。
+
+- リポジトリルート（./my-app）で次を実行する。
+
+```bash
+cp .env.example .env
+npm install
+npm run dev
+```
+
+- ブラウザで [`http://localhost:3000/`](http://localhost:3000/) を開く。
+
 ## トラブルシューティング
 
 ### PostgreSQL は起動しているが演習用DBがない
