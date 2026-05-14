@@ -1,6 +1,11 @@
 "use client";
 
-import { formatResolutionAngstrom } from "@/lib/pdb.ts";
+// Local client-safe helper to format resolution (avoids importing server-only module)
+function formatResolutionAngstrom(resolution: number | string | null | undefined) {
+  if (resolution === null || resolution === undefined) return "";
+  const n = Number(resolution);
+  return Number.isFinite(n) ? `${n.toFixed(2)} Å` : "";
+}
 
 import {
   Table,
