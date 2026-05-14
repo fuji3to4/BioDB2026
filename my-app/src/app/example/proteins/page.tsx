@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import { fetchProteins } from "@/lib/proteins";
-import { EXAMPLE_SEARCH_PATH } from "@/lib/routes";
 import { ProteinCreateForm } from "./protein-create-form";
 import {
   deleteProteinAction,
@@ -17,7 +16,7 @@ export default async function ProteinsPage() {
     <main className="page-shell">
       <section className="card">
         <div className="page-links">
-          <Link href={EXAMPLE_SEARCH_PATH}>Back to search</Link>
+          <Link href="/example">Back to search</Link>
         </div>
         <h1>Protein Management</h1>
         <ProteinCreateForm />

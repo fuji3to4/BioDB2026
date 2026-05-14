@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { fetchPdbDetail, formatResolutionAngstrom } from "@/lib/pdb";
-import { EXAMPLE_SEARCH_PATH } from "@/lib/routes";
 
 type DetailProps = {
   params: Promise<{ pdbid: string }>;
@@ -21,7 +20,7 @@ export default async function PdbDetailPage({ params }: DetailProps) {
     <main className="page-shell">
       <section className="card detail-grid">
         <div>
-          <p><Link href={EXAMPLE_SEARCH_PATH}>Back to search</Link></p>
+          <p><Link href="/example">Back to search</Link></p>
           <h1>{detail.pdbid}</h1>
           <h2>{detail.name}</h2>
           <p><strong>Organism:</strong> {detail.organism}</p>

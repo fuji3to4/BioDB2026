@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { fetchPdbSearchResults } from "@/lib/pdb";
-import { EXAMPLE_PROTEINS_PATH, getExamplePdbDetailPath } from "@/lib/routes";
 import { normalizeSearchFilters } from "@/lib/search-filters";
 
 type HomeProps = {
@@ -30,7 +29,7 @@ export default async function ExampleHomePage({ searchParams }: HomeProps) {
     <main className="page-shell">
       <section className="card">
         <div className="page-links">
-          <Link href={EXAMPLE_PROTEINS_PATH}>Protein Management</Link>
+          <Link href="/example/proteins">Protein Management</Link>
         </div>
         <h1>Search Protein Database</h1>
         <form className="search-form" method="get" action="">
@@ -67,7 +66,7 @@ export default async function ExampleHomePage({ searchParams }: HomeProps) {
           <tbody>
             {rows.map((row, index) => (
               <tr key={`${row.pdbid}-${row.name}-${index}`}>
-                <td><Link href={getExamplePdbDetailPath(row.pdbid)}>{row.pdbid}</Link></td>
+                <td><Link href={`/example/pdb/${row.pdbid}`}>{row.pdbid}</Link></td>
                 <td>{row.method}</td>
                 <td>{row.resolution}</td>
                 <td>{row.class}</td>
