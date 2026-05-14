@@ -7,6 +7,7 @@ import {
   finishDetailError,
   finishDetailSuccess,
   finishSearchSuccess,
+  finishSearchError,
   startDetailLoad,
   startSearch,
 } from "./client-state.ts";
@@ -113,4 +114,49 @@ test("finishDetailError clears selected detail and records the error", () => {
   assert.equal(nextState.isDetailLoading, false);
   assert.equal(nextState.selectedDetail, null);
   assert.equal(nextState.detailError, "PDB entry not found");
+});
+
+test("finishSearchError clears searching and stores message", () => {
+  const state = {
+    ...createInitialSpaState(),
+    isSearching: true,
+    searchError: null,
+    results: [
+      {
+        pdbid: "1abc",
+        method: "X-RAY DIFFRACTION",
+        resolution: 1.5,
+        class: "Enzyme",
+        name: "Hemo",
+        organism: "Human",
+      },
+    ],
+    selectedPdbId: "1abc",
+    selectedDetail: {
+      pdbid: "1abc",
+      method: "X-RAY DIFFRACTION",
+      resolution: 1.5,
+      class: "Enzyme",
+      name: "Hemo",
+      organism: "Human",
+      chain: "A",
+      positions: "1-100",
+      deposited: "2024-01-01",
+      url: "https://example.invalid/1abc",
+      len: 100,
+    },
+    isDetailLoading: false,
+    detailError: "old detail error",
+  };
+
+  const nextState = finishSearchError(state, "network failure");
+
+  assert.equal(nextState.isSearching, false);
+  assert.equal(nextState.searchError, "network failure");
+  // preserve unrelated fields
+  assert.deepEqual(nextState.results, state.results);
+  assert.equal(nextState.selectedPdbId, state.selectedPdbId);
+  assert.deepEqual(nextState.selectedDetail, state.selectedDetail);
+  assert.equal(nextState.isDetailLoading, state.isDetailLoading);
+  assert.equal(nextState.detailError, state.detailError);
 });
