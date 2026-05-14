@@ -11,11 +11,7 @@ header('Content-Type:text/html; charset=UTF-8');
 
 <?php
 require('connectdb.php');
-// 初期値設定
-$status = 'error';
-$count = 0;
-$data = [];
-$message = '';
+
 
 try {
     $sql = "SELECT pdb.pdbid, pdb.resolution, protein.name, protein.organism
@@ -36,27 +32,6 @@ try {
     $message = "DB検索エラー: " . $Exception->getMessage();
 }
 
-// レスポンス構築
-// $response = [
-//     'status' => $status,
-//     'count' => $count,
-//     'data' => $data,
-//     'message' => $message
-// ];
-
-// // JSON エンコード
-// $json = json_encode($response, JSON_UNESCAPED_UNICODE);
-// if ($json === false) {
-//     http_response_code(500);
-//     echo json_encode(['status' => 'error', 'message' => 'JSON encode failed']);
-//     exit;
-// }
-
-// echo $json;
-
-//
-//Table表示
-//
 ?>
 
 <!-- 表のヘッダーの記述 -->
