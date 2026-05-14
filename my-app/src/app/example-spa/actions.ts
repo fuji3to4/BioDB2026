@@ -9,9 +9,17 @@ import type {
   SpaSearchRow,
 } from "./types.ts";
 
-export async function searchPdbAction(raw: SpaSearchForm): Promise<SpaSearchRow[]> {
-  const filters = normalizeSearchFilters(raw);
-  return fetchPdbSearchResults(filters);
+export async function searchPdbAction(
+  raw: SpaSearchForm,
+): Promise<{ ok: true; results: SpaSearchRow[] } | { ok: false; message: string }> {
+  try {
+    const filters = normalizeSearchFilters(raw);
+    const results = await fetchPdbSearchResults(filters);
+    return { ok: true, results };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return { ok: false, message: message || "An unexpected error occurred" };
+  }
 }
 
 export async function getPdbDetailAction(
