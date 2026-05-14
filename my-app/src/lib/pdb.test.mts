@@ -3,20 +3,23 @@ import test from "node:test";
 
 import { buildPdbSearchQuery, buildPdbDetailQuery, formatResolutionAngstrom} from "./pdb.ts";
 
-test("buildPdbSearchQuery adds a resolution predicate only when provided", () => {
+test("buildPdbSearchQuery adds method and resolution predicates when provided", () => {
   const withResolution = buildPdbSearchQuery({
     id: "1abc",
+    method: "X-ray",
     name: "",
     className: "Enzyme",
     organism: "",
     resolution: 2.2,
   });
 
-  assert.match(withResolution.text, /pdb\.resolution <= \$5/);
-  assert.deepEqual(withResolution.values, ["%1abc%", "%%", "%Enzyme%", "%%", 2.2]);
+  assert.match(withResolution.text, /pdb\.method like \$5/);
+  assert.match(withResolution.text, /pdb\.resolution <= \$6/);
+  assert.deepEqual(withResolution.values, ["%1abc%", "%%", "%Enzyme%", "%%", "%X-ray%", 2.2]);
 
   const withoutResolution = buildPdbSearchQuery({
     id: "",
+    method: "",
     name: "",
     className: "",
     organism: "",
@@ -24,7 +27,7 @@ test("buildPdbSearchQuery adds a resolution predicate only when provided", () =>
   });
 
   assert.doesNotMatch(withoutResolution.text, /resolution <=/);
-  assert.deepEqual(withoutResolution.values, ["%%", "%%", "%%", "%%"]);
+  assert.deepEqual(withoutResolution.values, ["%%", "%%", "%%", "%%", "%%"]);
 });
 
 test("buildPdbDetailQuery uses exact-match pdbid lookup", () => {

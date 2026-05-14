@@ -9,6 +9,7 @@ export function buildPdbSearchQuery(filters: SearchFilters) {
     "and (protein.name like $2)",
     "and (pdb.class like $3)",
     "and (protein.organism like $4)",
+    "and (pdb.method like $5)",
   ];
 
   const values: Array<string | number> = [
@@ -16,10 +17,11 @@ export function buildPdbSearchQuery(filters: SearchFilters) {
     `%${filters.name}%`,
     `%${filters.className}%`,
     `%${filters.organism}%`,
+    `%${filters.method}%`,
   ];
 
   if (filters.resolution !== null) {
-    textParts.push("and (pdb.resolution <= $5)");
+    textParts.push("and (pdb.resolution <= $6)");
     values.push(filters.resolution);
   }
 

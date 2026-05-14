@@ -11,6 +11,7 @@ export default async function ExampleHomePage({ searchParams }: HomeProps) {
   let filters: ReturnType<typeof normalizeSearchFilters>;
   const base = {
     id: typeof raw.id === "string" ? raw.id : "",
+    method: typeof raw.method === "string" ? raw.method : "",
     name: typeof raw.name === "string" ? raw.name : "",
     class: typeof raw.class === "string" ? raw.class : "",
     org: typeof raw.org === "string" ? raw.org : "",
@@ -35,6 +36,7 @@ export default async function ExampleHomePage({ searchParams }: HomeProps) {
         <form className="search-form" method="get" action="">
           <input name="id" defaultValue={filters.id} placeholder="PDBID" />
           <input name="name" defaultValue={filters.name} placeholder="Protein Name" />
+          <input name="method" defaultValue={filters.method} placeholder="Method" />
           <input name="org" defaultValue={filters.organism} placeholder="Organism" />
           <input name="res" defaultValue={filters.resolution ?? ""} placeholder="Resolution" />
           <select name="class" defaultValue={filters.className} aria-label="Protein class">
