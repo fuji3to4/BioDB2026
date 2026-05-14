@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   EMPTY_FILTERS,
   createInitialSpaState,
+  clearDetailSelection,
   finishDetailError,
   finishDetailSuccess,
   finishSearchSuccess,
@@ -114,6 +115,35 @@ test("finishDetailError clears selected detail and records the error", () => {
   assert.equal(nextState.isDetailLoading, false);
   assert.equal(nextState.selectedDetail, null);
   assert.equal(nextState.detailError, "PDB entry not found");
+});
+
+test("clearDetailSelection closes the detail popover state", () => {
+  const state = {
+    ...createInitialSpaState(),
+    selectedPdbId: "1abc",
+    selectedDetail: {
+      pdbid: "1abc",
+      method: "X-RAY DIFFRACTION",
+      resolution: 2.2,
+      class: "Enzyme",
+      name: "Hemoglobin",
+      organism: "Human",
+      chain: "A",
+      positions: "1-100",
+      deposited: "2024-01-01",
+      url: "https://example.invalid/1abc",
+      len: 100,
+    },
+    isDetailLoading: true,
+    detailError: "stale error",
+  };
+
+  const nextState = clearDetailSelection(state);
+
+  assert.equal(nextState.selectedPdbId, null);
+  assert.equal(nextState.selectedDetail, null);
+  assert.equal(nextState.isDetailLoading, false);
+  assert.equal(nextState.detailError, null);
 });
 
 test("finishSearchError clears searching and stores message", () => {

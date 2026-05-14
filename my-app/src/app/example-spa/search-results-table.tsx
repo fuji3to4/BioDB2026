@@ -1,12 +1,5 @@
 "use client";
 
-// Local client-safe helper to format resolution (avoids importing server-only module)
-function formatResolutionAngstrom(resolution: number | string | null | undefined) {
-  if (resolution === null || resolution === undefined) return "";
-  const n = Number(resolution);
-  return Number.isFinite(n) ? `${n.toFixed(2)} Å` : "";
-}
-
 import {
   Table,
   TableBody,
@@ -16,13 +9,16 @@ import {
   TableRow,
 } from "@/components/ui/table.tsx";
 
+import { PdbDetailPopover } from "./pdb-detail-popover.tsx";
 import type { ExampleSpaState } from "./types.ts";
 
 type SearchResultsTableProps = {
   state: ExampleSpaState;
+  onOpenDetail: (pdbid: string) => void;
+  onCloseDetail: () => void;
 };
 
-export function SearchResultsTable({ state }: SearchResultsTableProps) {
+export function SearchResultsTable({ state, onOpenDetail, onCloseDetail }: SearchResultsTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -39,9 +35,22 @@ export function SearchResultsTable({ state }: SearchResultsTableProps) {
         {state.results.length ? (
           state.results.map((row) => (
             <TableRow key={row.pdbid}>
-              <TableCell>{row.pdbid}</TableCell>
+              <TableCell>
+                <PdbDetailPopover
+                  pdbid={row.pdbid}
+                  state={state}
+                  onOpenDetail={onOpenDetail}
+                  onCloseDetail={onCloseDetail}
+                />
+              </TableCell>
               <TableCell>{row.method}</TableCell>
-              <TableCell>{formatResolutionAngstrom(row.resolution)}</TableCell>
+              <TableCell>
+                {row.resolution === null || row.resolution === undefined
+                  ? ""
+                  : Number.isFinite(Number(row.resolution))
+                    ? `${Number(row.resolution).toFixed(2)} Å`
+                    : ""}
+              </TableCell>
               <TableCell>{row.class}</TableCell>
               <TableCell>{row.name}</TableCell>
               <TableCell>{row.organism}</TableCell>

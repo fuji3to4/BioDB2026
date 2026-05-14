@@ -91,3 +91,13 @@ export function finishDetailError(state: ExampleSpaState, message: string): Exam
     detailError: message,
   };
 }
+
+export function clearDetailSelection(state: ExampleSpaState): ExampleSpaState {
+  return {
+    ...state,
+    selectedPdbId: null,
+    selectedDetail: null,
+    isDetailLoading: false,
+    detailError: null,
+  };
+}
