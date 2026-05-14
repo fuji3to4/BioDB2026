@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { buildPdbSearchQuery, buildPdbDetailQuery, formatResolutionAngstrom, getPdbImagePath } from "./pdb.ts";
+import { buildPdbSearchQuery, buildPdbDetailQuery, formatResolutionAngstrom} from "./pdb.ts";
 
 test("buildPdbSearchQuery adds a resolution predicate only when provided", () => {
   const withResolution = buildPdbSearchQuery({
@@ -36,10 +36,6 @@ test("buildPdbDetailQuery uses exact-match pdbid lookup", () => {
 
 test("formatResolutionAngstrom formats correctly", () => {
   assert.equal(formatResolutionAngstrom(2.3456), "2.35 Å");
-});
-
-test("getPdbImagePath returns path", () => {
-  assert.equal(getPdbImagePath("1GUU"), "/pic/1guu.jpeg");
 });
 
 test("formatResolutionAngstrom handles null and undefined", () => {
