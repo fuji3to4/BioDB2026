@@ -6,18 +6,18 @@ export function buildPdbSearchQuery(filters: SearchFilters) {
     "select pdb.pdbid, pdb.method, pdb.resolution, pdb.class, protein.name, protein.organism",
     "from pdb natural join pdb2protein natural join protein",
     "where (pdb.pdbid like $1)",
-    "and (protein.name like $2)",
-    "and (pdb.class like $3)",
-    "and (protein.organism like $4)",
-    "and (pdb.method like $5)",
+    "and (pdb.method like $2)",
+    "and (protein.name like $3)",
+    "and (pdb.class like $4)",
+    "and (protein.organism like $5)",
   ];
 
   const values: Array<string | number> = [
     `%${filters.id}%`,
+    `%${filters.method}%`,
     `%${filters.name}%`,
     `%${filters.className}%`,
     `%${filters.organism}%`,
-    `%${filters.method}%`,
   ];
 
   if (filters.resolution !== null) {

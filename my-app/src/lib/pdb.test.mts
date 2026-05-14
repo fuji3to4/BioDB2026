@@ -3,31 +3,33 @@ import test from "node:test";
 
 import { buildPdbSearchQuery, buildPdbDetailQuery, formatResolutionAngstrom} from "./pdb.ts";
 
-test("buildPdbSearchQuery adds method and resolution predicates when provided", () => {
-  const withResolution = buildPdbSearchQuery({
+test("buildPdbSearchQuery filters by method before applying resolution", () => {
+  const query = buildPdbSearchQuery({
     id: "1abc",
-    method: "X-ray",
+    method: "X-RAY",
     name: "",
     className: "Enzyme",
     organism: "",
     resolution: 2.2,
   });
 
-  assert.match(withResolution.text, /pdb\.method like \$5/);
-  assert.match(withResolution.text, /pdb\.resolution <= \$6/);
-  assert.deepEqual(withResolution.values, ["%1abc%", "%%", "%Enzyme%", "%%", "%X-ray%", 2.2]);
+  assert.match(query.text, /pdb\.method like \$2/);
+  assert.match(query.text, /pdb\.resolution <= \$6/);
+  assert.deepEqual(query.values, ["%1abc%", "%X-RAY%", "%%", "%Enzyme%", "%%", 2.2]);
+});
 
-  const withoutResolution = buildPdbSearchQuery({
+test("buildPdbSearchQuery keeps method in the values list when resolution is empty", () => {
+  const query = buildPdbSearchQuery({
     id: "",
-    method: "",
+    method: "NMR",
     name: "",
     className: "",
     organism: "",
     resolution: null,
   });
 
-  assert.doesNotMatch(withoutResolution.text, /resolution <=/);
-  assert.deepEqual(withoutResolution.values, ["%%", "%%", "%%", "%%", "%%"]);
+  assert.doesNotMatch(query.text, /resolution <=/);
+  assert.deepEqual(query.values, ["%%", "%NMR%", "%%", "%%", "%%"]);
 });
 
 test("buildPdbDetailQuery uses exact-match pdbid lookup", () => {
