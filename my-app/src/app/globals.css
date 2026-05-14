@@ -11,15 +11,6 @@ body {
   padding: 32px 20px 64px;
 }
 
-.site-header {
-  margin-bottom: 24px;
-}
-
-.site-nav {
-  display: flex;
-  gap: 16px;
-}
-
 .card {
   background: #fff;
   border-radius: 16px;
@@ -49,6 +40,18 @@ body {
   cursor: pointer;
   background: #162033;
   color: #fff;
+}
+
+.page-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.page-links a {
+  color: #162033;
+  font-weight: 600;
 }
 
 .data-table {
