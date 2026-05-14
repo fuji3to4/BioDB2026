@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-
 export default async function Home() {
   return (
     <main className="page-shell">
@@ -13,9 +12,12 @@ export default async function Home() {
 
         <div className="page-links">
           <Link href="/example">Go to Example Page</Link>
-         
+        </div>
+
+        <div className="page-links">
+          <Link href="/example-spa">Go to Example SPA Page</Link>
         </div>
       </section>
     </main>
-  )
-};
+  );
+}

@@ -9,7 +9,10 @@ import {
 } from "./proteins.ts";
 
 test("buildProteinListQuery selects protein rows in id order", () => {
-  assert.match(buildProteinListQuery().text, /select \* from protein/i);
+  assert.match(
+    buildProteinListQuery().text,
+    /select proteinid, name, organism, len, fav from protein order by proteinid/i,
+  );
 });
 
 test("buildCreateProteinQuery inserts name organism len and default fav", () => {

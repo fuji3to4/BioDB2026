@@ -1,5 +1,6 @@
 export type SearchFilters = {
   id: string;
+  method: string;
   name: string;
   className: string;
   organism: string;
@@ -8,6 +9,7 @@ export type SearchFilters = {
 
 type RawFilters = {
   id?: string;
+  method?: string;
   name?: string;
   class?: string;
   org?: string;
@@ -30,6 +32,7 @@ export function parseResolutionInput(value: string | undefined): number | null {
 export function normalizeSearchFilters(raw: RawFilters): SearchFilters {
   return {
     id: raw.id?.trim() ?? "",
+    method: raw.method?.trim() ?? "",
     name: raw.name?.trim() ?? "",
     className: raw.class?.trim() ?? "",
     organism: raw.org?.trim() ?? "",
