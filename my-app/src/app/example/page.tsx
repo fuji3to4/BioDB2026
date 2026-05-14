@@ -2,6 +2,8 @@ import Link from "next/link";
 import { fetchPdbSearchResults } from "@/lib/pdb";
 import { normalizeSearchFilters } from "@/lib/search-filters";
 
+export const dynamic = "force-dynamic";
+
 type HomeProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };

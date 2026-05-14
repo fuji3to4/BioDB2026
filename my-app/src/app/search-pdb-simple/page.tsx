@@ -1,5 +1,7 @@
 import { Pool } from "pg";
 
+export const dynamic = "force-dynamic";
+
 type SimplePdbRow = {
   pdbid: string;
   resolution: number | string | null;
