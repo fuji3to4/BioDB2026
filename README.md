@@ -14,9 +14,9 @@ docker compose up -d
 
 これにより次が起動します。
 
-- PostgreSQL: `127.0.0.1:5432`（ホストのループバックのみ）
-- PHP/Apache: `http://localhost/`（`127.0.0.1:80`、ホストのループバックのみ）
-- `nextjs`コンテナ: `127.0.0.1:3000` を公開（ホストのループバックのみ）
+- PostgreSQL: `127.0.0.1:5432`
+- PHP/Apache: `http://localhost/`
+- `nextjs`コンテナ: `127.0.0.1:3000` を公開
 
 `docker compose up -d` だけでは Next.js の開発サーバーは起動しません。実行中の `nextjs` コンテナに接続し、以下の手動手順を完了するまで `http://localhost:3000/` は利用できません。
 
