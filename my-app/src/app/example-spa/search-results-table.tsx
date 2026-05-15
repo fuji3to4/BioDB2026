@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table.tsx";
 
-import { PdbDetailPopover } from "./pdb-detail-popover.tsx";
+import { PdbDetailPopover } from "./pdb-detail.tsx";
 import type { ExampleSpaState } from "./types.ts";
 
 type SearchResultsTableProps = {

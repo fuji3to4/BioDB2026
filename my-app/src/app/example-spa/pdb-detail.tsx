@@ -53,7 +53,7 @@ export function PdbDetailPopover({
         </button>
       </PopoverTrigger>
 
-      <PopoverContent align="start" className="w-[min(90vw,48rem)]">
+      <PopoverContent align="start" side="right" className="w-[min(90vw,48rem)]">
         <div className="space-y-4">
           <div>
             <p className="text-xs uppercase tracking-wide text-slate-500">PDB entry</p>
@@ -78,7 +78,7 @@ export function PdbDetailPopover({
 
 function DetailSkeleton() {
   return (
-    <div className="grid gap-4 md:grid-cols-[220px_1fr]">
+    <div className="grid gap-4 md:grid-cols-[320px_1fr]">
       <Skeleton className="h-56 w-full rounded-md" />
       <div className="space-y-3">
         <Skeleton className="h-5 w-3/4" />
@@ -93,7 +93,7 @@ function DetailSkeleton() {
 
 function DetailContent({ detail }: { detail: SpaPdbDetail }) {
   return (
-    <div className="grid gap-4 md:grid-cols-[220px_1fr]">
+    <div className="grid gap-4 md:grid-cols-[320px_1fr]">
       <div className="overflow-hidden rounded-md border bg-slate-50">
         <Image
           src={`/pic/${detail.pdbid.toLowerCase()}.jpeg`}

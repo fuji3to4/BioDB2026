@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import { fetchProteins } from "@/lib/proteins";
 import { ProteinCreateForm } from "./protein-create-form";
+import { DeleteProteinDialog } from "./delete-protein-dialog";
 import {
   deleteProteinAction,
   incrementProteinFavAction,
@@ -48,9 +48,10 @@ export default async function ProteinsPage() {
                     <form action={incrementProteinFavAction.bind(null, protein.proteinid)}>
                       <button type="submit">+1 Fav</button>
                     </form>
-                    <form action={deleteProteinAction.bind(null, protein.proteinid)}>
-                      <ConfirmDeleteButton className="danger-button">Delete</ConfirmDeleteButton>
-                    </form>
+                    <DeleteProteinDialog 
+                      proteinId={protein.proteinid}
+                      deleteAction={deleteProteinAction}
+                    />
                   </td>
                 </tr>
               ))
