@@ -20,7 +20,7 @@ function fetch_pdb_search(array $filters): array
 
     $sql = "
         SELECT pdb.pdbid, pdb.method, pdb.resolution, pdb.class, protein.name, protein.organism
-        FROM pdb NATURAL JOIN pdb2protein NATURAL JOIN protein
+        FROM pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid
         WHERE (pdb.pdbid LIKE :id)
           AND (pdb.class LIKE :class)
           AND (protein.name LIKE :name)
@@ -57,7 +57,7 @@ function fetch_pdb_detail(string $pdbid): ?array
     $stmt = $pdo->prepare("
         SELECT pdb.pdbid, pdb.method, pdb.resolution, pdb.chain, pdb.positions,
                pdb.deposited, pdb.class, pdb.url, protein.name, protein.organism, protein.len
-        FROM pdb NATURAL JOIN pdb2protein NATURAL JOIN protein
+        FROM pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid
         WHERE pdb.pdbid = :pdbid
     ");
     $stmt->bindValue(':pdbid', $pdbid, PDO::PARAM_STR);

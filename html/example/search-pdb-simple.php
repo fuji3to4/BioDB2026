@@ -33,10 +33,8 @@ header('Content-Type:text/html; charset=UTF-8');
 
     try {
         $sql = "SELECT pdb.pdbid, pdb.resolution, protein.name, protein.organism
-            FROM protein, pdb, pdb2protein
-            WHERE pdb.pdbid = pdb2protein.pdbid
-            AND protein.proteinid = pdb2protein.proteinid 
-            AND pdb.resolution <= 2.5";
+            FROM pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid
+            WHERE pdb.resolution <= 2.5";
 
         $stmh = $pdo->prepare($sql);
         $stmh->execute();
