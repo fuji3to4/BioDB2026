@@ -12,23 +12,21 @@ const targetFiles = [
   resolve(srcDir, "app", "search-pdb-simple", "page.tsx"),
 ];
 
-const forbiddenSnippets = ["new Pool(", "pool.query(", 'from "pg"'];
+const forbiddenSnippets = ["new Pool(", "pool.query(", 'from "pg"', "from 'pg'"];
 const requiredSnippet = "db.execute(sql`";
 
-test("database access uses shared drizzle db", async () => {
-  await Promise.all(
-    targetFiles.map(async (filePath) => {
-      const content = await readFile(filePath, "utf8");
-      for (const snippet of forbiddenSnippets) {
-        assert.ok(
-          !content.includes(snippet),
-          `${filePath} should not include ${snippet}`
-        );
-      }
+for (const filePath of targetFiles) {
+  test(`${filePath} uses shared drizzle db`, async () => {
+    const content = await readFile(filePath, "utf8");
+    for (const snippet of forbiddenSnippets) {
       assert.ok(
-        content.includes(requiredSnippet),
-        `${filePath} should include ${requiredSnippet}`
+        !content.includes(snippet),
+        `${filePath} should not include ${snippet}`
       );
-    })
-  );
-});
+    }
+    assert.ok(
+      content.includes(requiredSnippet),
+      `${filePath} should include ${requiredSnippet}`
+    );
+  });
+}
