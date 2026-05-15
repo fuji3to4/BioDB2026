@@ -97,7 +97,7 @@ export const db = new Proxy(dbTarget as Database, {
 
 // Temporary compatibility export while remaining migration tasks update imports.
 export const pool = new Proxy({} as Pool, {
-  get(_target, property, receiver) {
+  get(_target, property) {
     const instance = getPool();
     const value = Reflect.get(instance, property, instance);
     return typeof value === "function" ? value.bind(instance) : value;

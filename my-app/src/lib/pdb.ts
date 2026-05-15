@@ -18,6 +18,20 @@ type PdbDetailRow = {
   pdbid: string;
   method: string;
   resolution: number | string | null;
+  chain: string;
+  positions: string;
+  deposited: string;
+  class: string;
+  url: string;
+  name: string;
+  organism: string;
+  len: number | string;
+};
+
+type RawPdbDetailRow = {
+  pdbid: string;
+  method: string;
+  resolution: number | string | null;
   chain: string | null;
   positions: string | null;
   deposited: string | null;
@@ -26,6 +40,17 @@ type PdbDetailRow = {
   name: string;
   organism: string;
   len: number | null;
+};
+
+function normalizePdbDetailRow(row: RawPdbDetailRow): PdbDetailRow {
+  return {
+    ...row,
+    chain: row.chain ?? "",
+    positions: row.positions ?? "",
+    deposited: row.deposited ?? "",
+    url: row.url ?? "",
+    len: row.len ?? "",
+  };
 };
 
 export async function fetchPdbSearchResults(filters: SearchFilters) {
@@ -56,7 +81,8 @@ export async function fetchPdbDetail(pdbid: string) {
     where (pdb.pdbid = ${pdbid})
   `);
 
-  return (result.rows[0] ?? null) as PdbDetailRow | null;
+  const row = (result.rows[0] ?? null) as RawPdbDetailRow | null;
+  return row ? normalizePdbDetailRow(row) : null;
 }
 
 export function formatResolutionAngstrom(resolution: number | string | null | undefined) {

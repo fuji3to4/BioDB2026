@@ -68,7 +68,15 @@ test("fetchPdbDetail uses exact-match pdbid lookup and returns the first row", a
 
   const detail = await fetchPdbDetail("1GUU");
 
-  assert.deepEqual(detail, { pdbid: "1GUU", method: "X-RAY" });
+  assert.deepEqual(detail, {
+    pdbid: "1GUU",
+    method: "X-RAY",
+    chain: "",
+    positions: "",
+    deposited: "",
+    url: "",
+    len: "",
+  });
 
   const statement = execute.mock.calls[0]!.arguments[0] as SQL;
   const rendered = render(statement);
@@ -76,6 +84,42 @@ test("fetchPdbDetail uses exact-match pdbid lookup and returns the first row", a
   assert.match(rendered.sql, /where \(pdb\.pdbid = \$1\)/i);
   assert.doesNotMatch(rendered.sql, /like '%' \|\|/i);
   assert.deepEqual(rendered.params, ["1GUU"]);
+});
+
+test("fetchPdbDetail normalizes nullable display fields to empty strings", async () => {
+  mock.method(db, "execute", async () => ({
+    rows: [
+      {
+        pdbid: "1GUU",
+        method: "X-RAY",
+        resolution: null,
+        chain: null,
+        positions: null,
+        deposited: null,
+        class: "Enzyme",
+        url: null,
+        name: "Hemoglobin",
+        organism: "Human",
+        len: null,
+      },
+    ],
+  }));
+
+  const detail = await fetchPdbDetail("1GUU");
+
+  assert.deepEqual(detail, {
+    pdbid: "1GUU",
+    method: "X-RAY",
+    resolution: null,
+    chain: "",
+    positions: "",
+    deposited: "",
+    class: "Enzyme",
+    url: "",
+    name: "Hemoglobin",
+    organism: "Human",
+    len: "",
+  });
 });
 
 test("formatResolutionAngstrom formats correctly", () => {
