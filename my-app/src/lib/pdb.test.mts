@@ -6,6 +6,7 @@ import { db } from "./db.ts";
 import { fetchPdbDetail, fetchPdbSearchResults, formatResolutionAngstrom } from "./pdb.ts";
 
 function render(statement: SQL) {
+  // toQuery is an internal Drizzle helper, but it keeps these SQL-shape assertions simple.
   return statement.toQuery({
     casing: {} as never,
     escapeName: (value) => `"${value}"`,
@@ -39,6 +40,25 @@ test("fetchPdbSearchResults sends method and optional resolution through raw dri
   assert.match(rendered.sql, /pdb\.method like '%' \|\| \$2 \|\| '%'/i);
   assert.match(rendered.sql, /pdb\.resolution <= \$6/i);
   assert.deepEqual(rendered.params, ["1abc", "X-RAY", "", "Enzyme", "", 2.2]);
+});
+
+test("fetchPdbSearchResults omits the resolution clause when resolution is null", async () => {
+  const execute = mock.method(db, "execute", async () => ({ rows: [] }));
+
+  await fetchPdbSearchResults({
+    id: "",
+    method: "NMR",
+    name: "",
+    className: "",
+    organism: "",
+    resolution: null,
+  });
+
+  const statement = execute.mock.calls[0]!.arguments[0] as SQL;
+  const rendered = render(statement);
+
+  assert.doesNotMatch(rendered.sql, /resolution <=/i);
+  assert.deepEqual(rendered.params, ["", "NMR", "", "", ""]);
 });
 
 test("fetchPdbDetail uses exact-match pdbid lookup and returns the first row", async () => {

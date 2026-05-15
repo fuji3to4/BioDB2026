@@ -3,6 +3,7 @@ import { sql } from "drizzle-orm";
 import { db } from "./db.ts";
 import type { SearchFilters } from "./search-filters.ts";
 
+// Raw execute results can surface numeric columns as strings depending on driver mapping.
 type PdbSearchRow = {
   pdbid: string;
   method: string;
@@ -12,6 +13,7 @@ type PdbSearchRow = {
   organism: string;
 };
 
+// Raw execute results can surface numeric columns as strings depending on driver mapping.
 type PdbDetailRow = {
   pdbid: string;
   method: string;
