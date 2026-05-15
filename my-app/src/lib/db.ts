@@ -57,8 +57,7 @@ function getDb(): Database {
   return dbInstance;
 }
 
-function getDbProperty(property: PropertyKey, receiver: object) {
-  void receiver;
+function getDbProperty(property: PropertyKey) {
   const instance = getDb();
   const value = Reflect.get(instance, property, instance);
   return typeof value === "function" ? value.bind(instance) : value;
@@ -70,7 +69,7 @@ export const db = new Proxy({} as Database, {
       // Staged migration: some modules import db before DATABASE_URL is set.
       // Defer the error until the first call instead of failing at import time.
       return (...args: unknown[]) => {
-        const value = getDbProperty(property, receiver);
+        const value = getDbProperty(property);
         if (typeof value === "function") {
           return value(...args);
         }
@@ -81,7 +80,7 @@ export const db = new Proxy({} as Database, {
       };
     }
 
-    return getDbProperty(property, receiver);
+    return getDbProperty(property);
   },
 }) as Database;
 
@@ -89,7 +88,7 @@ export const db = new Proxy({} as Database, {
 export const pool = new Proxy({} as Pool, {
   get(_target, property, receiver) {
     const instance = getPool();
-    const value = Reflect.get(instance, property, receiver);
+    const value = Reflect.get(instance, property, instance);
     return typeof value === "function" ? value.bind(instance) : value;
   },
 }) as Pool;
