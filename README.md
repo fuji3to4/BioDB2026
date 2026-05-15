@@ -67,7 +67,7 @@ npm run dev
 
 - Next.js をローカルで実行したい場合は、次の手順を実行してください。
 
-[Node.js公式サイト](https://nodejs.org/)からVoltaによりLTSバージョンをインストールする。
+[Node.js公式サイト](https://nodejs.org/)からLTSバージョンをインストールする。
 
 - リポジトリルート（./my-app）で次を実行する。
 
