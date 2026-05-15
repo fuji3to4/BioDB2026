@@ -1,56 +1,75 @@
-import { pool } from "./db.ts";
+import { sql } from "drizzle-orm";
+
+import { db } from "./db.ts";
 import type { SearchFilters } from "./search-filters.ts";
 
-export function buildPdbSearchQuery(filters: SearchFilters) {
-  const textParts = [
-    "select pdb.pdbid, pdb.method, pdb.resolution, pdb.class, protein.name, protein.organism",
-    "FROM pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid",
-    "where (pdb.pdbid like $1)",
-    "and (pdb.method like $2)",
-    "and (protein.name like $3)",
-    "and (pdb.class like $4)",
-    "and (protein.organism like $5)",
-  ];
-
-  const values: Array<string | number> = [
-    `%${filters.id}%`,
-    `%${filters.method}%`,
-    `%${filters.name}%`,
-    `%${filters.className}%`,
-    `%${filters.organism}%`,
-  ];
-
-  if (filters.resolution !== null) {
-    textParts.push("and (pdb.resolution <= $6)");
-    values.push(filters.resolution);
-  }
-
-  return { text: textParts.join("\n"), values };
+const defaultExecute = db.execute;
+if (!Object.getOwnPropertyDescriptor(db, "execute")) {
+  Object.defineProperty(db, "execute", {
+    value: defaultExecute,
+    configurable: true,
+    writable: true,
+  });
 }
 
-export function buildPdbDetailQuery(pdbid: string) {
-  return {
-    text: `
-      select pdb.pdbid, pdb.method, pdb.resolution, pdb.chain, pdb.positions,
-             to_char(pdb.deposited, 'YYYY-MM-DD') as deposited, pdb.class, pdb.url, 
-             protein.name, protein.organism, protein.len
-      from pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid
-      where (pdb.pdbid = $1)
-    `,
-    values: [pdbid],
-  };
+function getExecute() {
+  return (Object.getOwnPropertyDescriptor(db, "execute")?.value ?? defaultExecute) as typeof db.execute;
 }
+
+type PdbSearchRow = {
+  pdbid: string;
+  method: string;
+  resolution: number | string | null;
+  class: string;
+  name: string;
+  organism: string;
+};
+
+type PdbDetailRow = {
+  pdbid: string;
+  method: string;
+  resolution: number | string | null;
+  chain: string | null;
+  positions: string | null;
+  deposited: string | null;
+  class: string;
+  url: string | null;
+  name: string;
+  organism: string;
+  len: number | null;
+};
 
 export async function fetchPdbSearchResults(filters: SearchFilters) {
-  const query = buildPdbSearchQuery(filters);
-  const result = await pool.query(query);
-  return result.rows;
+  const execute = getExecute();
+  const result = await execute(sql`
+    select pdb.pdbid, pdb.method, pdb.resolution, pdb.class, protein.name, protein.organism
+    from pdb
+    inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid
+    inner join protein on pdb2protein.proteinid = protein.proteinid
+    where (pdb.pdbid like '%' || ${filters.id} || '%')
+      and (pdb.method like '%' || ${filters.method} || '%')
+      and (protein.name like '%' || ${filters.name} || '%')
+      and (pdb.class like '%' || ${filters.className} || '%')
+      and (protein.organism like '%' || ${filters.organism} || '%')
+      ${filters.resolution === null ? sql`` : sql`and (pdb.resolution <= ${filters.resolution})`}
+  `);
+
+  return result.rows as PdbSearchRow[];
 }
 
 export async function fetchPdbDetail(pdbid: string) {
-  const query = buildPdbDetailQuery(pdbid);
-  const result = await pool.query(query);
-  return result.rows[0] ?? null;
+  const execute = getExecute();
+  const result = await execute(sql`
+    select pdb.pdbid, pdb.method, pdb.resolution, pdb.chain, pdb.positions,
+           to_char(pdb.deposited, 'YYYY-MM-DD') as deposited, pdb.class, pdb.url,
+           protein.name, protein.organism, protein.len
+    from pdb
+    inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid
+    inner join protein on pdb2protein.proteinid = protein.proteinid
+    where (pdb.pdbid = ${pdbid})
+  `);
+
+  return (result.rows[0] ?? null) as PdbDetailRow | null;
 }
 
 export function formatResolutionAngstrom(resolution: number | string | null | undefined) {
@@ -58,4 +77,3 @@ export function formatResolutionAngstrom(resolution: number | string | null | un
   const n = Number(resolution);
   return Number.isFinite(n) ? `${n.toFixed(2)} Å` : "";
 }
-
