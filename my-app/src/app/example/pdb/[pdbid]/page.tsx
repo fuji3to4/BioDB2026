@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { hasExternalPdbUrl } from "@/lib/external-pdb-url";
 import { fetchPdbDetail, formatResolutionAngstrom } from "@/lib/pdb";
 
 type DetailProps = {
@@ -32,7 +33,9 @@ export default async function PdbDetailPage({ params }: DetailProps) {
             <li><strong>Method:</strong> {detail.method}</li>
             <li><strong>Resolution:</strong> {formatResolutionAngstrom(detail.resolution)}</li>
           </ul>
-          <p><a href={detail.url} target="_blank" rel="noreferrer">Open PDB reference</a></p>
+          {hasExternalPdbUrl(detail.url) ? (
+            <p><a href={detail.url} target="_blank" rel="noreferrer">Open PDB reference</a></p>
+          ) : null}
         </div>
         <div>
           <Image

@@ -2,8 +2,13 @@ import assert from "node:assert/strict";
 import test, { afterEach, mock } from "node:test";
 import type { SQL } from "drizzle-orm";
 
+import { hasExternalPdbUrl } from "./external-pdb-url.ts";
 import { db } from "./db.ts";
-import { fetchPdbDetail, fetchPdbSearchResults, formatResolutionAngstrom } from "./pdb.ts";
+import {
+  fetchPdbDetail,
+  fetchPdbSearchResults,
+  formatResolutionAngstrom,
+} from "./pdb.ts";
 
 function render(statement: SQL) {
   // toQuery is an internal Drizzle helper, but it keeps these SQL-shape assertions simple.
@@ -129,4 +134,10 @@ test("formatResolutionAngstrom formats correctly", () => {
 test("formatResolutionAngstrom handles null and undefined", () => {
   assert.equal(formatResolutionAngstrom(null), "");
   assert.equal(formatResolutionAngstrom(undefined), "");
+});
+
+test("hasExternalPdbUrl rejects blank urls", () => {
+  assert.equal(hasExternalPdbUrl(""), false);
+  assert.equal(hasExternalPdbUrl("   "), false);
+  assert.equal(hasExternalPdbUrl("https://example.invalid/1abc"), true);
 });
