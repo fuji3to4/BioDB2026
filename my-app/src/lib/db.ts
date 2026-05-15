@@ -1,10 +1,15 @@
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
+
+type Database = ReturnType<typeof drizzle>;
 
 const globalForDb = globalThis as typeof globalThis & {
   biodbPool?: Pool;
+  biodbDb?: Database;
 };
 
 let poolInstance: Pool | undefined;
+let dbInstance: Database | undefined;
 
 function getPool(): Pool {
   if (poolInstance) {
@@ -31,6 +36,51 @@ function getPool(): Pool {
 
   return poolInstance;
 }
+
+function getDb(): Database {
+  if (dbInstance) {
+    return dbInstance;
+  }
+
+  if (globalForDb.biodbDb) {
+    dbInstance = globalForDb.biodbDb;
+    return dbInstance;
+  }
+
+  const pool = getPool();
+  dbInstance = drizzle(pool);
+
+  if (process.env.NODE_ENV !== "production") {
+    globalForDb.biodbDb = dbInstance;
+  }
+
+  return dbInstance;
+}
+
+function getDbProperty(property: PropertyKey, receiver: object) {
+  const instance = getDb();
+  const value = Reflect.get(instance, property, receiver);
+  return typeof value === "function" ? value.bind(instance) : value;
+}
+
+export const db = new Proxy({} as Database, {
+  get(_target, property, receiver) {
+    if (!dbInstance && !globalForDb.biodbDb && !process.env.DATABASE_URL) {
+      return (...args: unknown[]) => {
+        const value = getDbProperty(property, receiver);
+        if (typeof value === "function") {
+          return value(...args);
+        }
+        if (args.length > 0) {
+          throw new Error(`Property ${String(property)} is not callable`);
+        }
+        return value;
+      };
+    }
+
+    return getDbProperty(property, receiver);
+  },
+}) as Database;
 
 export const pool = new Proxy({} as Pool, {
   get(_target, property, receiver) {
