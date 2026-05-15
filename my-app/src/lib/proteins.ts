@@ -1,4 +1,6 @@
-import { pool } from "./db.ts";
+import { sql } from "drizzle-orm";
+
+import { db } from "./db.ts";
 import type { ProteinInput } from "./protein-form.ts";
 
 export type ProteinRow = {
@@ -9,48 +11,33 @@ export type ProteinRow = {
   fav: number;
 };
 
-export function buildProteinListQuery() {
-  return { text: "select proteinid, name, organism, len, fav from protein order by proteinid", values: [] };
-}
-
-export function buildCreateProteinQuery(input: ProteinInput) {
-  return {
-    text: "insert into protein(name, organism, len, fav) values ($1, $2, $3, 0)",
-    values: [input.name, input.organism, input.length],
-  };
-}
-
-export function buildIncrementFavQuery(proteinId: number) {
-  return {
-    text: "update protein set fav = fav + 1 where proteinid = $1",
-    values: [proteinId],
-  };
-}
-
-export function buildDeleteProteinQuery(proteinId: number) {
-  return {
-    text: "delete from protein where proteinid = $1",
-    values: [proteinId],
-  };
-}
-
 export async function fetchProteins() {
-  const query = buildProteinListQuery();
-  const result = await pool.query(query);
+  const result = await db.execute(sql`
+    select proteinid, name, organism, len, fav
+    from protein
+    order by proteinid
+  `);
   return result.rows as ProteinRow[];
 }
 
 export async function createProtein(input: ProteinInput) {
-  const query = buildCreateProteinQuery(input);
-  await pool.query(query);
+  await db.execute(sql`
+    insert into protein(name, organism, len, fav)
+    values (${input.name}, ${input.organism}, ${input.length}, 0)
+  `);
 }
 
 export async function incrementProteinFav(proteinId: number) {
-  const query = buildIncrementFavQuery(proteinId);
-  await pool.query(query);
+  await db.execute(sql`
+    update protein
+    set fav = fav + 1
+    where proteinid = ${proteinId}
+  `);
 }
 
 export async function deleteProtein(proteinId: number) {
-  const query = buildDeleteProteinQuery(proteinId);
-  await pool.query(query);
+  await db.execute(sql`
+    delete from protein
+    where proteinid = ${proteinId}
+  `);
 }
