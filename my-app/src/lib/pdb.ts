@@ -3,19 +3,6 @@ import { sql } from "drizzle-orm";
 import { db } from "./db.ts";
 import type { SearchFilters } from "./search-filters.ts";
 
-const defaultExecute = db.execute;
-if (!Object.getOwnPropertyDescriptor(db, "execute")) {
-  Object.defineProperty(db, "execute", {
-    value: defaultExecute,
-    configurable: true,
-    writable: true,
-  });
-}
-
-function getExecute() {
-  return (Object.getOwnPropertyDescriptor(db, "execute")?.value ?? defaultExecute) as typeof db.execute;
-}
-
 type PdbSearchRow = {
   pdbid: string;
   method: string;
@@ -40,8 +27,7 @@ type PdbDetailRow = {
 };
 
 export async function fetchPdbSearchResults(filters: SearchFilters) {
-  const execute = getExecute();
-  const result = await execute(sql`
+  const result = await db.execute(sql`
     select pdb.pdbid, pdb.method, pdb.resolution, pdb.class, protein.name, protein.organism
     from pdb
     inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid
@@ -58,8 +44,7 @@ export async function fetchPdbSearchResults(filters: SearchFilters) {
 }
 
 export async function fetchPdbDetail(pdbid: string) {
-  const execute = getExecute();
-  const result = await execute(sql`
+  const result = await db.execute(sql`
     select pdb.pdbid, pdb.method, pdb.resolution, pdb.chain, pdb.positions,
            to_char(pdb.deposited, 'YYYY-MM-DD') as deposited, pdb.class, pdb.url,
            protein.name, protein.organism, protein.len

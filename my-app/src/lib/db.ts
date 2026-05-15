@@ -63,8 +63,19 @@ function getDbProperty(property: PropertyKey) {
   return typeof value === "function" ? value.bind(instance) : value;
 }
 
-export const db = new Proxy({} as Database, {
-  get(_target, property, receiver) {
+const dbTarget = {
+  execute(...args: Parameters<Database["execute"]>) {
+    const execute = getDbProperty("execute") as Database["execute"];
+    return execute(...args);
+  },
+} as Pick<Database, "execute">;
+
+export const db = new Proxy(dbTarget as Database, {
+  get(target, property, receiver) {
+    if (Object.hasOwn(target, property)) {
+      return Reflect.get(target, property, receiver);
+    }
+
     if (!dbInstance && !globalForDb.biodbDb && !process.env.DATABASE_URL) {
       // Staged migration: some modules import db before DATABASE_URL is set.
       // Defer the error until the first call instead of failing at import time.
