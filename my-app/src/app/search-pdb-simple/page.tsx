@@ -19,11 +19,9 @@ async function fetchRows(): Promise<SimplePdbRow[]> {
 
   try {
     const result = await pool.query<SimplePdbRow>(`
-      select pdb.pdbid, pdb.resolution, protein.name, protein.organism
-      from protein, pdb, pdb2protein
-      where pdb.pdbid = pdb2protein.pdbid
-      and protein.proteinid = pdb2protein.proteinid
-      and pdb.resolution <= 2.5
+      SELECT pdb.pdbid, pdb.resolution, protein.name, protein.organism
+      FROM pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid
+      WHERE pdb.resolution <= 2.5
     `);
 
     return result.rows;

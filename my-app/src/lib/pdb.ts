@@ -4,7 +4,7 @@ import type { SearchFilters } from "./search-filters.ts";
 export function buildPdbSearchQuery(filters: SearchFilters) {
   const textParts = [
     "select pdb.pdbid, pdb.method, pdb.resolution, pdb.class, protein.name, protein.organism",
-    "from pdb natural join pdb2protein natural join protein",
+    "FROM pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid",
     "where (pdb.pdbid like $1)",
     "and (pdb.method like $2)",
     "and (protein.name like $3)",
@@ -34,7 +34,7 @@ export function buildPdbDetailQuery(pdbid: string) {
       select pdb.pdbid, pdb.method, pdb.resolution, pdb.chain, pdb.positions,
              to_char(pdb.deposited, 'YYYY-MM-DD') as deposited, pdb.class, pdb.url, 
              protein.name, protein.organism, protein.len
-      from pdb natural join pdb2protein natural join protein
+      from pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid
       where (pdb.pdbid = $1)
     `,
     values: [pdbid],
