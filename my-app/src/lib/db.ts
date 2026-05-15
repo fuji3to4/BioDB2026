@@ -66,6 +66,7 @@ function getDbProperty(property: PropertyKey, receiver: object) {
 export const db = new Proxy({} as Database, {
   get(_target, property, receiver) {
     if (!dbInstance && !globalForDb.biodbDb && !process.env.DATABASE_URL) {
+      // Defer DATABASE_URL errors to call-time (unlike the eager pool proxy).
       return (...args: unknown[]) => {
         const value = getDbProperty(property, receiver);
         if (typeof value === "function") {
