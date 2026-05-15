@@ -58,15 +58,17 @@ function getDb(): Database {
 }
 
 function getDbProperty(property: PropertyKey, receiver: object) {
+  void receiver;
   const instance = getDb();
-  const value = Reflect.get(instance, property, receiver);
+  const value = Reflect.get(instance, property, instance);
   return typeof value === "function" ? value.bind(instance) : value;
 }
 
 export const db = new Proxy({} as Database, {
   get(_target, property, receiver) {
     if (!dbInstance && !globalForDb.biodbDb && !process.env.DATABASE_URL) {
-      // Defer DATABASE_URL errors to call-time (unlike the eager pool proxy).
+      // Staged migration: some modules import db before DATABASE_URL is set.
+      // Defer the error until the first call instead of failing at import time.
       return (...args: unknown[]) => {
         const value = getDbProperty(property, receiver);
         if (typeof value === "function") {
@@ -83,6 +85,7 @@ export const db = new Proxy({} as Database, {
   },
 }) as Database;
 
+// Temporary compatibility export while remaining migration tasks update imports.
 export const pool = new Proxy({} as Pool, {
   get(_target, property, receiver) {
     const instance = getPool();
