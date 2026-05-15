@@ -28,6 +28,7 @@ $count = count($rows);
     <p><a href="proteins.php">Protein Management</a></p>
     <h1>Search Protein Database</h1>
 
+    <!-- 検索フォーム -->
     <form method="get" action="">
       <div class="row g-2 mb-3">
         <div class="col-auto">
@@ -49,12 +50,11 @@ $count = count($rows);
         <div class="col-auto">
           <select class="form-select" name="class" aria-label="Protein class">
             <option value="">Any</option>
-            <?php foreach (['Enzyme', 'DNA-Binding', 'Membrane', 'Signaling Protein', 'Protein Binding'] as $opt): ?>
-              <option value="<?= htmlspecialchars($opt, ENT_QUOTES) ?>"
-                <?= $class === $opt ? 'selected' : '' ?>>
-                <?= htmlspecialchars($opt, ENT_QUOTES) ?>
-              </option>
-            <?php endforeach; ?>
+            <option value="Enzyme" <?= $class === 'Enzyme' ? 'selected' : '' ?>>Enzyme</option>
+            <option value="DNA-Binding" <?= $class === 'DNA-Binding' ? 'selected' : '' ?>>DNA-Binding</option>
+            <option value="Membrane" <?= $class === 'Membrane' ? 'selected' : '' ?>>Membrane</option>
+            <option value="Signaling Protein" <?= $class === 'Signaling Protein' ? 'selected' : '' ?>>Signaling Protein</option>
+            <option value="Protein Binding" <?= $class === 'Protein Binding' ? 'selected' : '' ?>>Protein Binding</option>
           </select>
         </div>
         <div class="col-auto">
@@ -63,6 +63,7 @@ $count = count($rows);
       </div>
     </form>
 
+    <!-- 検索結果 -->
     <p><?= $count ?> result(s)</p>
 
     <table class="table table-striped">
