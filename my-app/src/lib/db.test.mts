@@ -90,3 +90,8 @@ test("db execute honors proxy target overrides from mock.method", async () => {
     else globalForDb.biodbPool = originalPool;
   }
 });
+
+test("db module does not expose the legacy pool export", async () => {
+  const mod = await import(`./db.ts?case=${Date.now()}`);
+  assert.equal("pool" in mod, false);
+});
