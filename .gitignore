@@ -8,6 +8,6 @@ my-app/.next/
 !.env.example
 dist/
 coverage/
-docs/
+docs/superpowers/
 BioDB2026.code-workspace
 bkp/

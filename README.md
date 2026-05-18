@@ -30,7 +30,7 @@ docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/demo.sql
 docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.sql
 ```
 
-もしくは、以下の手順で `psql` に接続してから、SQLファイルを適用してください。
+もしくは、以下の手順で`biodb-postgres`コンテナに接続してから、`pgsql`コマンドにてSQLファイルを適用してください。
 
 ```powershell
 docker exec -it biodb-postgres bash
