@@ -1,10 +1,33 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import test, { afterEach, mock } from "node:test";
+import type { SQL } from "drizzle-orm";
 
-import { buildPdbSearchQuery, buildPdbDetailQuery, formatResolutionAngstrom} from "./pdb.ts";
+import { hasExternalPdbUrl } from "./external-pdb-url.ts";
+import { db } from "./db.ts";
+import {
+  fetchPdbDetail,
+  fetchPdbSearchResults,
+  formatResolutionAngstrom,
+} from "./pdb.ts";
 
-test("buildPdbSearchQuery filters by method before applying resolution", () => {
-  const query = buildPdbSearchQuery({
+function render(statement: SQL) {
+  // toQuery is an internal Drizzle helper, but it keeps these SQL-shape assertions simple.
+  return statement.toQuery({
+    casing: {} as never,
+    escapeName: (value) => `"${value}"`,
+    escapeParam: (index) => `$${index + 1}`,
+    escapeString: (value) => `'${value.replaceAll("'", "''")}'`,
+  });
+}
+
+afterEach(() => {
+  mock.restoreAll();
+});
+
+test("fetchPdbSearchResults sends method and optional resolution through raw drizzle sql", async () => {
+  const execute = mock.method(db, "execute", async () => ({ rows: [] }));
+
+  await fetchPdbSearchResults({
     id: "1abc",
     method: "X-RAY",
     name: "",
@@ -13,13 +36,21 @@ test("buildPdbSearchQuery filters by method before applying resolution", () => {
     resolution: 2.2,
   });
 
-  assert.match(query.text, /pdb\.method like \$2/);
-  assert.match(query.text, /pdb\.resolution <= \$6/);
-  assert.deepEqual(query.values, ["%1abc%", "%X-RAY%", "%%", "%Enzyme%", "%%", 2.2]);
+  assert.equal(execute.mock.calls.length, 1);
+
+  const statement = execute.mock.calls[0]!.arguments[0] as SQL;
+  const rendered = render(statement);
+
+  assert.match(rendered.sql, /pdb\.pdbid like '%' \|\| \$1 \|\| '%'/i);
+  assert.match(rendered.sql, /pdb\.method like '%' \|\| \$2 \|\| '%'/i);
+  assert.match(rendered.sql, /pdb\.resolution <= \$6/i);
+  assert.deepEqual(rendered.params, ["1abc", "X-RAY", "", "Enzyme", "", 2.2]);
 });
 
-test("buildPdbSearchQuery keeps method in the values list when resolution is empty", () => {
-  const query = buildPdbSearchQuery({
+test("fetchPdbSearchResults omits the resolution clause when resolution is null", async () => {
+  const execute = mock.method(db, "execute", async () => ({ rows: [] }));
+
+  await fetchPdbSearchResults({
     id: "",
     method: "NMR",
     name: "",
@@ -28,15 +59,72 @@ test("buildPdbSearchQuery keeps method in the values list when resolution is emp
     resolution: null,
   });
 
-  assert.doesNotMatch(query.text, /resolution <=/);
-  assert.deepEqual(query.values, ["%%", "%NMR%", "%%", "%%", "%%"]);
+  const statement = execute.mock.calls[0]!.arguments[0] as SQL;
+  const rendered = render(statement);
+
+  assert.doesNotMatch(rendered.sql, /resolution <=/i);
+  assert.deepEqual(rendered.params, ["", "NMR", "", "", ""]);
 });
 
-test("buildPdbDetailQuery uses exact-match pdbid lookup", () => {
-  const detail = buildPdbDetailQuery("1GUU");
-  assert.match(detail.text, /where \(pdb\.pdbid = \$1\)/i);
-  assert.doesNotMatch(detail.text, /like/i);
-  assert.deepEqual(detail.values, ["1GUU"]);
+test("fetchPdbDetail uses exact-match pdbid lookup and returns the first row", async () => {
+  const execute = mock.method(db, "execute", async () => ({
+    rows: [{ pdbid: "1GUU", method: "X-RAY" }],
+  }));
+
+  const detail = await fetchPdbDetail("1GUU");
+
+  assert.deepEqual(detail, {
+    pdbid: "1GUU",
+    method: "X-RAY",
+    chain: "",
+    positions: "",
+    deposited: "",
+    url: "",
+    len: "",
+  });
+
+  const statement = execute.mock.calls[0]!.arguments[0] as SQL;
+  const rendered = render(statement);
+
+  assert.match(rendered.sql, /where \(pdb\.pdbid = \$1\)/i);
+  assert.doesNotMatch(rendered.sql, /like '%' \|\|/i);
+  assert.deepEqual(rendered.params, ["1GUU"]);
+});
+
+test("fetchPdbDetail normalizes nullable display fields to empty strings", async () => {
+  mock.method(db, "execute", async () => ({
+    rows: [
+      {
+        pdbid: "1GUU",
+        method: "X-RAY",
+        resolution: null,
+        chain: null,
+        positions: null,
+        deposited: null,
+        class: "Enzyme",
+        url: null,
+        name: "Hemoglobin",
+        organism: "Human",
+        len: null,
+      },
+    ],
+  }));
+
+  const detail = await fetchPdbDetail("1GUU");
+
+  assert.deepEqual(detail, {
+    pdbid: "1GUU",
+    method: "X-RAY",
+    resolution: null,
+    chain: "",
+    positions: "",
+    deposited: "",
+    class: "Enzyme",
+    url: "",
+    name: "Hemoglobin",
+    organism: "Human",
+    len: "",
+  });
 });
 
 test("formatResolutionAngstrom formats correctly", () => {
@@ -46,4 +134,10 @@ test("formatResolutionAngstrom formats correctly", () => {
 test("formatResolutionAngstrom handles null and undefined", () => {
   assert.equal(formatResolutionAngstrom(null), "");
   assert.equal(formatResolutionAngstrom(undefined), "");
+});
+
+test("hasExternalPdbUrl rejects blank urls", () => {
+  assert.equal(hasExternalPdbUrl(""), false);
+  assert.equal(hasExternalPdbUrl("   "), false);
+  assert.equal(hasExternalPdbUrl("https://example.invalid/1abc"), true);
 });

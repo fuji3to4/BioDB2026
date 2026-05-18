@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface DeleteProteinDialogProps {
-  proteinId: string;
-  deleteAction: (proteinId: string, formData?: FormData) => Promise<void>;
+  proteinId: number;
+  deleteAction: (proteinId: number, formData?: FormData) => Promise<void>;
 }
 
 export function DeleteProteinDialog({

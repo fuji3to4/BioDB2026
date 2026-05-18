@@ -1,4 +1,6 @@
-import { Pool } from "pg";
+import { sql } from "drizzle-orm";
+
+import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -10,24 +12,15 @@ type SimplePdbRow = {
 };
 
 async function fetchRows(): Promise<SimplePdbRow[]> {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not set");
-  }
+  const result = await db.execute(sql`
+    select pdb.pdbid, pdb.resolution, protein.name, protein.organism
+    from pdb
+    inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid
+    inner join protein on pdb2protein.proteinid = protein.proteinid
+    where pdb.resolution <= 2.5
+  `);
 
-  const pool = new Pool({ connectionString });
-
-  try {
-    const result = await pool.query<SimplePdbRow>(`
-      SELECT pdb.pdbid, pdb.resolution, protein.name, protein.organism
-      FROM pdb INNER JOIN pdb2protein ON pdb.pdbid = pdb2protein.pdbid INNER JOIN protein ON pdb2protein.proteinid = protein.proteinid
-      WHERE pdb.resolution <= 2.5
-    `);
-
-    return result.rows;
-  } finally {
-    await pool.end();
-  }
+  return result.rows as SimplePdbRow[];
 }
 
 export default async function SearchPdbSimplePage() {

@@ -1,19 +1,21 @@
-import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres";
+
+type Database = ReturnType<typeof drizzle>;
 
 const globalForDb = globalThis as typeof globalThis & {
-  biodbPool?: Pool;
+  biodbDb?: Database;
 };
 
-let poolInstance: Pool | undefined;
+let dbInstance: Database | undefined;
 
-function getPool(): Pool {
-  if (poolInstance) {
-    return poolInstance;
+function getDb(): Database {
+  if (dbInstance) {
+    return dbInstance;
   }
 
-  if (globalForDb.biodbPool) {
-    poolInstance = globalForDb.biodbPool;
-    return poolInstance;
+  if (globalForDb.biodbDb) {
+    dbInstance = globalForDb.biodbDb;
+    return dbInstance;
   }
 
   const connectionString = process.env.DATABASE_URL;
@@ -21,21 +23,18 @@ function getPool(): Pool {
     throw new Error("DATABASE_URL is not set");
   }
 
-  poolInstance = new Pool({
-    connectionString,
-  });
+  dbInstance = drizzle(connectionString);
 
   if (process.env.NODE_ENV !== "production") {
-    globalForDb.biodbPool = poolInstance;
+    globalForDb.biodbDb = dbInstance;
   }
 
-  return poolInstance;
+  return dbInstance;
 }
 
-export const pool = new Proxy({} as Pool, {
-  get(_target, property, receiver) {
-    const instance = getPool();
-    const value = Reflect.get(instance, property, receiver);
-    return typeof value === "function" ? value.bind(instance) : value;
+export const db: Pick<Database, "execute"> = {
+  execute(...args: Parameters<Database["execute"]>) {
+    const instance = getDb();
+    return instance.execute(...args);
   },
-}) as Pool;
+};

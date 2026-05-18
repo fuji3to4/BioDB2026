@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { hasExternalPdbUrl } from "@/lib/external-pdb-url";
 
 import type { ExampleSpaState, SpaPdbDetail } from "./types.ts";
 
@@ -114,14 +115,16 @@ function DetailContent({ detail }: { detail: SpaPdbDetail }) {
         <DetailRow label="Protein name" value={detail.name} />
         <DetailRow label="Organism" value={detail.organism} />
         <DetailRow label="Length" value={`${detail.len} AA`} />
-        <div className="pt-2">
-          <dt className="font-medium text-slate-500">External PDB link</dt>
-          <dd>
-            <a href={detail.url} target="_blank" rel="noreferrer" className="text-blue-600 underline">
-              Open reference
-            </a>
-          </dd>
-        </div>
+        {hasExternalPdbUrl(detail.url) ? (
+          <div className="pt-2">
+            <dt className="font-medium text-slate-500">External PDB link</dt>
+            <dd>
+              <a href={detail.url} target="_blank" rel="noreferrer" className="text-blue-600 underline">
+                Open reference
+              </a>
+            </dd>
+          </div>
+        ) : null}
       </dl>
     </div>
   );
