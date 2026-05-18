@@ -1,12 +1,15 @@
 # BioDB2026
 
-Next.js App Router implementation of the BioDB examples.
+BioDB サンプルを Next.js App Router で実装したアプリです。
 
 ## Routes
 
-- `/` — PDB search form and results
-- `/pdb/[pdbid]` — PDB detail page backed by PostgreSQL and `public/pic`
-- `/proteins` — Protein list plus create/fav/delete actions
+- `/` - 各サンプルページへのトップページ
+- `/search-pdb-simple` - 単純な SQL 検索結果ページ
+- `/example` - 検索フォームと結果一覧（サーバー描画）
+- `/example/pdb/[pdbid]` - PDB 詳細ページ（PostgreSQL + `public/pic` 画像）
+- `/example/proteins` - Protein 一覧と作成・Fav 加算・削除
+- `/example-spa` - クライアント状態管理つきの SPA サンプル
 
 ## Commands
 
@@ -17,5 +20,3 @@ npm run lint
 npm run build
 npm run dev
 ```
-
-For local builds, set `DATABASE_URL=postgresql://user:password@postgres:5432/demo` when running `npm run build`.
