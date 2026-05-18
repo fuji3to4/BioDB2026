@@ -3,16 +3,13 @@ import test, { mock } from "node:test";
 
 const globalForDb = globalThis as typeof globalThis & {
   biodbDb?: unknown;
-  biodbPool?: unknown;
 };
 
 test("db module can be imported before DATABASE_URL is set", async () => {
   const original = process.env.DATABASE_URL;
   const originalDb = globalForDb.biodbDb;
-  const originalPool = globalForDb.biodbPool;
   delete process.env.DATABASE_URL;
   delete globalForDb.biodbDb;
-  delete globalForDb.biodbPool;
 
   try {
     const { db } = await import(`./db.ts?case=${Date.now()}`);
@@ -25,44 +22,34 @@ test("db module can be imported before DATABASE_URL is set", async () => {
     else process.env.DATABASE_URL = original;
     if (originalDb === undefined) delete globalForDb.biodbDb;
     else globalForDb.biodbDb = originalDb;
-    if (originalPool === undefined) delete globalForDb.biodbPool;
-    else globalForDb.biodbPool = originalPool;
   }
 });
 
-test("db proxy getters use the instance receiver", async () => {
+test("db module only exposes execute for app code", async () => {
   const originalDb = globalForDb.biodbDb;
-  const originalPool = globalForDb.biodbPool;
   delete globalForDb.biodbDb;
-  delete globalForDb.biodbPool;
 
   const fakeDb = {
-    value: 42,
-    get answer() {
-      assert.equal(this, fakeDb);
-      return this.value;
-    },
+    execute: async () => ({ rows: [] }),
+    answer: 42,
   };
 
   try {
-    globalForDb.biodbDb = fakeDb;
+    globalForDb.biodbDb = fakeDb as unknown;
     const { db } = await import(`./db.ts?case=${Date.now()}`);
-    assert.equal(db.answer, 42);
+    assert.equal(typeof db.execute, "function");
+    assert.equal((db as { answer?: unknown }).answer, undefined);
   } finally {
     if (originalDb === undefined) delete globalForDb.biodbDb;
     else globalForDb.biodbDb = originalDb;
-    if (originalPool === undefined) delete globalForDb.biodbPool;
-    else globalForDb.biodbPool = originalPool;
   }
 });
 
-test("db execute honors proxy target overrides from mock.method", async () => {
+test("db execute honors mock.method overrides", async () => {
   const original = process.env.DATABASE_URL;
   const originalDb = globalForDb.biodbDb;
-  const originalPool = globalForDb.biodbPool;
   delete process.env.DATABASE_URL;
   delete globalForDb.biodbDb;
-  delete globalForDb.biodbPool;
 
   const sentinel = { rows: [{ ok: true }] };
 
@@ -86,8 +73,6 @@ test("db execute honors proxy target overrides from mock.method", async () => {
     else process.env.DATABASE_URL = original;
     if (originalDb === undefined) delete globalForDb.biodbDb;
     else globalForDb.biodbDb = originalDb;
-    if (originalPool === undefined) delete globalForDb.biodbPool;
-    else globalForDb.biodbPool = originalPool;
   }
 });
 
