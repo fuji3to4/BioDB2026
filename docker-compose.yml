@@ -2,6 +2,11 @@ services:
   postgres:
     build: ./docker/postgres
     container_name: biodb-postgres
+    command: >
+      postgres 
+      -c log_statement=all 
+      -c log_duration=on
+      -c log_line_prefix='%m [%p] '
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
