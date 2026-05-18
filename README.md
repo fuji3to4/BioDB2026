@@ -4,7 +4,6 @@
 
 このリポジトリは、Docker Compose上でPostgreSQL、PHP、Next.jsを動かすための演習環境です。
 
-英語版は `README_en.md` を参照してください。
 
 ## コンテナの起動
 
@@ -31,10 +30,21 @@ docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/demo.sql
 docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.sql
 ```
 
+もしくは、以下の手順で `psql` に接続してから、SQLファイルを適用してください。
+
+```powershell
+docker exec -it biodb-postgres bash
+```
+
+```bash
+psql -U user -d postgres -f demo.sql
+psql -U user -d postgres -f setting.sql
+```
+
 - `user` ロールは演習フロー向けに意図的に権限を制限しています（`CREATEDB` のみ、スーパーユーザー権限なし）。
 - `demo.sql` はバイオインフォマティクス演習用の `demo` データベースを再作成します。
 - `setting.sql` はSQL演習用の `database1` データベースを再作成します。
-- 旧イメージや旧ボリュームでPostgreSQLを初期化済みの場合は、`docker compose up -d --build` の前に `docker compose down -v` でリセットし、権限を絞った `user` ロールを正しく再作成してください。
+
 
 ## PHPページ
 
@@ -61,6 +71,14 @@ npm run dev
 
 - [`http://localhost:3000/`](http://localhost:3000/)
 
+※`npm run dev`は開発用にNext.jsを起動させます。アクセスする度にコードの変更が反映されるため、開発中はこのコマンドを実行したままで大丈夫です。ただしコンパイルが毎回入るので若干重くなります。
+以下のコマンドは本番用にNext.jsをビルドして起動させるコマンドです。一度ビルドしてしまえば、コードの変更があっても再度ビルドしない限り反映されないため、ウェブアプリを軽く動かすことができます。
+
+```bash
+npm run build
+npm start
+```
+
 
 ## (Optional) Next.js のローカル開発環境での実行
 ※提出時に./node_modulesを削除してもらう必要があるかもしれません。
@@ -78,14 +96,6 @@ npm run dev
 ```
 
 - ブラウザで [`http://localhost:3000/`](http://localhost:3000/) を開く。
-
-※`npm run dev`は開発用にNext.jsを起動させます。アクセスする度にコードの変更が反映されるため、開発中はこのコマンドを実行したままで大丈夫です。ただしコンパイルが毎回入るので若干重くなります。
-以下のコマンドは本番用にNext.jsをビルドして起動させるコマンドです。一度ビルドしてしまえば、コードの変更があっても再度ビルドしない限り反映されないため、ウェブアプリを軽く動かすことができます。
-
-```bash
-npm run build
-npm start
-```
 
 
 ## トラブルシューティング
