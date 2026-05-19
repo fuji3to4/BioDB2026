@@ -23,28 +23,28 @@
     テーブル名や属性名（列名）は<strong>すべて英数字小文字</strong>で記載してください。
   </li>
   <li>
-    テーブル名や属性名（列名）に<strong>バッククォート（`）を付けると<a
+    テーブル名や属性名（列名）に<strong>ダブルクォート（"）を付けると<a
         href="https://im10.el.kyutech.ac.jp/2026/mod/url/view.php?id=55533"
         target="_blank"
-        >予約語</a>なども使用できるようになる</strong>。
+        >予約語</a>なども使用できるようになる</strong>（PostgreSQLではバッククォート（`）ではなくダブルクォート（"）を使用する）。
     <ul>
       <li>
         演習1の<a
           href="https://im10.el.kyutech.ac.jp/2026/mod/resource/view.php?id=55511"
           target="_blank"
           >setting.sql</a
-        >はテーブル名や属性名にバッククォート（`）付けています。
+        >はテーブル名や属性名にダブルクォート（"）付けています。
       </li>
       <li>
-        MySQLの予約語とは予めMySQLに使われている関数の名前などに当たります。
+        PostgreSQLの予約語とは予めPostgreSQLに使われている関数の名前などに当たります。
       </li>
       <li>
-        自分の使いたい属性名にエラーが出るなら（`）を加えると言う方策でいいと思います。
+        自分の使いたい属性名にエラーが出るなら（"）を加えると言う方策でいいと思います。
       </li>
       <li>
         ただ、基本的には予約語の使用は避けて下さい。エラーの原因になることもあります。特に、select,
         from, like,
-        whereなどqueryによく使う単語などは、SQL文で命令するときに属性名に毎回（`）が必要となり面倒です。
+        whereなどqueryによく使う単語などは、SQL文で命令するときに属性名に毎回（"）が必要となり面倒です。
       </li>
     </ul>
   </li>
@@ -57,29 +57,25 @@
 </p>
 <p>→csvからテーブルをimportする方法</p>
 <p>&nbsp;</p>
-<p>(2) 作成した自分のSQLファイルをMySQLにインポート</p>
+<p>(2) 作成した自分のSQLファイルをPostgreSQLにインポート</p>
+<p>以下のコマンドを実行します（ファイル名は各自作成したSQLファイル名に置き換えてください）。</p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
-  docker exec -it docker-mysql bash
+  docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/demo.sql
 </p>
-<p>&nbsp;</p>
-<p>sqlファイルをインポートする</p>
-<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
-  mysql -u user -ppassword &lt;
-  <i
-    ><span>demo</span>.sql　<span>#ファイル名(</span><i>demo.sql</i
-    ><span>)は各自つけたDBのファイル名です</span></i
-  >
+<p>
+  <span style="color: #0000ff">※ファイル名（<code>demo.sql</code>）は各自つけたDBのファイル名です。<code>./SQL/</code> フォルダに配置されたSQLファイルがコンテナ内の <code>/home/user/SQL/</code> に対応しています。</span>
 </p>
 <p>&nbsp;</p>
 <p>(4) データベースの確認</p>
+<p>psqlに接続して確認します。</p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
-  mysql -u user -ppassword<br />mysql&gt; show databases;&nbsp;
-  &nbsp;#データベースのリストが表示されるので、自分のデータベースが作成されているか確認<br /><br />mysql&gt;
-  use demo;&nbsp; #自分の作成したデータベース名<br /><br />mysql&gt; show
-  tables;&nbsp;&nbsp;#テーブルのリストが表示されるので、作成したテーブルすべてが含まれているか確認<br /><br />mysql&gt;
-  show fields from PDB;&nbsp;&nbsp;<span style="font-size: 0.9375rem"
+  docker compose exec postgres psql -U user -d demo<br /><br />demo=# \l
+  &nbsp;&nbsp;#データベースのリストが表示されるので、自分のデータベースが作成されているか確認<br /><br />demo=#
+  \c demo &nbsp;&nbsp;#自分の作成したデータベース名に切り替え<br /><br />demo=# \dt
+  &nbsp;&nbsp;#テーブルのリストが表示されるので、作成したテーブルすべてが含まれているか確認<br /><br />demo=#
+  \d PDB &nbsp;&nbsp;<span style="font-size: 0.9375rem"
     >#データ型や主キー等が正しく定義されているか確認</span
-  ><br /><br />mysql&gt; select * from PDB;&nbsp;<span
+  ><br /><br />demo=# select * from PDB;&nbsp;<span
     style="font-size: 0.9375rem"
     >#テーブルに含まれる全レコードを確認</span
   >
@@ -89,7 +85,7 @@
 <ul>
   <li>
     <div>
-      MySQLでデータベースの操作を試す。自作のデータベースを使って演習１でやったようにいろいろSQL文を考えて検索してみて下さい。<span
+      psqlでデータベースの操作を試す。自作のデータベースを使って演習１でやったようにいろいろSQL文を考えて検索してみて下さい。<span
         style="color: #ff0000"
         >最終的に作成するデータベースサイトを想定してSQL文を考えてみてください。</span
       >
@@ -99,14 +95,14 @@
     <div>
       <span style="color: #ff0000"
         >データベースの内容を増やしたり修正したりしたい場合はSQLファイルに記述して</span
-      >再度インポートするようにしてください。MySQL内でデータの追加もできますが、エクスポートしないと、SQLファイルには反映されません。
+      >再度インポートするようにしてください。psql内でデータの追加もできますが、エクスポートしないと、SQLファイルには反映されません。
     </div>
   </li>
 </ul>
 <div class="editor-indent" style="margin-left: 30px">
   <span style="font-size: 0.9375rem"
-    >※逆に言うと、MySQLモードでデータをいじっても、作成したSQLファイル(demo.sql等)
-    には影響しません。MySQLを操作していてデータベースがおかしくなったら一旦データベースをdropして入れ直せば元に戻ります。</span
+    >※逆に言うと、psqlでデータをいじっても、作成したSQLファイル(demo.sql等)
+    には影響しません。psqlを操作していてデータベースがおかしくなったら一旦データベースをdropして入れ直せば元に戻ります。</span
   >
 </div>
 <p></p>
