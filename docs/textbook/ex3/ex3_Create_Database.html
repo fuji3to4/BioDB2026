@@ -1,0 +1,151 @@
+<p>
+  <span style="font-size: 0.9375rem"
+    >(1) 自分が設計したデータベースについてSQLファイルを作成する。</span
+  ><strong style="font-size: 0.9375rem"
+    ><span style="color: #ff0000"
+      >ファイル名やデータベース名(demo)、テーブル名は各自で名前を付けて下さい。</span
+    ></strong
+  >
+</p>
+<p>
+  ※<a
+    href="https://im10.el.kyutech.ac.jp/2026/mod/resource/view.php?id=55530"
+    target="_blank"
+    >demo.sql</a
+  >はmoodleに置いているので参考にしてください。
+</p>
+<ul>
+  <li>
+    一行目の<strong>「create database demo」</strong
+    >で指定したdemoのところが<strong>データベース名</strong>になります。<strong>各自好きなデータベース名</strong>を付けて下さい。今後何度も出てくるので要確認。
+  </li>
+  <li>
+    テーブル名や属性名（列名）は<strong>すべて英数字小文字</strong>で記載してください。
+  </li>
+  <li>
+    テーブル名や属性名（列名）に<strong>バッククォート（`）を付けると<a
+        href="https://im10.el.kyutech.ac.jp/2026/mod/url/view.php?id=55533"
+        target="_blank"
+        >予約語</a>なども使用できるようになる</strong>。
+    <ul>
+      <li>
+        演習1の<a
+          href="https://im10.el.kyutech.ac.jp/2026/mod/resource/view.php?id=55511"
+          target="_blank"
+          >setting.sql</a
+        >はテーブル名や属性名にバッククォート（`）付けています。
+      </li>
+      <li>
+        MySQLの予約語とは予めMySQLに使われている関数の名前などに当たります。
+      </li>
+      <li>
+        自分の使いたい属性名にエラーが出るなら（`）を加えると言う方策でいいと思います。
+      </li>
+      <li>
+        ただ、基本的には予約語の使用は避けて下さい。エラーの原因になることもあります。特に、select,
+        from, like,
+        whereなどqueryによく使う単語などは、SQL文で命令するときに属性名に毎回（`）が必要となり面倒です。
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>&nbsp;</p>
+<p>
+  <span style="background-color: #ffff99"
+    >※テーブルの入力が面倒なので、CSV（Excel）ファイルから直接テーブルをインポートしたい！！</span
+  >
+</p>
+<p>→csvからテーブルをimportする方法</p>
+<p>&nbsp;</p>
+<p>(2) 作成した自分のSQLファイルをMySQLにインポート</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  docker exec -it docker-mysql bash
+</p>
+<p>&nbsp;</p>
+<p>sqlファイルをインポートする</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  mysql -u user -ppassword &lt;
+  <i
+    ><span>demo</span>.sql　<span>#ファイル名(</span><i>demo.sql</i
+    ><span>)は各自つけたDBのファイル名です</span></i
+  >
+</p>
+<p>&nbsp;</p>
+<p>(4) データベースの確認</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  mysql -u user -ppassword<br />mysql&gt; show databases;&nbsp;
+  &nbsp;#データベースのリストが表示されるので、自分のデータベースが作成されているか確認<br /><br />mysql&gt;
+  use demo;&nbsp; #自分の作成したデータベース名<br /><br />mysql&gt; show
+  tables;&nbsp;&nbsp;#テーブルのリストが表示されるので、作成したテーブルすべてが含まれているか確認<br /><br />mysql&gt;
+  show fields from PDB;&nbsp;&nbsp;<span style="font-size: 0.9375rem"
+    >#データ型や主キー等が正しく定義されているか確認</span
+  ><br /><br />mysql&gt; select * from PDB;&nbsp;<span
+    style="font-size: 0.9375rem"
+    >#テーブルに含まれる全レコードを確認</span
+  >
+</p>
+<p>&nbsp;</p>
+<p>(5) データベース検索テスト</p>
+<ul>
+  <li>
+    <div>
+      MySQLでデータベースの操作を試す。自作のデータベースを使って演習１でやったようにいろいろSQL文を考えて検索してみて下さい。<span
+        style="color: #ff0000"
+        >最終的に作成するデータベースサイトを想定してSQL文を考えてみてください。</span
+      >
+    </div>
+  </li>
+  <li>
+    <div>
+      <span style="color: #ff0000"
+        >データベースの内容を増やしたり修正したりしたい場合はSQLファイルに記述して</span
+      >再度インポートするようにしてください。MySQL内でデータの追加もできますが、エクスポートしないと、SQLファイルには反映されません。
+    </div>
+  </li>
+</ul>
+<div class="editor-indent" style="margin-left: 30px">
+  <span style="font-size: 0.9375rem"
+    >※逆に言うと、MySQLモードでデータをいじっても、作成したSQLファイル(demo.sql等)
+    には影響しません。MySQLを操作していてデータベースがおかしくなったら一旦データベースをdropして入れ直せば元に戻ります。</span
+  >
+</div>
+<p></p>
+<hr />
+<p>&nbsp;</p>
+<p>
+  (6)<b>【課題】</b>作成したデータベースを「<strong>演習3課題提出先</strong>」にアップロードせよ。
+</p>
+<p>&nbsp;&nbsp;</p>
+<p><b>提出期限：1週目の金曜日(23:59)まで</b></p>
+<ul>
+  <li>作成したSQLファイル(.sql)をファイルとしてアップロード</li>
+  <li>csvファイルでインポートした人はcsvファイルもアップロード</li>
+  <li>オンラインテキストに以下の内容を含める。</li>
+  <ul>
+    <li>作成した全てのテーブルの出力</li>
+    <ul>
+      <li>
+        <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+          SELECT * FROM <i>table名</i> limit 5;
+        </p>
+      </li>
+    </ul>
+  </ul>
+</ul>
+<p style="margin-left: 120px">
+  でテーブルを<strong>それぞれ出力</strong>し（3個テーブル作ったのなら3個すべて）、入力フォームにコピー＆ペースト。limit
+  5は5行だけ出力するという意味
+</p>
+<ul>
+  <ul>
+    <li>SQL文を一例以上</li>
+    <ul>
+      <li>何をするSQLかの説明</li>
+      <li>検索のSQL文</li>
+      <li>検索出力結果</li>
+    </ul>
+  </ul>
+</ul>
+<p></p>
+<p></p>
+<p></p>
