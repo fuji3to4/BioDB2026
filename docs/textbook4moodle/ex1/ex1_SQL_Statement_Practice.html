@@ -1,0 +1,147 @@
+﻿<p style="color: #0000ff">
+  <span style="font-size: medium"
+    ><span style="color: #495057">(1)</span
+    ><a
+      href="https://ict-i.el.kyutech.ac.jp/mod/resource/view.php?id=49049"
+      style="background-color: #ffffff; font-size: 0.9375rem"
+    >
+    </a
+    ><span style="background-color: #ffffff"
+      ><a
+        href="https://im10.el.kyutech.ac.jp/2026/mod/resource/view.php?id=55511"
+        target="_blank"
+        >setting.sql</a
+      ></span
+    ><span style="color: #495057"
+      >ファイルをダウンロードし、SQLファイルを保存してください。保存ファイル名はsetting.sqlにします。</span
+    ></span
+  >
+</p>
+<p style="color: #0000ff; margin-left: 30px">
+  <span style="font-size: medium"
+    ><span style="color: #495057"
+      ><span>Docker環境の <code>./SQL/</code> フォルダに元々入っています。</span></span
+    ></span
+  >
+</p>
+<p style="color: #0000ff; margin-left: 30px">
+  <span style="font-size: medium"
+    ><span style="color: #495057"><span>　</span></span></span
+  >
+</p>
+<p>(2) 端末を開く。</p>
+<p>
+  <span style="font-size: medium">(3) SQL練習用のSQLファイルをインポート</span>
+</p>
+<p>以下のコマンドを実行します。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/setting.sql
+</p>
+<p>
+  <span style="color: #0000ff">※<code>./SQL/setting.sql</code> はDocker環境に元々入っています。</span>
+</p>
+<p>&nbsp;</p>
+<p>(4) psql を起動する</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  docker compose exec postgres psql -U user -d database1
+</p>
+<p>
+  <span style="font-size: 0.9375rem"
+    >起動できたら、下図のようにpsqlのモードになる。</span
+  >
+</p>
+
+<p>&nbsp;　</p>
+<p>
+  (4)使用するデータベースを選択する。このSQLの復習には「database1」を使用する。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  \c database1
+</p>
+<p>
+  <span lang="EN-US">PostgreSQL</span
+  >では、コマンド文の最後にセミコロン（;）を入力して<span lang="EN-US"
+    >Enter</span
+  >を押した時点で実行される。セミコロン入れる前であれば改行を入れることも可能。<span
+    lang="EN-US"
+  ></span>
+</p>
+<p>
+  database1のデータベースの構成は<a
+    href="https://im10.el.kyutech.ac.jp/2026/mod/page/view.php?id=55512"
+    target="_blank"
+    >ここ</a
+  >を参照。
+</p>
+<p>&nbsp;　</p>
+<p>(5) SQL文（SELECT文）のテスト</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  SELECT 商品名 FROM 商品;
+</p>
+<ul>
+  <li>
+    <span style="font-size: 0.9375rem">SQLは</span
+    ><span style="font-size: 0.9375rem; text-decoration: underline"
+      >大文字・小文字どちらでもよい</span
+    ><span style="font-size: 0.9375rem"
+      >。ただし、テーブルの名前は区別される。</span
+    >
+  </li>
+  <li>
+    SQL文とテーブル名、列名の間に<span
+      style="font-size: 0.9375rem; text-decoration: underline"
+      >全角のスペースを入れると認識されない</span
+    ><span style="font-size: 0.9375rem">。</span>
+  </li>
+</ul>
+<p>&nbsp;　</p>
+<p>
+  <span style="font-size: 0.9375rem"
+    >(6)
+    <a
+      href="https://im10.el.kyutech.ac.jp/2026/mod/resource/view.php?id=55507"
+      target="_blank"
+      >SQL例題</a
+    >の例文を必ず入力し出力の確認をして練習をしてください。</span
+  >
+</p>
+<p>
+  <span style="font-size: 0.9375rem"
+    >※例題中のSELECT文で使う<a
+      href="https://im10.el.kyutech.ac.jp/2026/mod/page/view.php?id=55513"
+      target="_blank"
+      >基本構文</a
+    ><br
+  /></span>
+</p>
+<p><span style="font-size: 0.9375rem">　</span></p>
+<hr />
+<p>
+  (7)<span style="font-weight: bold">【課題】</span
+  >例題を参考に自分でSQL文を<span style="color: #ff0000"><b>3例</b></span
+  >作成し、「<strong>演習1課題提出先</strong>」にアップロードせよ。
+</p>
+<p>&nbsp;　</p>
+<p>
+  <span style="font-size: 0.9375rem"
+    ><span style="font-size: 0.9375rem"
+      ><b
+        >提出期限：可能な限り<span style="color: #ff0000"
+          ><span>本日中</span></span
+        >、遅くとも1週目の金曜日（23:59）まで。</b
+      ></span
+    ></span
+  >
+</p>
+<p>
+  <span style="font-size: 0.9375rem"
+    ><span style="font-size: 0.9375rem"
+      ><span style="font-size: 0.9375rem">SQLに、以下の内容をつけること。</span
+      ><br /></span
+  ></span>
+</p>
+<p>
+  <span style="font-size: 0.9375rem"
+    >・何をするSQLかを説明<br />・検索のSQL文<br />・検索出力結果</span
+  >
+</p>
