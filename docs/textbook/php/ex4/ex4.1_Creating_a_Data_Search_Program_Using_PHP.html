@@ -1,0 +1,98 @@
+<p>
+  演習4.1では、データベースを検索し出力をWeb上に表示するPHPプログラムを作成する。
+</p>
+<p>
+  PHPの基礎については、講義資料もしくは以下のmoodleページを参考にしてみて下さい。
+</p>
+<ul>
+  <li>
+    <a href="https://im10.el.kyutech.ac.jp/2026/mod/page/view.php?id=55544" target="_blank">PHPの文法の基礎（変数）</a>
+  </li>
+  <li>
+    <a href="https://im10.el.kyutech.ac.jp/2026/mod/page/view.php?id=55545" target="_blank">PHPの文法の基礎（型）</a>
+  </li>
+  <li>
+    <a href="https://im10.el.kyutech.ac.jp/2026/mod/page/view.php?id=55546" target="_blank">PHPによるデータベース制御</a>
+  </li>
+</ul>
+<p>サンプルプログラム</p>
+<ul>
+  <li>
+    <a href="https://im10.el.kyutech.ac.jp/2026/mod/page/view.php?id=55547" target="_blank">PHPサンプルプログラム</a>
+  </li>
+  <li>
+    <a href="https://im10.el.kyutech.ac.jp/2026/mod/page/view.php?id=55548" target="_blank">PHPサンプルプログラム2</a>
+  </li>
+</ul>
+
+<h5>演習4.1の手順：</h5>
+<p>
+  例題は <code>html/example/search-pdb-simple.php</code> です。<br>
+  <code>demo</code>データベースから3つのテーブルを繋ぎ合わせ、PDBID・Resolution・Protein name・Organismの列を取り出して表示させるプログラムです。
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (0) <strong>demo.sql</strong>をPostgreSQLにインポートしていない場合は、以下のコマンドを実行する。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  docker compose exec postgres psql -U user -d postgres -f /home/user/SQL/demo.sql
+</p>
+<p>
+  <span style="color: #0000ff">※Docker環境の <code>./SQL/</code> フォルダに <code>demo.sql</code> が入っています。</span>
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (1) 演習環境のリポジトリフォルダ（<code>BioDB2026/</code>）を開き、<strong>html/example/search-pdb-simple.php</strong>を確認してください。
+</p>
+<p>
+  このファイルを参考に、自分用の <code>search-pdb-simple.php</code> を <strong>./html/</strong> のディレクトリに作成してください。
+</p>
+<p>
+  <span style="color: #0000ff">※DB接続の設定例（PostgreSQL用）：</span>
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $dsn = "pgsql:host=postgres;dbname=demo;options='--client_encoding=UTF8'";<br>
+  $pdo = new PDO($dsn, "user", "password");
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (2) WEBブラウザを起動し、URL入力欄に以下のURLを入力してEnterキーを押し、実行結果を確認する。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost/search-pdb-simple.php
+</p>
+<p>
+  （例題は <a href="http://localhost/example/search-pdb-simple.php" target="_blank">http://localhost/example/search-pdb-simple.php</a> に準備してあります）
+</p>
+<p>
+  <span style="color: #0000ff">※PHPはWEBサーバーを介していないと動作しません。必ずWEBブラウザを通してURLからアクセスしてください。</span>
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (3) 例題の出力を確認したら、<strong>自作したデータベースを検索するPHPプログラムを作成し、動作確認をしてください。</strong>
+</p>
+<ul>
+  <li>DB接続のデータベース名（<code>dbname=demo</code> の部分）を自分のDBに変更してください。</li>
+  <li>各自が求める検索ができるようにSQL文を工夫してみてください。</li>
+  <li>
+    <span style="color: #ff0000"><strong>よく出るエラーに関して：</strong></span>
+    <a href="https://ict-i.el.kyutech.ac.jp/mod/page/view.php?id=195911" target="_blank">【デバッグ】よく見るエラーと対処法</a>を参考に修正してみてください。
+  </li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+<p>&nbsp;</p>
+<p>
+  (4) <strong>【課題】</strong>自作したデータベースを検索するPHPプログラムを「<strong>演習4.1課題提出先</strong>」にアップロードせよ。
+</p>
+<p>&nbsp;</p>
+<p><strong>提出期限：1週目の金曜日(23:59)まで</strong></p>
+<ul>
+  <li>作成したPHPプログラム（.php）</li>
+  <li>何をするプログラムかの説明（コード内にコメントもしくはmoodleのオンラインテキスト）</li>
+</ul>

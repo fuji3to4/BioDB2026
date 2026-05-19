@@ -1,0 +1,70 @@
+<p>
+  演習5.2-adv1（発展）では、Next.jsの<strong>Server Actions</strong>を使ってデータの追加・削除を行うCRUD操作を実装する。
+</p>
+<p>
+  Server Actionsとは、Next.jsでサーバー側の処理（DB書き込みなど）を関数として定義し、クライアントから呼び出せる仕組みです。
+</p>
+<p>&nbsp;</p>
+<p>
+  例題は <a href="http://localhost:3000/example/proteins" target="_blank">http://localhost:3000/example/proteins</a>（<code>my-app/src/app/example/proteins/</code>）です。
+</p>
+<p>&nbsp;</p>
+
+<h5>演習5.2-adv1の手順：</h5>
+
+<p>
+  (1) 演習環境の <strong>my-app/src/app/example/proteins/</strong> フォルダのファイル群を確認する。
+</p>
+<ul>
+  <li><code>page.tsx</code>：タンパク質一覧の表示と削除・Favボタン（Server Component）</li>
+  <li><code>actions.ts</code>：<code>"use server"</code> ディレクティブを持つServer Actions。<code>deleteProteinAction</code>・<code>incrementProteinFavAction</code> などのDB書き込み処理を定義。</li>
+  <li><code>protein-create-form.tsx</code>：データ追加フォーム（Client Component）</li>
+  <li><code>delete-protein-dialog.tsx</code>：削除確認ダイアログ（Client Component）</li>
+</ul>
+<p>
+  <span style="color: #0000ff">※<code>actions.ts</code> の冒頭に <code>"use server"</code> があることで、サーバー側で実行されるServer Actionになります。クライアントから直接呼び出せますが、処理はサーバーで行われます。</span>
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (2) WEBブラウザでアクセスして動作確認する。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost:3000/example/proteins
+</p>
+<ul>
+  <li>フォームにProtein Name・Organism・Lengthを入力して「Add Protein」ボタンを押し、一覧にデータが追加されることを確認する。</li>
+  <li>「Delete」ボタンを押して確認ダイアログを経てデータが削除されることを確認する。</li>
+  <li>「+1 Fav」ボタンを押して、Favカウントが増加することを確認する。</li>
+</ul>
+<p>&nbsp;</p>
+
+<p>
+  (3) ダイナミックルーティングの例として、<code>my-app/src/app/example/pdb/[pdbid]/page.tsx</code> も確認してみてください。
+</p>
+<ul>
+  <li>フォルダ名の <code>[pdbid]</code> がURLのパラメータに対応している。</li>
+  <li><code>/example/pdb/1AGW</code> にアクセスすると、<code>params.pdbid</code> に <code>"1AGW"</code> が渡される。</li>
+</ul>
+<p>&nbsp;</p>
+
+<p>
+  (4) 例題を参考に、<strong>自作データベースに対応したCRUDページを作成してください。</strong>
+</p>
+<ul>
+  <li><code>my-app/src/app/</code> 以下に任意のフォルダを作り、<code>page.tsx</code> と <code>actions.ts</code> を作成する。</li>
+  <li><code>actions.ts</code> に <code>"use server"</code> を記述し、INSERT・DELETE処理をServer Actionとして定義する。</li>
+  <li>自分のテーブルの列に合わせてフォームとSQL文を変更してください。</li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+<p>&nbsp;</p>
+<p>
+  (5) <strong>【課題（任意）】</strong>作成したCRUDページを「<strong>演習5.2-adv1課題提出先</strong>」にアップロードせよ。
+</p>
+<p>
+  <span style="color: #0000ff">※発展課題です。余裕があれば取り組んでみてください。</span>
+</p>
+<p>&nbsp;</p>
+<p><strong>提出期限：演習終了日の翌週の月曜日13時まで</strong></p>

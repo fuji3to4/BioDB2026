@@ -1,0 +1,75 @@
+<p>
+  演習4.2では、データベースを検索し出力をWeb上に表示するNext.jsプログラムを作成する。
+</p>
+<p>
+  Next.jsではReactの<strong>Server Component</strong>という仕組みを使うことで、サーバー側でデータベースを検索してHTMLを生成することができます。
+</p>
+<p>&nbsp;</p>
+
+<h5>演習4.2の手順：</h5>
+<p>
+  例題は <code>my-app/src/app/search-pdb-simple/page.tsx</code> です。<br>
+  <code>demo</code>データベースから3つのテーブルを繋ぎ合わせ、PDBID・Resolution・Protein name・Organismの列を取り出して表示させるプログラムです。
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (0) <strong>nextjsコンテナ</strong>に接続し、開発サーバーを起動する（まだ起動していない場合）。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  docker exec -it biodb-nextjs bash
+</p>
+<p>コンテナ内で：</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  npm run dev
+</p>
+<p>
+  <span style="color: #0000ff">※VS Code の Dev Containers 機能で <code>biodb-nextjs</code> コンテナに接続して作業することもできます。その場合はコンテナ内の <code>/app</code> ディレクトリで作業してください。</span>
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (1) 演習環境の <strong>my-app/src/app/search-pdb-simple/page.tsx</strong> を確認してください。
+</p>
+<p>コードのポイント：</p>
+<ul>
+  <li><code>export const dynamic = "force-dynamic"</code>：アクセスのたびにサーバー側でDBを検索して最新データを返す設定</li>
+  <li><code>db.execute(sql`...`)</code>：Drizzle ORM を使ったSQL実行</li>
+  <li>関数に <code>async</code> が付いており、コンポーネント自体がデータを取得できるのがServer Componentの特徴</li>
+</ul>
+<p>&nbsp;</p>
+
+<p>
+  (2) WEBブラウザを起動し、URL入力欄に以下のURLを入力してEnterキーを押し、実行結果を確認する。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost:3000/search-pdb-simple
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (3) 例題の出力を確認したら、<strong>自作したデータベースを検索する新しいページを作成し、動作確認をしてください。</strong>
+</p>
+<ul>
+  <li><code>my-app/src/app/</code> 以下に任意の名前でフォルダを作り、<code>page.tsx</code> を作成する。<br>
+    例：<code>my-app/src/app/my-search/page.tsx</code>
+  </li>
+  <li>SQLは <code>db.execute(sql`SELECT ... FROM ...`)</code> の形式で記述する。</li>
+  <li>自分のデータベース名・テーブル名に合わせて変更する（<code>DATABASE_URL</code> の <code>dbname</code> 部分も確認）。</li>
+  <li>
+    <span style="color: #0000ff">※コードを変更するとブラウザがホットリロードされて自動反映されます（<code>npm run dev</code> 実行中）。</span>
+  </li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+<p>&nbsp;</p>
+<p>
+  (4) <strong>【課題】</strong>自作したデータベースを検索するNext.jsページを「<strong>演習4.2課題提出先</strong>」にアップロードせよ。
+</p>
+<p>&nbsp;</p>
+<p><strong>提出期限：1週目の金曜日(23:59)まで</strong></p>
+<ul>
+  <li>作成した <code>page.tsx</code>（および関連ファイルがあれば）</li>
+  <li>何をするプログラムかの説明（コード内にコメントもしくはmoodleのオンラインテキスト）</li>
+</ul>

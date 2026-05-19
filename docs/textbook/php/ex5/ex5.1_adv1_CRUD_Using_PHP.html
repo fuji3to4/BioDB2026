@@ -1,0 +1,60 @@
+<p>
+  演習5.1-adv1（発展）では、PHPを使ってデータの追加・削除・更新を行うCRUD操作を実装する。
+</p>
+<p>
+  <strong>CRUD</strong>とは Create（作成）・Read（読み取り）・Update（更新）・Delete（削除）の頭文字をとったもので、Webアプリケーションの基本操作です。
+</p>
+<p>&nbsp;</p>
+<p>
+  例題は <a href="http://localhost/example/proteins.php" target="_blank">http://localhost/example/proteins.php</a>（<code>html/example/proteins.php</code>）です。
+</p>
+<p>&nbsp;</p>
+
+<h5>演習5.1-adv1の手順：</h5>
+
+<p>
+  (1) 演習環境の <strong>html/example/proteins.php</strong> を確認する。
+</p>
+<p>コードのポイント：</p>
+<ul>
+  <li><strong>PRGパターン（Post-Redirect-Get）</strong>：POSTリクエストでデータを更新した後、<code>header('Location: proteins.php')</code> でリダイレクトすることで、ブラウザの更新ボタンによる二重送信を防ぐ。</li>
+  <li><code>$_POST['action']</code> の値（<code>create</code>/<code>delete</code>/<code>fav</code>）によって処理を分岐している。</li>
+  <li>フォームの <code>&lt;input type="hidden" name="action" value="create"&gt;</code> でアクションを送信している。</li>
+</ul>
+<p>&nbsp;</p>
+
+<p>
+  (2) WEBブラウザでアクセスして動作確認する。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost/example/proteins.php
+</p>
+<ul>
+  <li>フォームにProtein Name・Organism・Lengthを入力して「Add」ボタンを押し、一覧にデータが追加されることを確認する。</li>
+  <li>「Delete」ボタンを押して、データが削除されることを確認する。</li>
+  <li>「★ Fav」ボタンを押して、Favカウントが増加することを確認する。</li>
+</ul>
+<p>&nbsp;</p>
+
+<p>
+  (3) 例題を参考に、<strong>自作データベースに対応したCRUDプログラムを ./html/ に作成してください。</strong>
+</p>
+<ul>
+  <li>自分のテーブルの列に合わせてフォームとSQL文を変更してください。</li>
+  <li>INSERT文・DELETE文を使ってデータを追加・削除できるようにしてください。</li>
+  <li>
+    <span style="color: #0000ff">※<code>html/example/lib/protein_queries.php</code> も合わせて確認してください。DB操作を関数として分離している例です。</span>
+  </li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+<p>&nbsp;</p>
+<p>
+  (4) <strong>【課題（任意）】</strong>作成したCRUDプログラムを「<strong>演習5.1-adv1課題提出先</strong>」にアップロードせよ。
+</p>
+<p>
+  <span style="color: #0000ff">※発展課題です。余裕があれば取り組んでみてください。</span>
+</p>
+<p>&nbsp;</p>
+<p><strong>提出期限：演習終了日の翌週の月曜日13時まで</strong></p>

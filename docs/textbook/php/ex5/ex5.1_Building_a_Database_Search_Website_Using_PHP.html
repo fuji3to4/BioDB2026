@@ -1,0 +1,84 @@
+<p>
+  演習5.1ではHTMLフォームとPHPを組み合わせたデータベース検索WEBサイトを構築する。
+</p>
+<p>&nbsp;</p>
+<p>
+  以下の流れで、まず例題（<a href="http://localhost/example/search.php" target="_blank">http://localhost/example/search.php</a>）を動作確認してから、自作のWebサイトの構築を行ってください。
+</p>
+<p>&nbsp;</p>
+<div>
+  <ol>
+    <li>GETメソッドで受けた引数を検索条件として、データベース検索をして、その検索結果を動的に表示させるPHPプログラムを作成する。</li>
+    <li>フォームに入力したキーワードを引数として送る検索用ページを組み合わせて、データベース検索Webサイトを構築する。</li>
+    <li>自分で作成したデータベースを使って、データベースを検索し表示させるWebサイトを構築する。</li>
+  </ol>
+</div>
+
+<h5>演習5.1の手順：</h5>
+
+<p>
+  (1) 演習環境の <strong>html/example/search.php</strong> を確認する。
+</p>
+<p>
+  ※このファイルは、検索フォームとデータベース検索・表示が一体となったPHPプログラムです。<br>
+  <span style="color: #0000ff">GETメソッドでURLから受け取った引数を検索条件として、データベースを検索して結果を動的に表示します。</span>
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (2) WEBブラウザを起動し、URL入力欄に以下のURLを入力してEnterキーを押し、実行結果を確認する。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost/example/search.php
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (3) GETメソッドの引数はURLの末尾に「?」をつけて渡すことができる。<br>
+  <span style="color: #0000ff">引数を以下の例のようにいろいろ入力してみて、検索結果の表が動的に変化するのを確認してください。</span>
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost/example/search.php?id=1AGW
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost/example/search.php?res=2.5
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost/example/search.php?org=Human&amp;res=2.5
+</p>
+<p>&nbsp;</p>
+
+<p>
+  (4) 例題の出力を確認したら、<strong>自作したデータベースを検索するPHPプログラムを ./html/ に作成してください。</strong>
+</p>
+<ul>
+  <li>まずは例題を自作データベースに変更するところから始めてみてください。</li>
+  <li>DB接続のデータベース名（<code>dbname=demo</code> の部分）を自分のDBに変更してください。</li>
+  <li>各自が求める検索ができるようにSQL文を工夫してみてください。</li>
+</ul>
+<p>&nbsp;</p>
+
+<p>
+  (5) WEBブラウザでURLからアクセスし、動作確認をしてください。
+</p>
+<p>
+  <span style="color: #ff0000"><strong>※ダブルクリックでhtmlファイルを開かないように注意。</strong>WEBブラウザは立ち上がりますが「Search」ボタンを押してもPHPが動きません。WEBサーバーを介していないためです。</span>
+</p>
+<p>&nbsp;</p>
+
+<hr />
+<p>&nbsp;</p>
+<p>
+  (6) <strong>【報告】</strong>演習5.1は2日がかりで作成してもらうので、1日目の経過報告として「<strong>演習5.1_経過報告提出先</strong>」に作成したphpを提出してください。
+</p>
+<p>※<strong>出欠代わり</strong>の経過報告です。<strong>一部のみ提出</strong>で構いません。</p>
+<p>&nbsp;</p>
+
+<p>
+  (7) <strong>【課題】</strong>演習を行った<code>BioDB2026</code>フォルダをまとめてzip圧縮して「<strong>演習5.1課題提出先</strong>」にアップロードせよ。
+</p>
+<p>
+  コメントとして、工夫した点などアピールしたいポイントを書いておいてください。
+</p>
+<p>&nbsp;</p>
+<p><strong>提出期限：演習終了日の翌週の月曜日13時まで</strong></p>
