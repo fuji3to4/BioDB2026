@@ -59,6 +59,7 @@ psql -U user -d postgres -f setting.sql
 
 `nextjs` コンテナは開発コンテナとして用意されています。
 VS Code Remote / Dev Containers で実行中の `nextjs` コンテナに接続し、`/app` で作業してください。
+
 もしくは、以下の手順で `nextjs` コンテナに接続してから、Next.js の開発サーバーを起動してください。
 
 ```powershell
