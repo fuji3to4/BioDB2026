@@ -57,7 +57,13 @@ psql -U user -d postgres -f setting.sql
 
 ## Next.js の作業フロー
 
-`nextjs` コンテナは開発コンテナとして用意されています。VS Code Remote / Dev Containers で実行中の `nextjs` コンテナに接続し、`/app` で作業してください。
+`nextjs` コンテナは開発コンテナとして用意されています。
+VS Code Remote / Dev Containers で実行中の `nextjs` コンテナに接続し、`/app` で作業してください。
+もしくは、以下の手順で `nextjs` コンテナに接続してから、Next.js の開発サーバーを起動してください。
+
+```powershell
+docker exec -it biodb-nextjs bash
+```
 
 コンテナ内で次を実行します。
 
@@ -81,7 +87,6 @@ npm start
 
 
 ## (Optional) Next.js のローカル開発環境での実行
-※提出時に./node_modulesを削除してもらう必要があるかもしれません。
 
 - Next.js をローカルで実行したい場合は、次の手順を実行してください。
 
