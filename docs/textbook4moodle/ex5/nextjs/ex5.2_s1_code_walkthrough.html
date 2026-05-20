@@ -1,0 +1,177 @@
+﻿<p>ここでは演習5.2の例題プログラム <code>my-app/src/app/example/page.tsx</code> を順番に解説します。<br>
+演習4.2の例題（<code>search-pdb-simple/page.tsx</code>）との違いに注目してください。</p>
+
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  import Link from "next/link";<br>
+  import { fetchPdbSearchResults } from "@/lib/pdb";<br>
+  import { normalizeSearchFilters } from "@/lib/search-filters";<br>
+  <br>
+  export const dynamic = "force-dynamic";<br>
+  <br>
+  type HomeProps = {<br>
+  &nbsp;&nbsp;searchParams: Promise&lt;Record&lt;string, string | string[] | undefined&gt;&gt;;<br>
+  };<br>
+  <br>
+  export default async function ExampleHomePage({ searchParams }: HomeProps) {<br>
+  &nbsp;&nbsp;const raw = await searchParams;<br>
+  &nbsp;&nbsp;const filters = normalizeSearchFilters({<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;id:  typeof raw.id  === "string" ? raw.id  : "",<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name: typeof raw.name === "string" ? raw.name : "",<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;org:  typeof raw.org  === "string" ? raw.org  : "",<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;res:  typeof raw.res  === "string" ? raw.res  : "",<br>
+  &nbsp;&nbsp;});<br>
+  <br>
+  &nbsp;&nbsp;const rows = await fetchPdbSearchResults(filters);<br>
+  <br>
+  &nbsp;&nbsp;return (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;main className="page-shell"&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;section className="card"&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Search Protein Database&lt;/h1&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;form className="search-form" method="get" action=""&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input name="id"   defaultValue={filters.id}       placeholder="PDBID" /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input name="name" defaultValue={filters.name}     placeholder="Protein Name" /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input name="org"  defaultValue={filters.organism} placeholder="Organism" /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input name="res"  defaultValue={filters.resolution ?? ""} placeholder="Resolution" /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type="submit"&gt;Search&lt;/button&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/section&gt;<br>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;section className="card"&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;{rows.length} result(s)&lt;/p&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table className="data-table"&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;thead&gt;...&lt;/thead&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tbody&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{rows.map((row, index) =&gt; (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr key={`${row.pdbid}-${row.name}-${index}`}&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;Link href={`/example/pdb/${row.pdbid}`}&gt;{row.pdbid}&lt;/Link&gt;&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;{row.name}&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tbody&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/table&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/section&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+  &nbsp;&nbsp;);<br>
+  }
+</p>
+<p>&nbsp;</p>
+<hr />
+
+<h5>プログラムの解説</h5>
+
+<p><strong>① import文</strong></p>
+<p>
+  <code>Link</code>（Next.jsのリンクコンポーネント）と、ライブラリ関数2つを読み込んでいます。<br>
+  <code>fetchPdbSearchResults</code>：検索条件を受け取りDBを検索する関数（<code>src/lib/pdb.ts</code> で定義）<br>
+  <code>normalizeSearchFilters</code>：URLパラメータの文字列を検索条件オブジェクトに変換する関数
+</p>
+<p>&nbsp;</p>
+
+<p><strong>② searchParams プロパティ</strong></p>
+<p>
+  演習4.2の例題にはなかった、<strong>このページ最大のポイント</strong>です。<br>
+  <code>searchParams</code> はNext.jsが自動的に渡してくれるプロパティで、URLのクエリパラメータ（<code>?id=1AGW&amp;res=2.5</code> の部分）を受け取ります。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // URLが /example?id=1AGW&amp;res=2.5 の場合<br>
+  const raw = await searchParams;<br>
+  // raw = { id: "1AGW", res: "2.5" }
+</p>
+<ul>
+  <li><code>searchParams</code> は非同期（<code>Promise</code>）なので <code>await searchParams</code> で値を取り出す</li>
+  <li>パラメータが未指定の場合は <code>undefined</code> になるため、<code>typeof raw.id === "string"</code> で安全に取り出す</li>
+</ul>
+<p>
+  <span style="color: #0000ff">※PHPの <code>$_GET['id']</code> に相当します。</span>
+</p>
+<p>&nbsp;</p>
+
+<p><strong>③ GETメソッドのフォーム</strong></p>
+<p>
+  <code>&lt;form method="get" action=""&gt;</code> はHTMLの標準的なGETフォームです。<br>
+  Searchボタンを押すと、フォームの各 <code>name</code> の値がURLのクエリパラメータとして付与され、<strong>同じページが再読み込み</strong>されます。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // 「id」欄に「1AGW」を入力してSearch → 以下のURLになる<br>
+  http://localhost:3000/example?id=1AGW
+</p>
+<p>
+  Server ComponentはURLが変わると再実行されるため、<code>searchParams</code> に新しい値が入り、DBが再検索されます。<br>
+  <span style="color: #0000ff">※JavaScriptを一切使わずにサーバー側でDBを再検索できるのがServer Componentの強みです。</span>
+</p>
+<p>&nbsp;</p>
+
+<p><strong>④ defaultValue で検索条件を保持</strong></p>
+<p>
+  フォームの各 <code>&lt;input&gt;</code> に <code>defaultValue</code> を指定することで、検索後も入力欄に条件が残ります。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  &lt;input name="id" defaultValue={filters.id} placeholder="PDBID" /&gt;
+</p>
+<ul>
+  <li><code>defaultValue</code>：ページ表示時の初期値（<code>searchParams</code> から取り出した値を再表示）</li>
+  <li><code>placeholder</code>：入力欄が空のときに薄く表示されるヒントテキスト</li>
+  <li>これを省略すると、検索するたびに入力欄がクリアされてしまう</li>
+</ul>
+<p>&nbsp;</p>
+
+<p><strong>⑤ fetchPdbSearchResults で条件付き検索</strong></p>
+<p>
+  <code>filters</code> オブジェクト（検索条件）をライブラリ関数に渡してDBを検索します。<br>
+  演習4.2の <code>fetchRows()</code> は引数なしでしたが、こちらは検索条件を引数として受け取ります。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  const rows = await fetchPdbSearchResults(filters);<br>
+  // filtersが空（全項目未入力）なら全件取得<br>
+  // filtersに条件があればWHERE句でしぼりこむ
+</p>
+<p>&nbsp;</p>
+
+<p><strong>⑥ Link コンポーネントで詳細ページへ</strong></p>
+<p>
+  PDBIDセルに <code>Link</code> コンポーネントを使い、詳細ページへのリンクを生成しています。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  &lt;td&gt;<br>
+  &nbsp;&nbsp;&lt;Link href={`/example/pdb/${row.pdbid}`}&gt;{row.pdbid}&lt;/Link&gt;<br>
+  &lt;/td&gt;
+</p>
+<p>
+  クリックすると <code>/example/pdb/1AGW</code> のような詳細ページに移動します（補足資料「段階的なページ表示」参照）。
+</p>
+<p>&nbsp;</p>
+
+<h5>演習4.2との主な違いまとめ</h5>
+<table border="1" style="border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr style="background: #f0f0f0;">
+      <th style="padding: 6px 10px;">項目</th>
+      <th style="padding: 6px 10px;">演習4.2（search-pdb-simple）</th>
+      <th style="padding: 6px 10px;">演習5.2（example）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 6px 10px;">検索条件</td>
+      <td style="padding: 6px 10px;">なし（全件固定）</td>
+      <td style="padding: 6px 10px;"><code>searchParams</code> で受け取る</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 10px;">フォーム</td>
+      <td style="padding: 6px 10px;">なし</td>
+      <td style="padding: 6px 10px;"><code>&lt;form method="get"&gt;</code></td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 10px;">詳細ページリンク</td>
+      <td style="padding: 6px 10px;">なし</td>
+      <td style="padding: 6px 10px;"><code>&lt;Link href={...}&gt;</code></td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 10px;">DB検索関数</td>
+      <td style="padding: 6px 10px;"><code>fetchRows()</code>（引数なし）</td>
+      <td style="padding: 6px 10px;"><code>fetchPdbSearchResults(filters)</code></td>
+    </tr>
+  </tbody>
+</table>
+<p>&nbsp;</p>
