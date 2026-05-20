@@ -1,0 +1,59 @@
+﻿<h5>PostgreSQLとの接続</h5>
+
+<p><strong>DSN（Data Source Name）の作成</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $db_user = "user"; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DB ユーザ名<br>
+  $db_pass = "password"; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DB パスワード<br>
+  $db_host = "postgres"; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DB ホスト名（DockerのPostgreSQLサービス名）<br>
+  $db_name = "demo"; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// DB データベース名
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $dsn = "pgsql:host={$db_host};dbname={$db_name};options='--client_encoding=UTF8'";
+</p>
+<p>
+  <span style="color: #0000ff">※ホスト名は <code>localhost</code> ではなく <code>postgres</code>（Docker Composeのサービス名）を指定します。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>PDOによるPostgreSQLへの接続</h5>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $pdo = new PDO($dsn, $db_user, $db_pass);
+</p>
+<p>接続エラーに備えてtry-catchを使うことを推奨します。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  try {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;$pdo = new PDO($dsn, $db_user, $db_pass);<br>
+  } catch (PDOException $e) {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;die("DB接続エラー: " . $e->getMessage());<br>
+  }
+</p>
+<p>&nbsp;</p>
+
+<hr />
+<p>&nbsp;</p>
+
+<h5>SQL検索の実行と出力</h5>
+
+<p><strong>（1）SQL文の設定</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $sql = "SELECT * FROM Protein";
+</p>
+
+<p><strong>（2）プリペアードステートメントの作成</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $stmh = $pdo->prepare($sql);
+</p>
+
+<p><strong>（3）SQLの実行</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $stmh->execute();
+</p>
+
+<p><strong>（4）検索の全結果を $result 配列に格納</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $result = $stmh->fetchAll(PDO::FETCH_ASSOC);
+</p>
+<p>
+  <span style="color: #0000ff">※<code>PDO::FETCH_ASSOC</code> は連想配列形式で取得するためのオプションです。列名をキーとして <code>$row["列名"]</code> でアクセスできます。</span>
+</p>
+<p>&nbsp;</p>

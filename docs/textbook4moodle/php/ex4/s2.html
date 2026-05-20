@@ -1,0 +1,66 @@
+<h5>PHPの型</h5>
+<p>PHPが扱うデータを分類すると、次のように大きく3種類に分けられます。</p>
+<p>&nbsp;</p>
+
+<p><strong>◆スカラー型</strong></p>
+<p>
+  <strong>整数： int, integer</strong><br>
+  整数で小数部を持たない数値。四則演算など算術計算ができる。10進数の他、8進数、16進数をサポートしている。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $val = 99; &nbsp;&nbsp;&nbsp;// 10進数の例<br>
+  $val = 077; &nbsp;&nbsp;// 8進数の場合は先頭に0をつける（077は10進数の63）<br>
+  $val = 0xf; &nbsp;&nbsp;// 16進数の場合は先頭に0xをつける（0xfは10進数の15）
+</p>
+<p>
+  <strong>文字列： string</strong><br>
+  文字の連続で、アルファベット、数字、記号などを含む。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $name = "藤井聡";<br>
+  $comment = "私は".$name."です。"; &nbsp;&nbsp;// 「.」で文字列を連結することができる<br>
+  $comment = "私は${name}です。"; &nbsp;&nbsp;&nbsp;&nbsp;// ""の中に{}を用いて変数の値を展開できる
+</p>
+<p>
+  <span style="color: #0000ff">※文字列の中で変数を展開する場合、外側の引用符は二重引用符（<code>"</code>）を使う必要があります。</span>
+</p>
+<p>
+  <strong>浮動小数点数： float, double, real</strong><br>
+  小数部を持つ数値。四則演算など算術計算ができる。
+</p>
+<p>
+  <strong>論理型： boolean, bool</strong><br>
+  TRUEとFALSEの値を持つ型。真偽を表現するときに使用する。
+</p>
+<p>&nbsp;</p>
+
+<p><strong>◆複合型</strong>（スカラー型を組み合わせることによって構成された型）</p>
+<p>
+  <strong>オブジェクト： object</strong><br>
+  classとして定義した独自型。その中に任意の複合型の変数を持つことができる。
+</p>
+<p>
+  <strong>配列： array</strong><br>
+  任意の数の複合型を格納するための領域。C言語と同様に[0]から値を格納できるが、キーを文字列で指定する連想配列を作ることも可能。<br>
+  [書式] <code>$&lt;配列名&gt;[&lt;キー&gt;]</code>
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $a[1] = 50;<br>
+  $b["web"] = "www.bio.kyutech.ac.jp"; &nbsp;&nbsp;// キー名は文字列でも可
+</p>
+<p>配列の初期化：</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $a = array(10, 20, 30); &nbsp;&nbsp;// $a[0]～$a[2]にそれぞれ10,20,30が設定される
+</p>
+<p>&nbsp;</p>
+
+<p><strong>◆特別型</strong>（上記以外で分類できない例外的なデータ）</p>
+<p>
+  <strong>リソース： resource</strong><br>
+  ファイルにアクセスするためのファイルポインタなど、コンピュータ上のリソースを扱うための型。
+</p>
+<p>
+  <strong>ヌル： NULL</strong><br>
+  空を意味する型・状態。
+</p>
+<p>&nbsp;</p>

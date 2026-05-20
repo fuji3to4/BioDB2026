@@ -1,0 +1,54 @@
+<p>PHPは、スクリプト言語Perlや、さらにはC言語の流れを組むスクリプト言語です。</p>
+<hr />
+
+<h5>１．変数</h5>
+<p>
+  変数とは、名前をつけたデータの格納庫です。変数に名前を定義するときは、名前の前に<code>$</code>記号をつけて変数名を指定します。<br>
+  PHPの変数宣言は次のように行います。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $変数名 = 値;
+</p>
+<p>たとえば、中身が数値の変数 <code>$a</code> を作成する場合は、次のようになります。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $a = 2;
+</p>
+<p>また、中身が文字列である変数 <code>$b</code> を作成する場合は、値となる文字列を引用符（<code>"</code>）で囲みます。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $b = "こんにちは。";
+</p>
+<p>
+  変数名としてつけることができる文字と記号は、英字、数字、<code>_</code>（アンダースコア）です。<br>
+  次の例は、変数名として扱えます。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $_abc<br>
+  $Abc<br>
+  $abc_3
+</p>
+<p>一方、次の例は変数として利用できません。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $_? &nbsp;&nbsp;&nbsp;&nbsp;// アンダースコア以外の記号を使用する<br>
+  $3rd &nbsp;&nbsp;&nbsp;// 数字が1文字目にくる変数名
+</p>
+<p>変数に値を代入するとき、計算結果を代入することができます。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $price = 20000 + 30000;
+</p>
+<p>この場合、<code>$price</code> の値は <code>50000</code> となります。</p>
+<p>文字列を連結して代入する場合は、以下のように「<code>.</code>」で連結します。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $hello = "こんにちは。" . "お元気ですか？";
+</p>
+<p><code>$hello</code> の値は <code>"こんにちは。お元気ですか？"</code> となります。</p>
+<p>&nbsp;</p>
+
+<h5>２．定義済み変数</h5>
+<p>以下の変数は、PHPに準備されている変数で、複数の値を持つ「配列」という形になっています。</p>
+<p><strong>主な定義済み変数</strong></p>
+<ul>
+  <li><code>$_GET</code> &nbsp;: クライアントからGETメソッドで渡されたデータ</li>
+  <li><code>$_POST</code> : クライアントからPOSTメソッドで渡されたデータ</li>
+  <li><code>$_FILES</code>: POSTメソッドで送信（アップロード）されたファイル</li>
+</ul>
+<p>&nbsp;</p>

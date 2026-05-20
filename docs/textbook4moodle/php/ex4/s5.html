@@ -1,0 +1,68 @@
+﻿<h5>PHPサンプルプログラム： 配列、繰り返し</h5>
+
+<p>
+  値を格納する変数を配列で準備するときは、<code>array</code>を使用します。<br>
+  以下のサンプルは、配列に格納した値を <code>for</code> 文を使って表示させるプログラムです。
+</p>
+<p>&nbsp;</p>
+
+<p>ファイル名を <code>sample2.php</code> として <strong>html/ フォルダ</strong>に保存してください。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  &lt;!---- sample2.php ----&gt;<br>
+  &lt;html&gt;<br>
+  &lt;head&gt;&lt;title&gt;ABCDEFGHI&lt;/title&gt;&lt;/head&gt;<br>
+  &lt;body&gt;<br>
+  &lt;?php<br>
+  &nbsp;&nbsp;$a = array("ABC", "DEF", "GHI");<br>
+  &nbsp;&nbsp;for ($i = 0; $i &lt; 3; $i++) {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;print $a[$i];<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;print "&lt;span style='color:#6666ff'&gt;".$a[$i]."&lt;/span&gt;";<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;print "\n";<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;print "&lt;hr width='50' align='left'&gt;\n";<br>
+  &nbsp;&nbsp;}<br>
+  ?&gt;<br>
+  &lt;/body&gt;<br>
+  &lt;/html&gt;<br>
+  &lt;!---- sample2.php end ----&gt;
+</p>
+<p>
+  ブラウザで <code>http://localhost/sample2.php</code> を開くと、以下のような出力になります。
+</p>
+<p>
+  ABC<span style="color:#6666ff">ABC</span><br>
+  <hr width="50" align="left">
+  DEF<span style="color:#6666ff">DEF</span><br>
+  <hr width="50" align="left">
+  GHI<span style="color:#6666ff">GHI</span><br>
+  <hr width="50" align="left">
+</p>
+<p>&nbsp;</p>
+
+<p><strong>【解説】</strong></p>
+<p>
+  <code>$a = array("ABC", "DEF", "GHI");</code><br>
+  $a変数は <code>array</code> により <code>$a[0]</code>～<code>$a[2]</code> の配列が準備され、それぞれに初期値が格納されます。
+</p>
+<p>
+  <code>for</code> 文の記述は、C言語とほぼ同じです。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  for (初期値の設定; 繰り返し条件; 条件更新式) {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;// ループ内の処理<br>
+  }
+</p>
+<ul>
+  <li>
+    <code>print $a[$i];</code><br>
+    $iの値がfor文で0～2まで変化するため、<code>$a[0]</code>～<code>$a[2]</code> の値を出力します。
+  </li>
+  <li>
+    <code>print "&lt;span style='color:#6666ff'&gt;".$a[$i]."&lt;/span&gt;";</code><br>
+    同じく <code>$a[$i]</code> を出力しますが、<code>&lt;span&gt;</code> タグのスタイルシートで色をつけて出力しています。
+  </li>
+  <li>
+    <code>print "&lt;hr width='50' align='left'&gt;\n";</code><br>
+    <code>&lt;hr&gt;</code> タグで幅50pxのラインを出力します。
+  </li>
+</ul>
+<p>&nbsp;</p>

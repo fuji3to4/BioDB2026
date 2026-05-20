@@ -1,0 +1,90 @@
+﻿<h5>PHPサンプルプログラム： Hello World!</h5>
+
+<p>
+  まず最初に、簡単なプログラムを作って動かしてみます。<br>
+  以下は「Hello World!」という見出しを出力するプログラムです。
+</p>
+<p>&nbsp;</p>
+
+<p>
+  HTML形式で書くときは、以下のようなソースになります。<br>
+  ファイル名を <code>sample1.html</code> として、リポジトリルートの <strong>html/ フォルダ</strong>に保存してください。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  &lt;!---- sample1.html ----&gt;<br>
+  &lt;html&gt;<br>
+  &lt;head&gt;<br>
+  &lt;title&gt;Hello World!&lt;/title&gt;<br>
+  &lt;/head&gt;<br>
+  &lt;body&gt;<br>
+  &lt;h1 style='color:#ff00ff'&gt;Hello World!&lt;/h1&gt;<br>
+  &lt;/body&gt;<br>
+  &lt;/html&gt;<br>
+  &lt;!---- sample1.html end ----&gt;
+</p>
+<p>
+  ファイルを保存したら、WEBブラウザで以下のURLにアクセスします。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost/sample1.html
+</p>
+<p>マゼンタ色の見出しで「Hello World!」と表示されていると思います。</p>
+<p>&nbsp;</p>
+
+<p>
+  次に、このHTMLと同じ出力結果が出るように、PHPソースを作ってみます。<br>
+  ファイル名を <code>sample1.php</code> として、同じく <strong>html/ フォルダ</strong>に保存します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  &lt;!---- sample1.php ----&gt;<br>
+  &lt;html&gt;<br>
+  &lt;?php<br>
+  &nbsp;&nbsp;$a="Hello World!";<br>
+  &nbsp;&nbsp;print "&lt;head&gt;\n";<br>
+  &nbsp;&nbsp;print "&lt;title&gt;".$a."&lt;/title&gt;\n";<br>
+  &nbsp;&nbsp;print "&lt;/head&gt;\n";<br>
+  &nbsp;&nbsp;print "&lt;body&gt;\n";<br>
+  &nbsp;&nbsp;print "&lt;h1 style='color:#ff00ff'&gt;".$a."&lt;/h1&gt;\n";<br>
+  &nbsp;&nbsp;print "&lt;/body&gt;\n";<br>
+  ?&gt;<br>
+  &lt;/html&gt;<br>
+  &lt;!---- sample1.php end ----&gt;
+</p>
+<p>
+  ファイルを保存したら、WEBブラウザで以下のURLにアクセスします。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  http://localhost/sample1.php
+</p>
+<p>マゼンタ色の見出しで「Hello World!」と表示されていると思います。</p>
+<p>
+  <span style="color: #0000ff">※PHPはWEBサーバーを介していないと動作しません。必ずWEBブラウザを通してURLからアクセスしてください（ファイルをダブルクリックして開いても動作しません）。</span>
+</p>
+<p>もし、エラーが出ている場合は、PHPの記述ミスが存在しています。</p>
+<p>&nbsp;</p>
+
+<p>
+  PHPのソースは、HTMLのソースに「モード切り替え記号」を使ってスクリプトを挿入します。<code>&lt;?php</code> から始まって、<code>?&gt;</code> で終わる部分がPHPのソースとなります。
+</p>
+<p>&nbsp;</p>
+
+<p><strong>【解説】</strong></p>
+<p>
+  <span style="color: #990000; font-weight: bold">&lt;?php</span> ← モード切り替え開始<br>
+  <strong>$a="Hello World!";</strong> ← $aという変数に文字列"Hello World!"を代入<br>
+  <span style="color: #006633; font-weight: bold">print "&lt;head&gt;\n";</span> ← print関数を使ってHTMLスクリプトを書き出す<br>
+  <span style="color: #006633; font-weight: bold">print "&lt;title&gt;".$a."&lt;/title&gt;\n";</span> ← 文字列を「.」（ドット）で連結して書き出す<br>
+  <span style="color: #006633; font-weight: bold">print "&lt;/head&gt;\n";</span><br>
+  <span style="color: #006633; font-weight: bold">print "&lt;body&gt;\n";</span><br>
+  <span style="color: #006633; font-weight: bold">print "&lt;h1 style='color:#ff00ff'&gt;".$a."&lt;/h1&gt;\n";</span><br>
+  <span style="color: #006633; font-weight: bold">print "&lt;/body&gt;\n";</span><br>
+  <span style="color: #990000; font-weight: bold">?&gt;</span> ← モード切り替え終了
+</p>
+<p>
+  <span style="color: #990000">赤字</span>はモード切り替え開始・終了を表し、<span style="color: #006633">緑字</span>はprint関数を使ってHTMLスクリプトを出力させています。<br>
+  クライアント（WEBブラウザ）は、PHPプログラムエンジンが出力した値（ここでは緑字のソース部分）を反映します。
+</p>
+<p>
+  最初に作った <code>sample1.html</code> と <code>sample1.php</code> を比べると、サーバ側ではソースが異なりますが、クライアント（WEBブラウザ）側では、サーバが返した結果を反映するため、表示が同じになります。
+</p>
+<p>&nbsp;</p>
