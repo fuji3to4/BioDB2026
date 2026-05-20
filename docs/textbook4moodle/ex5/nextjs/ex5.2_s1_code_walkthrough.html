@@ -142,6 +142,104 @@
 </p>
 <p>&nbsp;</p>
 
+
+<hr />
+
+<h5>⑦ @/lib/pdb.ts と @/lib/search-filters.ts の中身</h5>
+<p>
+  <code>page.tsx</code> が呼び出している <code>normalizeSearchFilters</code> と <code>fetchPdbSearchResults</code> の実装を確認します。
+</p>
+
+<p><strong>normalizeSearchFilters（src/lib/search-filters.ts）</strong></p>
+<p>
+  URLパラメータはすべて文字列です。この関数が型変換・バリデーションを行い、DB検索に使えるオブジェクトに変換します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  export function normalizeSearchFilters(raw) {<br>
+  &nbsp;&nbsp;return {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;id:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raw.id?.trim()&nbsp;&nbsp;&nbsp;&nbsp;?? "",<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raw.name?.trim()&nbsp;&nbsp;?? "",<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;organism:&nbsp;raw.org?.trim()&nbsp;&nbsp;&nbsp;?? "",<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;resolution: parseResolutionInput(raw.res),<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;// ...<br>
+  &nbsp;&nbsp;};<br>
+  }<br>
+  <br>
+  function parseResolutionInput(value) {<br>
+  &nbsp;&nbsp;if (!value || value.trim() === "") return null; // 未入力はnull<br>
+  &nbsp;&nbsp;const parsed = Number(value.trim());<br>
+  &nbsp;&nbsp;if (!Number.isFinite(parsed) || parsed &lt;= 0) {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;throw new Error("Resolution must be a positive number");<br>
+  &nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;return parsed; // 数値に変換して返す<br>
+  }
+</p>
+<ul>
+  <li><code>?.trim()</code>：値が <code>undefined</code> でもエラーにならないオプショナルチェーン + 前後スペース除去</li>
+  <li><code>?? ""</code>：<code>null</code>/<code>undefined</code> の場合は空文字を使う（ヌル合体演算子）</li>
+  <li><code>resolution</code> のみ数値型に変換。未入力なら <code>null</code>（条件なし＝全件対象）</li>
+</ul>
+<p>&nbsp;</p>
+
+<p><strong>fetchPdbSearchResults（src/lib/pdb.ts）</strong></p>
+<p>
+  検索条件を受け取り、SQLで複数テーブルをJOINして検索します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  export async function fetchPdbSearchResults(filters) {<br>
+  &nbsp;&nbsp;const result = await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;select pdb.pdbid, pdb.method, pdb.resolution, pdb.class,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protein.name, protein.organism<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from pdb<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join protein on pdb2protein.proteinid = protein.proteinid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;where (pdb.pdbid   like '%' || ${filters.id}       || '%')<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and (pdb.method   like '%' || ${filters.method}   || '%')<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and (protein.name like '%' || ${filters.name}     || '%')<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and (protein.organism like '%' || ${filters.organism} || '%')<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${filters.resolution === null<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? sql``<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: sql`and (pdb.resolution &lt;= ${filters.resolution})`}<br>
+  &nbsp;&nbsp;`);<br>
+  &nbsp;&nbsp;return result.rows;<br>
+  }
+</p>
+<ul>
+  <li><code>like '%' || ${...} || '%'</code>：部分一致検索。<code>${...}</code> でTypeScript変数をSQLに安全に埋め込む（SQLインジェクション対策済み）</li>
+  <li>例：<code>filters.id = "1AG"</code> のとき → <code>like '%1AG%'</code> → 「1AG」を含む全PDBIDがヒット</li>
+  <li>空文字の場合は <code>like '%%'</code> → すべてにマッチ（条件なし）</li>
+  <li><code>filters.resolution === null ? sql`` : sql`and ...`</code>：resolution が未入力（<code>null</code>）なら resolution の WHERE句を追加しない（条件ゼロ＝全件）</li>
+</ul>
+<p>
+  <span style="color: #0000ff">※PHPの <code>WHERE pdbid LIKE :id</code> + <code>bindValue</code> に相当します。Drizzle ORMのテンプレートリテラルが自動でエスケープ処理を行います。</span>
+</p>
+<p>&nbsp;</p>
+
+<p><strong>fetchPdbDetail（src/lib/pdb.ts）</strong></p>
+<p>
+  PDBIDを指定して1件の詳細データを取得します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  export async function fetchPdbDetail(pdbid) {<br>
+  &nbsp;&nbsp;const result = await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;select pdb.pdbid, pdb.method, pdb.resolution, pdb.chain,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pdb.positions, to_char(pdb.deposited, 'YYYY-MM-DD') as deposited,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pdb.class, pdb.url,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protein.name, protein.organism, protein.len<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from pdb<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join protein on pdb2protein.proteinid = protein.proteinid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;where pdb.pdbid = ${pdbid}<br>
+  &nbsp;&nbsp;`);<br>
+  &nbsp;&nbsp;return result.rows[0] ?? null; // 1件だけ取る（なければnull）<br>
+  }
+</p>
+<ul>
+  <li><code>where pdb.pdbid = ${pdbid}</code>：完全一致（<code>=</code>）で1件を特定</li>
+  <li><code>to_char(pdb.deposited, 'YYYY-MM-DD')</code>：PostgreSQLの日付型を文字列に変換する関数</li>
+  <li><code>result.rows[0] ?? null</code>：結果の先頭1件を取る。データがなければ <code>null</code> を返す</li>
+</ul>
+<p>&nbsp;</p>
 <h5>演習4.2との主な違いまとめ</h5>
 <table border="1" style="border-collapse: collapse; width: 100%;">
   <thead>

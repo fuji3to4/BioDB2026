@@ -159,6 +159,82 @@
 <p>&nbsp;</p>
 
 <p>
-  <span style="color: #0000ff">※このSPA実装はかなり本格的です。演習での自作は必須ではありません。Server Component版（例題）の仕組みをしっかり理解した上で、余裕があれば参考にしてください。</span>
+  <span style="color: #0000ff"><hr />
+
+<h5>８．@/lib/pdb.ts の SQL（actions.ts から呼ばれる処理）</h5>
+<p>
+  <code>actions.ts</code> の Server Action は <code>@/lib/pdb.ts</code> の関数を呼び出してDBを検索します。<br>
+  その実際のSQL処理を確認します。
+</p>
+
+<p><strong>searchPdbAction → fetchPdbSearchResults（一覧検索）</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // actions.ts<br>
+  export async function searchPdbAction(raw) {<br>
+  &nbsp;&nbsp;const filters = normalizeSearchFilters(raw);<br>
+  &nbsp;&nbsp;const rows = await fetchPdbSearchResults(filters);<br>
+  &nbsp;&nbsp;return { ok: true, rows };<br>
+  }<br>
+  <br>
+  // @/lib/pdb.ts の中身<br>
+  export async function fetchPdbSearchResults(filters) {<br>
+  &nbsp;&nbsp;const result = await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;select pdb.pdbid, pdb.method, pdb.resolution, pdb.class,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protein.name, protein.organism<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from pdb<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join protein on pdb2protein.proteinid = protein.proteinid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;where (pdb.pdbid   like '%' || ${filters.id}       || '%')<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and (protein.name like '%' || ${filters.name}     || '%')<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and (protein.organism like '%' || ${filters.organism} || '%')<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${filters.resolution === null<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? sql``<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: sql`and (pdb.resolution &lt;= ${filters.resolution})`}<br>
+  &nbsp;&nbsp;`);<br>
+  &nbsp;&nbsp;return result.rows;<br>
+  }
+</p>
+<ul>
+  <li><code>like '%' || ${...} || '%'</code>：部分一致検索。<code>${...}</code> で変数をSQLに安全に埋め込む（SQLインジェクション対策済み）</li>
+  <li>空文字 → <code>like '%%'</code> → すべてにマッチ（条件なし＝全件）</li>
+  <li><code>filters.resolution === null</code> のとき → resolution の WHERE句を追加しない</li>
+  <li><code>normalizeSearchFilters</code> がフォーム入力の文字列を型変換・バリデーションする（数値変換、空白除去）</li>
+</ul>
+<p>&nbsp;</p>
+
+<p><strong>getPdbDetailAction → fetchPdbDetail（詳細取得）</strong></p>
+<p>PDBIDをクリックすると Server Action が呼ばれ、詳細データを1件取得します。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // actions.ts<br>
+  export async function getPdbDetailAction(pdbid) {<br>
+  &nbsp;&nbsp;const detail = await fetchPdbDetail(pdbid);<br>
+  &nbsp;&nbsp;if (!detail) return { ok: false, message: "PDB entry not found" };<br>
+  &nbsp;&nbsp;return { ok: true, detail };<br>
+  }<br>
+  <br>
+  // @/lib/pdb.ts の中身<br>
+  export async function fetchPdbDetail(pdbid) {<br>
+  &nbsp;&nbsp;const result = await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;select pdb.pdbid, pdb.method, pdb.resolution, pdb.chain,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pdb.positions, to_char(pdb.deposited, 'YYYY-MM-DD') as deposited,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pdb.class, pdb.url, protein.name, protein.organism, protein.len<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from pdb<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join protein on pdb2protein.proteinid = protein.proteinid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;where pdb.pdbid = ${pdbid}<br>
+  &nbsp;&nbsp;`);<br>
+  &nbsp;&nbsp;return result.rows[0] ?? null;<br>
+  }
+</p>
+<ul>
+  <li><code>where pdb.pdbid = ${pdbid}</code>：完全一致（<code>=</code>）で1件を特定</li>
+  <li><code>to_char(pdb.deposited, 'YYYY-MM-DD')</code>：PostgreSQLの日付型を文字列に変換</li>
+  <li><code>result.rows[0] ?? null</code>：先頭1件のみ取得。存在しない場合は <code>null</code></li>
+</ul>
+<p>
+  <span style="color: #0000ff">※Server ActionはサーバーでSQLを実行し、結果のオブジェクトだけをブラウザに返します。DBの接続情報はブラウザには渡りません。</span>
+</p>
+<p>&nbsp;</p>
+※このSPA実装はかなり本格的です。演習での自作は必須ではありません。Server Component版（例題）の仕組みをしっかり理解した上で、余裕があれば参考にしてください。</span>
 </p>
 <p>&nbsp;</p>
