@@ -1,0 +1,164 @@
+﻿<p>ここでは演習5.2の発展課題（SPA版）のサンプルプログラム <code>my-app/src/app/example-spa/</code> を解説します。<br>
+演習4.2・5.2の例題（Server Component）との違いに注目してください。</p>
+<hr />
+
+<h5>１．SPAとは何か</h5>
+<p>
+  <strong>SPA（Single Page Application）</strong>とは、ページ全体を再読み込みせずにデータを更新するWebアプリケーションの形式です。
+</p>
+<table border="1" style="border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr style="background: #f0f0f0;">
+      <th style="padding: 6px 10px;">項目</th>
+      <th style="padding: 6px 10px;">Server Component（例題）</th>
+      <th style="padding: 6px 10px;">SPA（この発展課題）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 6px 10px;">実行場所</td>
+      <td style="padding: 6px 10px;">サーバー側</td>
+      <td style="padding: 6px 10px;">ブラウザ側（クライアント）</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 10px;">検索のトリガー</td>
+      <td style="padding: 6px 10px;">フォーム送信 → ページ再読み込み</td>
+      <td style="padding: 6px 10px;">入力するたびに自動で検索（ページ再読み込みなし）</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 10px;">DB接続</td>
+      <td style="padding: 6px 10px;">コンポーネントから直接</td>
+      <td style="padding: 6px 10px;">Server Action（サーバー関数の呼び出し）経由</td>
+    </tr>
+  </tbody>
+</table>
+<p>&nbsp;</p>
+
+<h5>２．ファイル構成</h5>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  example-spa/<br>
+  ├─ page.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← メインのClient Component（状態管理・イベント処理）<br>
+  ├─ search-form.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 検索フォームコンポーネント<br>
+  ├─ search-results-table.tsx ← 検索結果テーブルコンポーネント<br>
+  ├─ pdb-detail.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 詳細ポップオーバーコンポーネント<br>
+  ├─ actions.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Server Action（DBアクセス）<br>
+  ├─ client-state.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 状態遷移の純粋関数<br>
+  └─ types.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 型定義
+</p>
+<p>&nbsp;</p>
+
+<h5>３．"use client" と "use server"</h5>
+<p>
+  このSPAでは2種類のファイルが使われています。
+</p>
+<p><strong>"use client"（クライアントコンポーネント）</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  "use client"; // ← ファイル先頭に記述<br>
+  <br>
+  import { useState, useEffect } from "react"; // ← ブラウザ側のReact機能が使える
+</p>
+<p>
+  <code>useState</code> や <code>useEffect</code> など、ブラウザのインタラクション（ユーザー操作への反応）が必要なコンポーネントに使います。<br>
+  <span style="color: #ff0000">注意：Client ComponentからはDBに直接アクセスできません。</span>
+</p>
+<p>&nbsp;</p>
+<p><strong>"use server"（Server Action）</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  "use server"; // ← ファイル先頭に記述（actions.ts）<br>
+  <br>
+  export async function searchPdbAction(filters) {<br>
+  &nbsp;&nbsp;// ここはサーバー側で実行される → DBアクセスOK<br>
+  &nbsp;&nbsp;const rows = await fetchPdbSearchResults(filters);<br>
+  &nbsp;&nbsp;return { ok: true, rows };<br>
+  }
+</p>
+<p>
+  Client ComponentからServer Actionを呼び出すことで、ページ再読み込みなしにDBを検索できます。<br>
+  <span style="color: #0000ff">※Client Component → Server Action → DB という経路でデータを取得します。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>４．useState による状態管理</h5>
+<p>
+  <code>useState</code> は、コンポーネントが持つ「状態（データ）」を管理するReactのフックです。<br>
+  状態が変化するとコンポーネントが再描画されます。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // page.tsx<br>
+  const [state, setState] = useState(createInitialSpaState);<br>
+  //&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;^^^^^&nbsp;&nbsp;&nbsp;^^^^^^^^<br>
+  //&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;現在値&nbsp;&nbsp;更新関数
+</p>
+<ul>
+  <li><code>state</code>：現在の状態（フィルター条件・検索結果・ローディング状態 等）</li>
+  <li><code>setState</code>：状態を更新する関数。呼ぶと再描画が走る</li>
+  <li><code>createInitialSpaState</code>：初期値を返す関数（<code>client-state.ts</code> で定義）</li>
+</ul>
+<p>
+  <span style="color: #0000ff">※PHPには相当するものはありません。フォーム→ページ再読み込みという流れの代わりに、JSのメモリ上で状態を保持するのがSPAの特徴です。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>５．useEffect とデバウンス（自動検索）</h5>
+<p>
+  <code>useEffect</code> は、状態が変化したタイミングで処理を実行するReactのフックです。<br>
+  このSPAでは、フィルター条件が変わるたびにDBを自動検索しています。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  const DEBOUNCE_MS = 250; // 250ミリ秒待ってから検索<br>
+  <br>
+  useEffect(() =&gt; {<br>
+  &nbsp;&nbsp;const timeoutId = setTimeout(() =&gt; {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;// フィルター変化から250ms後に検索を実行<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;void searchPdbAction(filters).then(result =&gt; {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setState(...);<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+  &nbsp;&nbsp;}, DEBOUNCE_MS);<br>
+  <br>
+  &nbsp;&nbsp;return () =&gt; clearTimeout(timeoutId); // 新しい変化が来たらタイマーをキャンセル<br>
+  }, [state.filters]); // ← state.filtersが変化したときだけ実行
+</p>
+<p>
+  <strong>デバウンス</strong>とは、連続した変化の最後から一定時間後だけ処理を実行する技法です。<br>
+  「1文字入力するたびに検索」では過剰なリクエストが発生するため、250ms待ってから検索しています。
+</p>
+<p>&nbsp;</p>
+
+<h5>６．データの流れ（まとめ）</h5>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  [ユーザーが入力欄を変更]<br>
+  &nbsp;&nbsp;↓ onChange イベント → handleFiltersChange()<br>
+  [state.filters が更新] → コンポーネント再描画<br>
+  &nbsp;&nbsp;↓ useEffect が検知（250ms後）<br>
+  [searchPdbAction を呼び出し]&nbsp;&nbsp;← ここからサーバー側<br>
+  &nbsp;&nbsp;↓ DBを検索して結果を返す<br>
+  [setState で state.results を更新] → テーブルが再描画
+</p>
+<p>&nbsp;</p>
+
+<h5>７．コンポーネント間のデータ受け渡し（Props）</h5>
+<p>
+  <code>page.tsx</code> が状態を一元管理し、子コンポーネントに <strong>props</strong>（プロパティ）として渡しています。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // page.tsx → SearchForm に渡す<br>
+  &lt;SearchForm<br>
+  &nbsp;&nbsp;filters={state.filters}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 現在のフィルター値（表示用）<br>
+  &nbsp;&nbsp;onChange={handleFiltersChange} // 変化を通知するコールバック<br>
+  /&gt;<br>
+  <br>
+  // SearchForm 側で受け取る<br>
+  function SearchForm({ filters, onChange }) {<br>
+  &nbsp;&nbsp;&lt;input value={filters.id} onChange={(e) =&gt; onChange({...filters, id: e.target.value})} /&gt;<br>
+  }
+</p>
+<ul>
+  <li>データは親から子へ <strong>props</strong> として流れる（一方向）</li>
+  <li>子から親へのイベント通知はコールバック関数（<code>onChange</code> 等）を使う</li>
+</ul>
+<p>&nbsp;</p>
+
+<p>
+  <span style="color: #0000ff">※このSPA実装はかなり本格的です。演習での自作は必須ではありません。Server Component版（例題）の仕組みをしっかり理解した上で、余裕があれば参考にしてください。</span>
+</p>
+<p>&nbsp;</p>
