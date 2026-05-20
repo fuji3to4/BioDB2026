@@ -1,75 +1,128 @@
 <p>
-  演習4.2では、データベースを検索し出力をWeb上に表示するNext.jsプログラムを作成する。
+    演習4.2では、データベースを検索し出力をWeb上に表示するNext.jsプログラムを作成する。
 </p>
 <p>
-  Next.jsではReactの<strong>Server Component</strong>という仕組みを使うことで、サーバー側でデータベースを検索してHTMLを生成することができます。
+    Next.jsではReactの<strong>Server Component</strong>という仕組みを使うことで、サーバー側でデータベースを検索してHTMLを生成することができます。
 </p>
 <p>&nbsp;</p>
 
 <h5>演習4.2の手順：</h5>
 <p>
-  例題は <code>my-app/src/app/search-pdb-simple/page.tsx</code> です。<br>
-  <code>demo</code>データベースから3つのテーブルを繋ぎ合わせ、PDBID・Resolution・Protein name・Organismの列を取り出して表示させるプログラムです。
+    例題は <code>my-app/src/app/search-pdb-simple/page.tsx</code> です。<br>
+    <code>demo</code>データベースから3つのテーブルを繋ぎ合わせ、PDBID・Resolution・Protein
+    name・Organismの列を取り出して表示させるプログラムです。
 </p>
 <p>&nbsp;</p>
 
 <p>
-  (0) <strong>nextjsコンテナ</strong>に接続し、開発サーバーを起動する（まだ起動していない場合）。
+    (1)<strong>nextjsコンテナ</strong>は開発コンテナとして用意されています。VS
+    Code Remote / Dev Containers で実行中の nextjs コンテナに接続し、<code>/app</code>
+    で作業してください。
 </p>
+<p>※VScodeの拡張機能で「Docker」開発支援が必要。参考: <a href="https://im10.el.kyutech.ac.jp/2026/mod/page/view.php?id=55497" target="_blank">VScodeの利用</a></p>
+<p><img src="https://im10.el.kyutech.ac.jp/2026/draftfile.php/8132/user/draft/8845863/image.png" alt="" role="presentation" class="img-fluid"><br></p>
+
+<p>　</p>
+<p>もしくは<strong>nextjsコンテナ</strong>に接続し、開発サーバーにbashで接続してもよい。</p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
-  docker exec -it biodb-nextjs bash
+    docker exec -it biodb-nextjs bash
 </p>
-<p>コンテナ内で：</p>
+<p>初めてNext.js起動するときに、コンテナ内で以下を行う：</p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
-  npm run dev
+    cp .env.example .env<br>
+    npm install<br>
 </p>
-<p>
-  <span style="color: #0000ff">※VS Code の Dev Containers 機能で <code>biodb-nextjs</code> コンテナに接続して作業することもできます。その場合はコンテナ内の <code>/app</code> ディレクトリで作業してください。</span>
-</p>
-<p>&nbsp;</p>
+<p><span style="font-size: 0.9375rem;">　&nbsp;</span></p>
 
 <p>
-  (1) 演習環境の <strong>my-app/src/app/search-pdb-simple/page.tsx</strong> を確認してください。
+    (2) 演習環境の
+    <strong>my-app/src/app/search-pdb-simple/page.tsx</strong>
+    を確認してください。
 </p>
 <p>コードのポイント：</p>
 <ul>
-  <li><code>export const dynamic = "force-dynamic"</code>：アクセスのたびにサーバー側でDBを検索して最新データを返す設定</li>
-  <li><code>db.execute(sql`...`)</code>：Drizzle ORM を使ったSQL実行</li>
-  <li>関数に <code>async</code> が付いており、コンポーネント自体がデータを取得できるのがServer Componentの特徴</li>
+    <li>
+        <code>export const dynamic = "force-dynamic"</code>：アクセスのたびにサーバー側でDBを検索して最新データを返す設定
+    </li>
+    <li><code>db.execute(sql`...`)</code>：Drizzle ORM を使ったSQL実行</li>
+    <li>
+        関数に
+        <code>async</code>
+        が付いており、コンポーネント自体がデータを取得できるのがServer
+        Componentの特徴
+    </li>
 </ul>
-<p>&nbsp;</p>
+<p>　</p>
+<p>next.js開発サーバーを起動</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+    npm run dev
+</p>
+<p>もしくは、ビルドして起動&nbsp;</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+    npm run build<br>
+    npm start<br>
+</p>
+<p>※<code>npm run dev</code>は開発用にNext.jsを起動させます。アクセスする度にコードの変更が反映されるため、開発中はこのコマンドを実行したままで大丈夫です。ただしコンパイルが毎回入るので若干重くなります。&nbsp;</p>
+<p>ビルドして起動させるコマンドは、一度ビルドしてしまえば、コードの変更があっても再度ビルドしない限り反映されないため、ウェブアプリを軽く動かすことができます。<br></p>
+<p>　</p>
 
 <p>
-  (2) WEBブラウザを起動し、URL入力欄に以下のURLを入力してEnterキーを押し、実行結果を確認する。
+    (3)
+    WEBブラウザを起動し、URL入力欄に以下のURLを入力してEnterキーを押し、実行結果を確認する。
 </p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
-  http://localhost:3000/search-pdb-simple
+    http://localhost:3000/search-pdb-simple
 </p>
 <p>&nbsp;</p>
 
 <p>
-  (3) 例題の出力を確認したら、<strong>自作したデータベースを検索する新しいページを作成し、動作確認をしてください。</strong>
+    (4) 例題の出力を確認したら、<strong>自作したデータベースを検索する新しいページを作成し、動作確認をしてください。</strong>
 </p>
 <ul>
-  <li><code>my-app/src/app/</code> 以下に任意の名前でフォルダを作り、<code>page.tsx</code> を作成する。<br>
-    例：<code>my-app/src/app/my-search/page.tsx</code>
-  </li>
-  <li>SQLは <code>db.execute(sql`SELECT ... FROM ...`)</code> の形式で記述する。</li>
-  <li>自分のデータベース名・テーブル名に合わせて変更する（<code>DATABASE_URL</code> の <code>dbname</code> 部分も確認）。</li>
-  <li>
-    <span style="color: #0000ff">※コードを変更するとブラウザがホットリロードされて自動反映されます（<code>npm run dev</code> 実行中）。</span>
-  </li>
+    <li>
+        <code>my-app/src/app/</code> 以下に任意の名前でフォルダを作り、<code>page.tsx</code>
+        を作成する。<br>
+        例：<code>my-app/src/app/my-search/page.tsx</code>
+    </li>
+    <li>
+        SQLは <code>db.execute(sql`SELECT ... FROM ...`)</code> の形式で記述する。
+    </li>
+    <li>自分のデータベース名に合わせて<code>.env</code>をに<div>
+            <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa"> MY_DATABASE_URL=postgresql://user:password@localhost:5432/{自分のデータベース名}</p>
+            を追記する。
+        </div>
+    </li>
+    <li>データベース接続用lib<code>my-app/lib/db.ts</code>をコピーして<code>my-app/lib/mydb.ts</code>を作成する。<code>process.env.DATABASE_URL</code>を<code>process.env.MY_DATABASE_URL</code>に変更する。</li>
+    <li>page.tsx冒頭のlibの呼び出しを<code>@/lib/mydb</code>に修正する。<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">import { db } from "@/lib/mydb";</p>
+    </li>
 </ul>
+<p>　</p>
+
+開発サーバーが起動しっぱしだった場合はCtrl+cで一旦停止して、再び起動する。
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+    npm run dev
+</p>
+※基本的には<code>npm run dev</code>中はコードを変更するとブラウザがホットリロードされて自動反映されますが、<code>.env</code>を編集した場合など運なく反映されないことがあるため。
+<p>&nbsp;</p>
+<p>以下のURLにブラウザからアクセスします。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+    http://localhost:3000/my-search
+</p>
+
+
 <p>&nbsp;</p>
 
-<hr />
+<hr>
 <p>&nbsp;</p>
 <p>
-  (4) <strong>【課題】</strong>自作したデータベースを検索するNext.jsページを「<strong>演習4.2課題提出先</strong>」にアップロードせよ。
+    (5)
+    <strong>【課題】</strong>自作したデータベースを検索するNext.jsページを「<strong>演習4.2課題提出先</strong>」にアップロードせよ。
 </p>
 <p>&nbsp;</p>
 <p><strong>提出期限：1週目の金曜日(23:59)まで</strong></p>
 <ul>
-  <li>作成した <code>page.tsx</code>（および関連ファイルがあれば）</li>
-  <li>何をするプログラムかの説明（コード内にコメントもしくはmoodleのオンラインテキスト）</li>
+    <li>作成した <code>page.tsx</code>（および関連ファイルがあれば）</li>
+    <li>
+        何をするプログラムかの説明（コード内にコメントもしくはmoodleのオンラインテキスト）
+    </li>
 </ul>
