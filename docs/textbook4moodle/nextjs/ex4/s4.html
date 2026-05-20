@@ -1,0 +1,102 @@
+<h5>データベース接続の設定</h5>
+
+<p><strong>.envファイルの設定</strong></p>
+<p>
+  Next.jsからPostgreSQLに接続するには、<code>my-app/</code> フォルダに <code>.env</code> ファイルを作成します。<br>
+  まず <code>.env.example</code> をコピーして <code>.env</code> を作成します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  # my-app/.env<br>
+  DATABASE_URL="postgresql://user:password@postgres:5432/demo"
+</p>
+<ul>
+  <li><code>user</code>：DBユーザー名</li>
+  <li><code>password</code>：DBパスワード</li>
+  <li><code>postgres</code>：ホスト名（Docker ComposeのPostgreSQLサービス名）</li>
+  <li><code>5432</code>：ポート番号</li>
+  <li><code>demo</code>：データベース名</li>
+</ul>
+<p>
+  <span style="color: #0000ff">※ホスト名は <code>localhost</code> ではなく <code>postgres</code>（Docker Composeのサービス名）を指定します。PHPの設定と同じです。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>Drizzle ORM によるDB接続</h5>
+<p>
+  Next.jsでは<strong>Drizzle ORM</strong>ライブラリを使ってPostgreSQLに接続します。<br>
+  接続設定は <code>my-app/src/lib/db.ts</code> に記述されています（変更不要）。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // my-app/src/lib/db.ts （参考：変更不要）<br>
+  import { drizzle } from "drizzle-orm/node-postgres";<br>
+  <br>
+  // ...<br>
+  <br>
+  dbInstance = drizzle(connectionString);&nbsp;&nbsp;// .envのDATABASE_URLを使って接続
+</p>
+<p>
+  <span style="color: #0000ff">※PHPの <code>new PDO($dsn, $user, $pass)</code> に相当します。</span>
+</p>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>SQLの実行方法</h5>
+
+<p><strong>（1）必要なものをimport</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  import { sql } from "drizzle-orm";<br>
+  import { db } from "@/lib/db";
+</p>
+
+<p><strong>（2）SQL文の実行</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  const result = await db.execute(sql`SELECT * FROM protein`);
+</p>
+<p>
+  <code>sql`...`</code> はテンプレートリテラルを使ったSQLタグです。SQL文をそのまま書けます。<br>
+  <span style="color: #0000ff">※PHPの <code>$stmh = $pdo-&gt;prepare($sql); $stmh-&gt;execute();</code> に相当します。</span>
+</p>
+
+<p><strong>（3）結果の取得</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  const rows = result.rows;&nbsp;&nbsp;// 検索結果の配列
+</p>
+<p>
+  <code>result.rows</code> はオブジェクトの配列です。各要素は列名をキーとして <code>row.pdbid</code> のようにアクセスできます。<br>
+  <span style="color: #0000ff">※PHPの <code>$stmh-&gt;fetchAll(PDO::FETCH_ASSOC)</code> に相当します。</span>
+</p>
+
+<p><strong>（4）型定義（コピペ用）</strong></p>
+<p>TypeScriptでは結果の型を定義しておくと、コード補完が効いて便利です（省略しても動作します）。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  type MyRow = {<br>
+  &nbsp;&nbsp;pdbid: string;<br>
+  &nbsp;&nbsp;resolution: number | string | null;<br>
+  &nbsp;&nbsp;name: string;<br>
+  };<br>
+  <br>
+  const rows = result.rows as MyRow[];
+</p>
+<p>&nbsp;</p>
+
+<p><strong>まとめ：DB検索の基本パターン</strong></p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  import { sql } from "drizzle-orm";<br>
+  import { db } from "@/lib/db";<br>
+  <br>
+  export const dynamic = "force-dynamic";<br>
+  <br>
+  type MyRow = { pdbid: string; name: string; };<br>
+  <br>
+  async function fetchRows(): Promise&lt;MyRow[]&gt; {<br>
+  &nbsp;&nbsp;const result = await db.execute(sql`SELECT pdbid, name FROM protein`);<br>
+  &nbsp;&nbsp;return result.rows as MyRow[];<br>
+  }<br>
+  <br>
+  export default async function MyPage() {<br>
+  &nbsp;&nbsp;const rows = await fetchRows();<br>
+  &nbsp;&nbsp;// rowsを使って表示...<br>
+  }
+</p>
+<p>&nbsp;</p>

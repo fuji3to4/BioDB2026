@@ -1,0 +1,87 @@
+<p>Next.jsの<strong>App Router</strong>では、ファイルの配置場所がそのままURLになります。このルールを理解することで、新しいページの作り方がわかります。</p>
+<hr />
+
+<h5>１．フォルダ構成とURL</h5>
+<p>
+  <code>my-app/src/app/</code> フォルダの中に置いたフォルダ名がURLのパスになります。<br>
+  各フォルダの中に <code>page.tsx</code> を置くと、そのURLにアクセスしたときに表示されるページになります。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  my-app/<br>
+  └─ src/<br>
+  &nbsp;&nbsp;&nbsp;└─ app/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ page.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ http://localhost:3000/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ layout.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ 全ページ共通のレイアウト<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ search-pdb-simple/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;└─ page.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ http://localhost:3000/search-pdb-simple<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ example/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ page.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ http://localhost:3000/example
+</p>
+<p>
+  <span style="color: #0000ff">※PHPでは <code>html/</code> フォルダにファイルを置きましたが、Next.jsでは <code>my-app/src/app/</code> フォルダ以下にページを作ります。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>２．page.tsx と layout.tsx の役割</h5>
+<ul>
+  <li><strong>page.tsx</strong>：そのURLにアクセスしたときに表示されるページのコンポーネント。必ず <code>export default function</code> を含む。</li>
+  <li><strong>layout.tsx</strong>：複数のページで共通するレイアウト（ヘッダー、フッターなど）を定義する。すべてのページに自動的に適用される。</li>
+</ul>
+<p>&nbsp;</p>
+
+<h5>３．Server ComponentとClient Componentの違い</h5>
+<p>Next.jsのコンポーネントには2種類あります。</p>
+<p><strong>Server Component（サーバーコンポーネント）</strong></p>
+<ul>
+  <li>ファイルの先頭に何も書かない（デフォルト）</li>
+  <li>サーバー側で実行される。データベースに直接アクセスできる</li>
+  <li><code>async function</code> が使える</li>
+  <li>ユーザー操作（ボタンクリック等）には対応しない</li>
+</ul>
+<p><strong>Client Component（クライアントコンポーネント）</strong></p>
+<ul>
+  <li>ファイルの先頭に <code>"use client";</code> と書く</li>
+  <li>ブラウザ側で実行される。ボタンクリックや入力操作が使える</li>
+  <li>データベースに直接アクセスできない</li>
+</ul>
+<p>
+  <span style="color: #0000ff">※演習の基本課題ではServer Componentを使います。データベースを検索してHTMLを返す用途に適しています。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>４．export const dynamic = "force-dynamic"</h5>
+<p>
+  Server Componentでデータベースの最新データを毎回取得するには、ファイルの先頭に以下を記述します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  export const dynamic = "force-dynamic";
+</p>
+<p>
+  これを書かないと、Next.jsがページをキャッシュし、データベースの内容が更新されても古い結果が表示される場合があります。<br>
+  データベースを参照するページには必ず記述してください。
+</p>
+<p>&nbsp;</p>
+
+<h5>５．新しいページの作り方</h5>
+<p>新しいページを追加する手順は次の通りです。</p>
+<ol>
+  <li><code>my-app/src/app/</code> 以下に新しいフォルダを作成する（フォルダ名 = URLパス）</li>
+  <li>そのフォルダの中に <code>page.tsx</code> を作成する</li>
+  <li><code>export default function</code> でコンポーネントを定義し、JSXを返す</li>
+</ol>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // my-app/src/app/my-page/page.tsx<br>
+  <br>
+  export default function MyPage() {<br>
+  &nbsp;&nbsp;return (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;main&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;My New Page&lt;/h1&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+  &nbsp;&nbsp;);<br>
+  }
+</p>
+<p>
+  ファイルを保存すると、<code>http://localhost:3000/my-page</code> でアクセスできるようになります。<br>
+  <span style="color: #0000ff">※Next.js開発サーバー（<code>docker compose up</code> で起動）が動いていれば、ファイルを保存するだけで自動的にページが有効になります。</span>
+</p>
+<p>&nbsp;</p>

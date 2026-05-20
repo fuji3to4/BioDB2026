@@ -1,0 +1,97 @@
+<p>ReactはJavaScriptのUIライブラリです。Next.jsはReactをベースとしたWebフレームワークで、<strong>JSX</strong>という記法を使ってUIを記述します。</p>
+<hr />
+
+<h5>１．JSXとは</h5>
+<p>
+  JSXは、JavaScriptの中にHTMLのような記法を書くための構文です。<br>
+  Next.jsのコードでは、関数の戻り値としてJSXを返すことでHTMLを出力します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // JSXの例<br>
+  return (<br>
+  &nbsp;&nbsp;&lt;main&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Hello World!&lt;/h1&gt;<br>
+  &nbsp;&nbsp;&lt;/main&gt;<br>
+  );
+</p>
+<p>
+  JSXはブラウザに送られる前にJavaScriptのコードに変換されます。PHPと異なり、JavaScriptの中に直接HTMLを書きます。
+</p>
+<p>&nbsp;</p>
+
+<h5>２．関数コンポーネント</h5>
+<p>
+  Next.jsのページは<strong>関数コンポーネント</strong>として定義します。<br>
+  関数が返す（<code>return</code>する）JSXが、ブラウザに表示されるHTMLになります。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  export default function MyPage() {<br>
+  &nbsp;&nbsp;return (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;main&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;My Page&lt;/h1&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Hello!&lt;/p&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+  &nbsp;&nbsp;);<br>
+  }
+</p>
+<p>
+  <code>export default</code> はこのファイルのメインの関数として外部に公開することを意味します。Next.jsはこれを自動的にページとして認識します。
+</p>
+<p>&nbsp;</p>
+
+<h5>３．PHPとJSXの主な違い</h5>
+<p>JSXを書く際、HTMLとは異なる点があります。</p>
+<ul>
+  <li><code>class</code> 属性は <code>className</code> と書く</li>
+  <li>タグは必ず閉じる（例：<code>&lt;br /&gt;</code>、<code>&lt;input /&gt;</code>）</li>
+  <li>属性値は文字列なら <code>"..."</code>、JavaScript式なら <code>{...}</code> で囲む</li>
+  <li>コメントは <code>{/* ... */}</code> で書く</li>
+</ul>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  {/* PHPの class="card" → JSXでは className="card" */}<br>
+  &lt;div className="card"&gt;..&lt;/div&gt;<br>
+  <br>
+  {/* 属性にJavaScript式を使う */}<br>
+  &lt;p style={{ color: "red" }}&gt;エラー&lt;/p&gt;
+</p>
+<p>&nbsp;</p>
+
+<h5>４．JSX内での式の埋め込み</h5>
+<p>
+  JSXの中で変数や計算結果を表示するには <code>{}</code> で囲みます。<br>
+  PHPの <code>&lt;?php echo $変数; ?&gt;</code> に相当します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  const count = 42;<br>
+  <br>
+  return (<br>
+  &nbsp;&nbsp;&lt;p&gt;{count} 件のデータがあります&lt;/p&gt;<br>
+  );
+</p>
+<p>配列の各要素を表示するには <code>.map()</code> を使います（PHPの <code>foreach</code> に相当）。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  const items = ["ABC", "DEF", "GHI"];<br>
+  <br>
+  return (<br>
+  &nbsp;&nbsp;&lt;ul&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;{items.map((item, index) =&gt; (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li key={index}&gt;{item}&lt;/li&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+  &nbsp;&nbsp;&lt;/ul&gt;<br>
+  );
+</p>
+<p>
+  <span style="color: #0000ff">※ <code>key</code> 属性はReactがリストを効率的に更新するために必要です。通常はユニークなIDや配列のインデックスを使います。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>５．Link コンポーネント</h5>
+<p>
+  Next.jsでページ間のリンクを作るには、<code>&lt;a&gt;</code> タグの代わりに <code>&lt;Link&gt;</code> コンポーネントを使います。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  import Link from "next/link";<br>
+  <br>
+  &lt;Link href="/search-pdb-simple"&gt;検索ページへ&lt;/Link&gt;
+</p>
+<p>&nbsp;</p>

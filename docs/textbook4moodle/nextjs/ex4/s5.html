@@ -1,0 +1,126 @@
+<p>ここでは演習4.2の例題プログラム <code>my-app/src/app/search-pdb-simple/page.tsx</code> を順番に解説します。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  import { sql } from "drizzle-orm";<br>
+  <br>
+  import { db } from "@/lib/db";<br>
+  <br>
+  export const dynamic = "force-dynamic";<br>
+  <br>
+  type SimplePdbRow = {<br>
+  &nbsp;&nbsp;pdbid: string;<br>
+  &nbsp;&nbsp;resolution: number | string | null;<br>
+  &nbsp;&nbsp;name: string;<br>
+  &nbsp;&nbsp;organism: string;<br>
+  };<br>
+  <br>
+  async function fetchRows(): Promise&lt;SimplePdbRow[]&gt; {<br>
+  &nbsp;&nbsp;const result = await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;select pdb.pdbid, pdb.resolution, protein.name, protein.organism<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from pdb<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join pdb2protein on pdb.pdbid = pdb2protein.pdbid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inner join protein on pdb2protein.proteinid = protein.proteinid<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;where pdb.resolution &lt;= 2.5<br>
+  &nbsp;&nbsp;`);<br>
+  <br>
+  &nbsp;&nbsp;return result.rows as SimplePdbRow[];<br>
+  }<br>
+  <br>
+  export default async function SearchPdbSimplePage() {<br>
+  &nbsp;&nbsp;const rows = await fetchRows();<br>
+  <br>
+  &nbsp;&nbsp;return (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;main className="page-shell"&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;section className="card"&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Search Result (Simple)&lt;/h1&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;{rows.length} result(s)&lt;/p&gt;<br>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table className="data-table"&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;thead&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;PDBID&lt;/th&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Resolution&lt;/th&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Protein name&lt;/th&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Organism&lt;/th&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/thead&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tbody&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{rows.map((row, index) =&gt; (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr key={`${row.pdbid}-${row.name}-${index}`}&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;{row.pdbid}&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;{row.resolution}&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;{row.name}&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;{row.organism}&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tbody&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/table&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/section&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+  &nbsp;&nbsp;);<br>
+  }
+</p>
+<p>&nbsp;</p>
+<hr />
+
+<h5>プログラムの解説</h5>
+
+<p><strong>① import文（1〜3行目）</strong></p>
+<p>
+  Drizzle ORMの <code>sql</code> タグと、DB接続オブジェクト <code>db</code> を読み込んでいます。<br>
+  <code>@/lib/db</code> の <code>@/</code> は <code>src/</code> フォルダを指すエイリアスです。<br>
+  <span style="color: #0000ff">※PHPの <code>require_once</code> に相当します。</span>
+</p>
+<p>&nbsp;</p>
+
+<p><strong>② export const dynamic = "force-dynamic"（5行目）</strong></p>
+<p>
+  毎回データベースを問い合わせて最新の結果を表示するための設定です。<br>
+  これを書かないと古いデータがキャッシュされて表示されることがあります（補足資料s3参照）。
+</p>
+<p>&nbsp;</p>
+
+<p><strong>③ type定義（7〜12行目）</strong></p>
+<p>
+  DB検索結果の1行分のデータ構造をTypeScriptの型として定義しています。<br>
+  列名と型を指定することで、コード補完が効くようになります。
+</p>
+<p>
+  <code>number | string | null</code> は「数値・文字列・nullのいずれか」という意味です。<br>
+  <code>resolution</code>（解像度）は小数値ですが、DBから返る型が一定でないためこのように定義しています。
+</p>
+<p>&nbsp;</p>
+
+<p><strong>④ fetchRows関数（14〜24行目）</strong></p>
+<p>
+  DB問い合わせを行う関数です。<code>async function</code> なので非同期処理です（補足資料s1参照）。<br>
+  <code>db.execute(sql`...`)</code> でSQL文を実行し、<code>result.rows</code> で結果の配列を得ます。<br>
+  <code>as SimplePdbRow[]</code> でTypeScriptに型を教えています。<br>
+  <span style="color: #0000ff">※PHPの <code>$stmh-&gt;execute()</code> + <code>fetchAll()</code> に相当します。</span>
+</p>
+<p>&nbsp;</p>
+
+<p><strong>⑤ SearchPdbSimplePage コンポーネント（26〜58行目）</strong></p>
+<p>
+  <code>export default async function</code> で定義されたServer Componentです（補足資料s3参照）。<br>
+  <code>async</code> なので、内部で <code>await fetchRows()</code> を呼び出せます。<br>
+  取得した <code>rows</code> 配列をJSXの中で使ってHTMLを構築しています。
+</p>
+<p>&nbsp;</p>
+
+<p><strong>⑥ JSXによるテーブル表示（35〜54行目）</strong></p>
+<p>
+  <code>&lt;table&gt;</code> の中で <code>rows.map()</code> を使ってデータを1行ずつ表示しています（補足資料s2参照）。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  {rows.map((row, index) =&gt; (<br>
+  &nbsp;&nbsp;&lt;tr key={`${row.pdbid}-${row.name}-${index}`}&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;{row.pdbid}&lt;/td&gt;<br>
+  &nbsp;&nbsp;&lt;/tr&gt;<br>
+  ))}
+</p>
+<ul>
+  <li><code>rows.map()</code> で配列の各要素に対して1つの <code>&lt;tr&gt;</code> を生成</li>
+  <li><code>key</code> 属性はReactが各要素を識別するために必要（リストを表示するときは必須）</li>
+  <li><code>{row.pdbid}</code> のように <code>{}</code> でJSX内にデータを埋め込む</li>
+</ul>
+<p>&nbsp;</p>
