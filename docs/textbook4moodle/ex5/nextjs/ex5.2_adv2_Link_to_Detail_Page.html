@@ -1,0 +1,122 @@
+﻿<p>検索結果の一覧ページから、各エントリの詳細ページへリンクをたどって移動できる「段階的なページ表示」の仕組みをNext.jsで実装する方法を解説します。</p>
+<hr />
+
+<h5>１．仕組みの概要</h5>
+<p>
+  Next.jsではURLパラメータを<strong>動的ルート（Dynamic Route）</strong>で表現します。<br>
+  フォルダ名を <code>[pdbid]</code> のように角括弧で囲むと、そのフォルダ名部分がURLの動的な値になります。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  [ブラウザ]<br>
+  &nbsp;&nbsp;↓ フォームで検索<br>
+  /example&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 検索結果の一覧、各PDBIDはLinkコンポーネント<br>
+  &nbsp;&nbsp;↓ PDBIDリンクをクリック → /example/pdb/1AGW に遷移<br>
+  /example/pdb/[pdbid]&nbsp;&nbsp;← pdbid="1AGW" を受け取って詳細を表示
+</p>
+<p>
+  <span style="color: #0000ff">※PHPの <code>pdb_detail.php?pdbid=1AGW</code>（GETパラメータ）に相当しますが、Next.jsではURLのパス自体に値を埋め込みます。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>２．動的ルートのフォルダ構成</h5>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  my-app/src/app/<br>
+  └─ example/<br>
+  &nbsp;&nbsp;&nbsp;├─ page.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ /example （一覧ページ）<br>
+  &nbsp;&nbsp;&nbsp;└─ pdb/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ [pdbid]/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ page.tsx&nbsp;&nbsp;&nbsp;&nbsp;→ /example/pdb/1AGW 等（詳細ページ）
+</p>
+<p>
+  フォルダ名 <code>[pdbid]</code> の角括弧が動的ルートのしるしです。<br>
+  <code>/example/pdb/1AGW</code> にアクセスすると、<code>pdbid</code> に <code>"1AGW"</code> がセットされます。
+</p>
+<p>&nbsp;</p>
+
+<h5>３．一覧ページのリンク生成（example/page.tsx）</h5>
+<p>
+  検索結果テーブルのPDBIDセルに、<code>Link</code> コンポーネントで詳細ページへのリンクを埋め込みます。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  import Link from "next/link";<br>
+  <br>
+  // ...<br>
+  <br>
+  &lt;td&gt;<br>
+  &nbsp;&nbsp;&lt;Link href={`/example/pdb/${row.pdbid}`}&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;{row.pdbid}<br>
+  &nbsp;&nbsp;&lt;/Link&gt;<br>
+  &lt;/td&gt;
+</p>
+<ul>
+  <li><code>Link</code> は Next.js のリンクコンポーネント（<code>import Link from "next/link"</code>）</li>
+  <li><code>href={`/example/pdb/${row.pdbid}`}</code> でURLを動的に生成（テンプレートリテラル）</li>
+  <li>クリックすると <code>/example/pdb/1AGW</code> のようなURLに遷移する</li>
+</ul>
+<p>&nbsp;</p>
+
+<h5>４．詳細ページでのパラメータ受け取り（example/pdb/[pdbid]/page.tsx）</h5>
+<p>
+  動的ルートの値は <code>params</code> プロパティから取得します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  import { notFound } from "next/navigation";<br>
+  <br>
+  type DetailProps = {<br>
+  &nbsp;&nbsp;params: Promise&lt;{ pdbid: string }&gt;;<br>
+  };<br>
+  <br>
+  export default async function PdbDetailPage({ params }: DetailProps) {<br>
+  &nbsp;&nbsp;const { pdbid } = await params;&nbsp;&nbsp;// URLの [pdbid] 部分を取得<br>
+  &nbsp;&nbsp;const detail = await fetchPdbDetail(pdbid);<br>
+  <br>
+  &nbsp;&nbsp;if (!detail) {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;notFound();&nbsp;&nbsp;// 該当なし → 404ページを表示<br>
+  &nbsp;&nbsp;}<br>
+  <br>
+  &nbsp;&nbsp;// detail を使って表示...<br>
+  }
+</p>
+<ul>
+  <li><code>params</code> は非同期（<code>Promise</code>）なので <code>await params</code> で値を取り出す</li>
+  <li><code>{ pdbid }</code> はフォルダ名 <code>[pdbid]</code> と対応している</li>
+  <li><code>notFound()</code> を呼ぶと Next.js 標準の404ページが表示される</li>
+</ul>
+<p>
+  <span style="color: #0000ff">※PHPの <code>$_GET['pdbid']</code> + <code>die()</code> に相当します。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>５．PHP版との比較</h5>
+<table border="1" style="border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr style="background: #f0f0f0;">
+      <th style="padding: 6px 10px;">項目</th>
+      <th style="padding: 6px 10px;">PHP版</th>
+      <th style="padding: 6px 10px;">Next.js版</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 6px 10px;">URLの形式</td>
+      <td style="padding: 6px 10px;"><code>pdb_detail.php?pdbid=1AGW</code></td>
+      <td style="padding: 6px 10px;"><code>/example/pdb/1AGW</code></td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 10px;">パラメータ取得</td>
+      <td style="padding: 6px 10px;"><code>$_GET['pdbid']</code></td>
+      <td style="padding: 6px 10px;"><code>const { pdbid } = await params</code></td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 10px;">リンク生成</td>
+      <td style="padding: 6px 10px;"><code>&lt;a href="pdb_detail.php?pdbid=..."&gt;</code></td>
+      <td style="padding: 6px 10px;"><code>&lt;Link href={`/example/pdb/${row.pdbid}`}&gt;</code></td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 10px;">エラー処理</td>
+      <td style="padding: 6px 10px;"><code>die('エラーメッセージ')</code></td>
+      <td style="padding: 6px 10px;"><code>notFound()</code>（標準404ページ）</td>
+    </tr>
+  </tbody>
+</table>
+<p>&nbsp;</p>

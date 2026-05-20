@@ -1,0 +1,80 @@
+﻿<p>検索結果の一覧ページから、各エントリの詳細ページへリンクをたどって移動できる「段階的なページ表示」の仕組みを解説します。</p>
+<p>
+  （<a href="https://im10.el.kyutech.ac.jp/2026/mod/folder/view.php?id=55564" target="_blank">サンプルプログラムのソース（Moodle）</a>）
+</p>
+<hr />
+
+<h5>１．仕組みの概要</h5>
+<p>
+  <code>search.php</code>（一覧ページ）でPDBIDのセルにリンクを貼り、クリックすると <code>pdb_detail.php</code>（詳細ページ）にPDBIDをGETパラメータとして渡します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  [ブラウザ]<br>
+  &nbsp;&nbsp;↓ フォームで検索<br>
+  search.php&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 検索結果の一覧、各PDBIDはリンク<br>
+  &nbsp;&nbsp;↓ PDBIDリンクをクリック → ?pdbid=1AGW を付けてGET送信<br>
+  pdb_detail.php&nbsp;← PDBIDを受け取って詳細を表示
+</p>
+<p>&nbsp;</p>
+
+<h5>２．一覧ページのリンク生成（search.php）</h5>
+<p>
+  検索結果テーブルのPDBIDセルに、詳細ページへのリンクを埋め込んでいます。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  &lt;td&gt;<br>
+  &nbsp;&nbsp;&lt;a href="pdb_detail.php?pdbid=&lt;?= urlencode((string)($row['pdbid'] ?? '')) ?&gt;"&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;?= htmlspecialchars((string)($row['pdbid'] ?? ''), ENT_QUOTES) ?&gt;<br>
+  &nbsp;&nbsp;&lt;/a&gt;<br>
+  &lt;/td&gt;
+</p>
+<ul>
+  <li><code>urlencode()</code>：URLに含める値を安全にエンコードする（特殊文字の対処）</li>
+  <li><code>htmlspecialchars()</code>：HTML出力時のXSS対策</li>
+  <li>リンクをクリックすると <code>pdb_detail.php?pdbid=1AGW</code> のようなURLに遷移する</li>
+</ul>
+<p>
+  <span style="color: #0000ff">この仕組みを応用すれば、一覧 → 詳細 → さらに詳細 と、多段的にデータをたどることができます。</span>
+</p>
+<p>&nbsp;</p>
+
+<h5>３．詳細ページでのパラメータ受け取り（pdb_detail.php）</h5>
+<p>
+  GETパラメータ <code>pdbid</code> を受け取り、データベースから該当エントリを取得して表示します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  $pdbid = isset($_GET['pdbid']) ? trim($_GET['pdbid']) : '';<br>
+  if ($pdbid === '') {<br>
+  &nbsp;&nbsp;die('pdbid が未指定です。');<br>
+  }<br>
+  <br>
+  $row = fetch_pdb_detail($pdbid);<br>
+  if ($row === null) {<br>
+  &nbsp;&nbsp;die('該当するPDBエントリが見つかりません: ' . htmlspecialchars($pdbid, ENT_QUOTES));<br>
+  }
+</p>
+<ul>
+  <li><code>$_GET['pdbid']</code> でURLパラメータ <code>?pdbid=...</code> の値を取得</li>
+  <li>値が空・未指定の場合は <code>die()</code> でエラー終了</li>
+  <li>DBに該当データがない場合もエラー表示</li>
+</ul>
+<p>&nbsp;</p>
+
+<h5>４．クォーテーションに関する注意</h5>
+<p>
+  HTMLの属性値（<code>href="..."</code>）はダブルクォーテーションが一般的ですが、シングルクォーテーション（<code>href='...'</code>）でも動作します。
+</p>
+<p>
+  PHPの文字列中でダブルクォーテーション（<code>"</code>）を使いたい場合はバックスラッシュでエスケープします。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // ダブルクォーテーション文字列中でのエスケープ例<br>
+  echo "&lt;a href=\"pdb_detail.php?pdbid=1AGW\"&gt;1AGW&lt;/a&gt;";<br>
+  <br>
+  // シングルクォーテーションを外側に使えばエスケープ不要<br>
+  echo '&lt;a href="pdb_detail.php?pdbid=1AGW"&gt;1AGW&lt;/a&gt;';
+</p>
+<p>
+  <span style="color: #0000ff">※ <code>htmlspecialchars()</code> と <code>urlencode()</code> を使えば安全なURLを簡潔に生成できます（上記の例を推奨）。</span>
+</p>
+<p>&nbsp;</p>
