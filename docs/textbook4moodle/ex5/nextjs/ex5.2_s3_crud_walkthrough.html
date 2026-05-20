@@ -1,0 +1,326 @@
+﻿<p>ここでは <code>my-app/src/app/example/proteins/</code> フォルダ（タンパク質の登録・削除・お気に入り操作）と
+<code>example/pdb/[pdbid]/</code>（詳細ページ）の実装を解説します。<br>
+検索ページ（<code>example/page.tsx</code>）の解説は別ページを参照してください。</p>
+
+<hr />
+
+<h5>１．フォルダ構成</h5>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  my-app/src/app/example/<br>
+  &nbsp;&nbsp;page.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← PDB検索ページ（別ページ参照）<br>
+  &nbsp;&nbsp;pdb/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;[pdbid]/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;page.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← PDB詳細ページ（動的ルート）<br>
+  &nbsp;&nbsp;proteins/<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;page.tsx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← タンパク質一覧 + CRUD<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;actions.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Server Actions（作成・削除・Fav+1）<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;protein-create-form.tsx&nbsp;&nbsp;&nbsp;← 入力フォーム（Client Component）<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;delete-protein-dialog.tsx&nbsp;← 削除確認ダイアログ（Client Component）
+</p>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>２．pdb/[pdbid]/page.tsx（詳細ページ）</h5>
+<p>
+  URLが <code>/example/pdb/1ABC</code> のとき、<code>[pdbid]</code> フォルダが <code>pdbid = "1ABC"</code> として動作します（動的ルート）。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  type DetailProps = {<br>
+  &nbsp;&nbsp;params: Promise&lt;{ pdbid: string }&gt;; // URLの[pdbid]部分<br>
+  };<br>
+  <br>
+  export default async function PdbDetailPage({ params }: DetailProps) {<br>
+  &nbsp;&nbsp;const { pdbid } = await params;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ① URLから pdbid を取得<br>
+  &nbsp;&nbsp;const detail = await fetchPdbDetail(pdbid); // ② DBから1件取得<br>
+  <br>
+  &nbsp;&nbsp;if (!detail) notFound();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ③ 見つからなければ404<br>
+  <br>
+  &nbsp;&nbsp;return (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;main&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;{detail.pdbid}&lt;/h1&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Image src={`/pic/${detail.pdbid.toLowerCase()}.jpeg`} ... /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+  &nbsp;&nbsp;);<br>
+  }
+</p>
+<ul>
+  <li><code>params</code> は Next.js 15 では <code>Promise</code> なので <code>await params</code> が必要</li>
+  <li><code>notFound()</code> を呼ぶと Next.js が自動的に 404 ページを表示する</li>
+  <li><code>Image</code>（next/image）は <code>&lt;img&gt;</code> の最適化版。<code>width/height</code> 指定が必要</li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>３．proteins/page.tsx（一覧ページ）</h5>
+<p>
+  タンパク質の一覧表示と各種操作を1ページにまとめたServer Componentです。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  export const dynamic = "force-dynamic"; // 毎回DBから取得<br>
+  <br>
+  export default async function ProteinsPage() {<br>
+  &nbsp;&nbsp;const proteins = await fetchProteins(); // 全件取得<br>
+  <br>
+  &nbsp;&nbsp;return (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;main&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ProteinCreateForm /&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/* 追加フォーム */}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{proteins.map((protein) =&gt; (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr key={protein.proteinid}&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;{protein.name}&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;form action={incrementProteinFavAction.bind(null, protein.proteinid)}&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type="submit"&gt;+1 Fav&lt;/button&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;DeleteProteinDialog proteinId={protein.proteinid} ... /&gt;&lt;/td&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/table&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+  &nbsp;&nbsp;);<br>
+  }
+</p>
+<ul>
+  <li>Server Component なのでコンポーネント関数自体に <code>async</code> が付き、ページ描画前にDBを取得できる</li>
+  <li><code>incrementProteinFavAction.bind(null, protein.proteinid)</code>：Server Action に引数をあらかじめバインドするパターン。クリックで特定のIDに +1 Fav が送信される</li>
+  <li><code>ProteinCreateForm</code> と <code>DeleteProteinDialog</code> はClient Component（後述）として別ファイルに分離している</li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>４．proteins/actions.ts（Server Actions）</h5>
+<p>
+  ファイル先頭の <code>"use server"</code> でこのファイル内の全関数が Server Action になります。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  "use server";<br>
+  <br>
+  import { revalidatePath } from "next/cache";<br>
+  <br>
+  export async function createProteinAction(_, formData: FormData) {<br>
+  &nbsp;&nbsp;try {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;const input = validateProteinInput(formData); // バリデーション<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;await createProtein(input);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // INSERT<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;revalidatePath("/example/proteins");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ページを再検証<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;return { error: null };&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 成功<br>
+  &nbsp;&nbsp;} catch (error) {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;return { error: error.message };&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // エラーメッセージを返す<br>
+  &nbsp;&nbsp;}<br>
+  }<br>
+  <br>
+  export async function incrementProteinFavAction(proteinId: number) {<br>
+  &nbsp;&nbsp;await incrementProteinFav(proteinId);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // UPDATE fav+1<br>
+  &nbsp;&nbsp;revalidatePath("/example/proteins");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ページを再検証<br>
+  }<br>
+  <br>
+  export async function deleteProteinAction(proteinId: number) {<br>
+  &nbsp;&nbsp;await deleteProtein(proteinId);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // DELETE<br>
+  &nbsp;&nbsp;revalidatePath("/example/proteins");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ページを再検証<br>
+  }
+</p>
+<ul>
+  <li><strong>revalidatePath</strong>：DBを更新した後にこれを呼ぶと、Next.jsが該当URLのキャッシュを破棄して次回アクセス時に最新データを取得する。PHPでは毎回DBを読み直すのが自然だが、Next.jsではキャッシュを明示的に無効化する必要がある</li>
+  <li><code>createProteinAction(_, formData)</code> の第1引数 <code>_</code>：<code>useActionState</code> が渡す「前回の状態」。この関数では使わないが、引数の位置を合わせるために必要</li>
+  <li>Server Action は必ず <code>async</code> 関数</li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>５．proteins/protein-create-form.tsx（入力フォーム）</h5>
+<p>
+  フォーム送信と状態管理を行うClient Componentです。<code>useActionState</code> と <code>useFormStatus</code> を使います。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  "use client";<br>
+  <br>
+  import { useActionState, useEffect, useRef } from "react";<br>
+  import { useFormStatus } from "react-dom";<br>
+  <br>
+  function SubmitButton() {<br>
+  &nbsp;&nbsp;const { pending } = useFormStatus();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 送信中かどうかを検知<br>
+  &nbsp;&nbsp;return &lt;button&gt;{pending ? "Creating..." : "Create protein"}&lt;/button&gt;;<br>
+  }<br>
+  <br>
+  export function ProteinCreateForm() {<br>
+  &nbsp;&nbsp;// useActionState: Actionの戻り値をstateとして受け取る<br>
+  &nbsp;&nbsp;const [state, formAction] = useActionState(createProteinAction, { error: null });<br>
+  &nbsp;&nbsp;const formRef = useRef&lt;HTMLFormElement&gt;(null);<br>
+  &nbsp;&nbsp;const submittedRef = useRef(false);<br>
+  <br>
+  &nbsp;&nbsp;// 成功したらフォームをリセット<br>
+  &nbsp;&nbsp;useEffect(() =&gt; {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;if (submittedRef.current &amp;&amp; state.error === null) {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;formRef.current?.reset();<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;submittedRef.current = false;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;}, [state.error]);<br>
+  <br>
+  &nbsp;&nbsp;return (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;form ref={formRef} action={formAction}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onSubmit={() =&gt; { submittedRef.current = true; }}&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input name="name" required /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input name="org" required /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input name="len" type="number" min="1" required /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{state.error ? &lt;p&gt;{state.error}&lt;/p&gt; : null}&nbsp;{/* エラー表示 */}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;SubmitButton /&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;<br>
+  &nbsp;&nbsp;);<br>
+  }
+</p>
+<ul>
+  <li><strong>useActionState(action, initialState)</strong>：Server Actionの戻り値（<code>{ error: ... }</code>）を <code>state</code> として受け取るフック。<code>formAction</code> を <code>form</code> の <code>action</code> に渡す</li>
+  <li><strong>useFormStatus()</strong>：<code>&lt;form&gt;</code> 内で使うと送信中（<code>pending</code>）を検知できる。<code>SubmitButton</code> として別コンポーネントに分離しているのはこのフックの仕様上の要件（親formコンポーネント内では使えない）</li>
+  <li><strong>useRef</strong>：2つの用途。<code>formRef</code> は <code>form</code> DOM要素の参照（<code>reset()</code> 呼び出し用）。<code>submittedRef</code> はフォーム送信済みフラグ（再レンダリングをまたいで値を保持するが、変化してもレンダリングを起こさない）</li>
+  <li><strong>useEffect</strong>：<code>state.error</code> が <code>null</code>（成功）かつ送信済みのとき → フォームをリセット。初期表示時に誤ってリセットしないよう <code>submittedRef</code> で制御している</li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>６．proteins/delete-protein-dialog.tsx（削除確認ダイアログ）</h5>
+<p>
+  削除は取り消せない操作なので、確認ダイアログを挟みます。<code>AlertDialog</code> は shadcn/ui コンポーネントです。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  "use client";<br>
+  <br>
+  import { AlertDialog, AlertDialogTrigger,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AlertDialogContent, AlertDialogFooter,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";<br>
+  <br>
+  export function DeleteProteinDialog({ proteinId, deleteAction }) {<br>
+  &nbsp;&nbsp;return (<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;AlertDialog&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;AlertDialogTrigger asChild&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button&gt;Delete&lt;/button&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/* ① このボタンでダイアログ表示 */}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/AlertDialogTrigger&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;AlertDialogContent&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Delete this protein?&lt;/p&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;AlertDialogFooter&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;AlertDialogCancel&gt;Cancel&lt;/AlertDialogCancel&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;AlertDialogAction onClick={() =&gt; deleteAction(proteinId)}&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/* ② 確認後にServer Action呼び出し */}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/AlertDialogAction&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/AlertDialogFooter&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/AlertDialogContent&gt;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/AlertDialog&gt;<br>
+  &nbsp;&nbsp;);<br>
+  }
+</p>
+<ul>
+  <li><code>AlertDialogTrigger asChild</code>：内側の <code>&lt;button&gt;</code> をトリガーとして使う（shadcn/ui のパターン）</li>
+  <li><code>AlertDialogAction onClick</code>：確認ボタンを押したときに <code>deleteAction(proteinId)</code>（Server Action）を直接呼び出す</li>
+  <li>Server Action はブラウザから呼べる非同期関数として振る舞うため、<code>onClick</code> から直接呼び出せる</li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>７．@/lib/proteins.ts の SQL（CRUD操作）</h5>
+<p>
+  4種類のCRUD操作をすべて確認します。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  // READ：全件取得<br>
+  export async function fetchProteins() {<br>
+  &nbsp;&nbsp;const result = await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;select proteinid, name, organism, len, fav<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from protein<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;order by proteinid<br>
+  &nbsp;&nbsp;`);<br>
+  &nbsp;&nbsp;return result.rows as ProteinRow[];<br>
+  }<br>
+  <br>
+  // CREATE：1件追加<br>
+  export async function createProtein(input: ProteinInput) {<br>
+  &nbsp;&nbsp;await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;insert into protein(name, organism, len, fav)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;values (${input.name}, ${input.organism}, ${input.length}, 0)<br>
+  &nbsp;&nbsp;`);<br>
+  }<br>
+  <br>
+  // UPDATE：fav を +1<br>
+  export async function incrementProteinFav(proteinId: number) {<br>
+  &nbsp;&nbsp;await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;update protein<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;set fav = fav + 1<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;where proteinid = ${proteinId}<br>
+  &nbsp;&nbsp;`);<br>
+  }<br>
+  <br>
+  // DELETE：1件削除<br>
+  export async function deleteProtein(proteinId: number) {<br>
+  &nbsp;&nbsp;await db.execute(sql`<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;delete from protein<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;where proteinid = ${proteinId}<br>
+  &nbsp;&nbsp;`);<br>
+  }
+</p>
+<ul>
+  <li><code>insert into protein(...) values (${...})</code>：<code>${}</code> で変数を埋め込む → SQLインジェクション対策済み</li>
+  <li><code>set fav = fav + 1</code>：現在の値に1を加算するSQL。JavaScriptで値を読んでから書くより安全（競合しない）</li>
+  <li><code>result.rows as ProteinRow[]</code>：TypeScriptの型アサーション。DBの実行結果を型付きに変換</li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>８．@/lib/protein-form.ts（入力バリデーション）</h5>
+<p>
+  フォームデータのバリデーションを専用ファイルに分離しています。
+</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  export function validateProteinInput(formData: FormData): ProteinInput {<br>
+  &nbsp;&nbsp;const name = readRequiredText(formData, "name", "Protein name");<br>
+  &nbsp;&nbsp;const organism = readRequiredText(formData, "org", "Organism");<br>
+  &nbsp;&nbsp;const length = Number(formData.get("len"));<br>
+  <br>
+  &nbsp;&nbsp;if (!Number.isInteger(length) || length &lt;= 0) {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;throw new Error("Length must be a positive integer");<br>
+  &nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;return { name, organism, length };<br>
+  }<br>
+  <br>
+  function readRequiredText(formData, key, label) {<br>
+  &nbsp;&nbsp;const value = formData.get(key);<br>
+  &nbsp;&nbsp;const text = typeof value === "string" ? value.trim() : "";<br>
+  &nbsp;&nbsp;if (!text) throw new Error(`${label} is required`);<br>
+  &nbsp;&nbsp;return text;<br>
+  }
+</p>
+<ul>
+  <li><code>formData.get("name")</code>：HTMLフォームの <code>name="name"</code> の値を取得（PHPの <code>$_POST["name"]</code> に相当）</li>
+  <li>エラーがあれば <code>throw</code> → <code>actions.ts</code> の <code>catch</code> で捕捉 → <code>{ error: message }</code> を返す → フォームに表示される</li>
+  <li>バリデーションをActionから分離することで、テストしやすい設計になっている</li>
+</ul>
+<p>&nbsp;</p>
+
+<hr />
+
+<h5>データフロー（まとめ）</h5>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
+  【追加】<br>
+  ユーザー入力 → ProteinCreateForm (Client)<br>
+  &nbsp;&nbsp;→ createProteinAction (Server Action)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;→ validateProteinInput → createProtein (INSERT)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;→ revalidatePath → ページ再描画（新しい一覧を表示）<br>
+  <br>
+  【Fav+1】<br>
+  ボタンクリック → form action=incrementProteinFavAction.bind(id)<br>
+  &nbsp;&nbsp;→ Server Action → incrementProteinFav (UPDATE fav+1)<br>
+  &nbsp;&nbsp;→ revalidatePath → ページ再描画<br>
+  <br>
+  【削除】<br>
+  DeleteProteinDialog (Client) → ダイアログ表示<br>
+  &nbsp;&nbsp;→ 確認ボタン onClick → deleteProteinAction (Server Action)<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;→ deleteProtein (DELETE) → revalidatePath → ページ再描画
+</p>
+<p>
+  <span style="color: #0000ff">※いずれの操作も <code>revalidatePath</code> によってページキャッシュが破棄され、最新のDB状態が表示されます。<br>
+  PHPでは毎リクエストごとにDBを読み直すのが自然ですが、Next.jsではキャッシュの明示的な無効化が重要です。</span>
+</p>
