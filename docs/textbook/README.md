@@ -1,4 +1,4 @@
-# データベースプログラミング演習 テキスト
+﻿# データベースプログラミング演習 テキスト
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -89,7 +89,7 @@
 
 | ファイル/フォルダ | 説明 |
 |----------------|------|
-| [`../../SQL/demo2026-backup.sql`](../../SQL/demo2026-backup.sql) | デモデータベース（PDB タンパク質データ） |
+| [`../../SQL/demo.sql`](../../SQL/demo.sql) | デモデータベース（PDB タンパク質データ） |
 | [`../../SQL/`](../../SQL/) | SQL セットアップファイル一式 |
 | [`../../html/example/`](../../html/example/) | PHP サンプルファイル一式 |
 | [`../../my-app/src/app/example/page.tsx`](../../my-app/src/app/example/page.tsx) | Next.js サンプルページ |
