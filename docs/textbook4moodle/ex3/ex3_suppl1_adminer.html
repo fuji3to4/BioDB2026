@@ -1,0 +1,119 @@
+<p>Adminer (<a href="https://www.adminer.org/" target="_blank">https://www.adminer.org/</a>)はブラウザからデータベースを確認・操作できる Web ツールです。<br>
+    psql コマンドが難しいと感じる場合や、データを視覚的に確認したいときに活用してください。</p>
+<p>&nbsp;</p>
+
+<hr>
+
+<h5>1. アクセス方法</h5>
+<p>Docker Compose を起動した状態でブラウザで以下の URL にアクセスします。</p>
+<p><a href="http://localhost/adminer-5.4.2.php" target="_blank">http://localhost/adminer-5.4.2.php</a></p>
+
+<hr>
+
+<h5>2. ログイン</h5>
+<p>以下の情報でログインしてください。</p>
+<table border="1" cellpadding="6" cellspacing="0">
+    <tbody>
+        <tr>
+            <th>項目</th>
+            <th>値</th>
+        </tr>
+        <tr>
+            <td>データベース種類</td>
+            <td>PostgreSQL</td>
+        </tr>
+        <tr>
+            <td>サーバ</td>
+            <td>postgres</td>
+        </tr>
+        <tr>
+            <td>ユーザ名</td>
+            <td>user</td>
+        </tr>
+        <tr>
+            <td>パスワード</td>
+            <td>password</td>
+        </tr>
+        <tr>
+            <td>データベース</td>
+            <td>（空欄のままログインできます）</td>
+        </tr>
+    </tbody>
+</table>
+<p>
+    <span style="color: #ff0000">※「サーバ」は <code>localhost</code> ではなく <code>postgres</code>（Docker ネットワーク上のサービス名）を入力してください。</span>
+</p>
+<p><span style="color: #ff0000"><img src="https://im10.el.kyutech.ac.jp/2026/draftfile.php/8132/user/draft/371480293/image%20%283%29.png" alt="" role="presentation" class="img-fluid"><br></span></p>
+<p>&nbsp;</p>
+
+<hr>
+
+<h5>3. データベースの確認</h5>
+<p>ログイン後、左メニューにデータベース一覧が表示されます。</p>
+<ul>
+    <li>自分が作成したデータベース名をクリック → テーブル一覧が表示される</li>
+    <li>テーブル名をクリック → 列定義（型・主キー・制約）を確認できる</li>
+    <li>「データを選択」→ テーブルの全レコードを一覧表示できる</li>
+</ul>
+<p>psql コマンドとの対応：</p>
+<table border="1" cellpadding="6" cellspacing="0">
+    <tbody>
+        <tr>
+            <th>psql コマンド</th>
+            <th>Adminer での操作</th>
+        </tr>
+        <tr>
+            <td><code>\l</code>（DB 一覧）</td>
+            <td>ログイン画面の DB 一覧 または 左メニュー</td>
+        </tr>
+        <tr>
+            <td><code>\dt</code>（テーブル一覧）</td>
+            <td>DB を選択 → テーブル一覧が表示</td>
+        </tr>
+        <tr>
+            <td><code>\d テーブル名</code>（列定義）</td>
+            <td>テーブル名をクリック → 「テーブル構造」</td>
+        </tr>
+        <tr>
+            <td><code>select * from テーブル名;</code></td>
+            <td>テーブルの「データを選択」</td>
+        </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+
+<hr>
+
+<h5>4. SQL 文の実行</h5>
+<p>上部メニューの「SQL コマンド」をクリックすると、SQL を直接入力して実行できます。</p>
+<p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">SELECT * FROM pdb WHERE resolution &lt; 2</p>
+<p>psql の対話モードと同様に自由な SQL 文を試すことができます。結果は表形式で表示されます。</p>
+<p>
+    <span style="color: #0000ff">→ 演習3の「データベース検索テスト」は Adminer の「SQL コマンド」でも実行できます。</span>
+</p>
+<p>&nbsp;</p>
+
+<hr>
+
+<h5>5. CSV からのデータインポート</h5>
+<p>Excel で作成したデータを CSV として保存しておくと、Adminer からも直接テーブルにインポートできます。</p>
+<ol>
+    <li>Adminer で対象のデータベースを選択</li>
+    <li>左メニューの「インポート」をクリック</li>
+    <li>CSV ファイルを選択してアップロード</li>
+    <li>「インポート」ボタンを押す</li>
+</ol>
+<p>
+    <span style="color: #ff0000">注意：CSV の列の順番とテーブルの列定義が一致している必要があります。<br>
+        事前に <code>CREATE TABLE</code> でテーブルを作成しておいてください。</span>
+</p>
+<p>&nbsp;</p>
+
+<hr>
+
+<h5>6. 注意事項</h5>
+<ul>
+    <li>Adminer での操作（レコード追加・削除・編集）は <strong>SQL ファイルには自動保存されません</strong>。<br>
+        変更を残したい場合は必ず SQL ファイルも更新してください。</li>
+    <li>Docker Compose が起動していないと Adminer にアクセスできません。</li>
+</ul>
