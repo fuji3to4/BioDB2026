@@ -4,6 +4,8 @@
 
 このリポジトリは、Docker Compose上でPostgreSQL、PHP、Next.jsを動かすための演習環境です。
 
+演習用ドキュメントは [こちら](./docs/textbook/README.md) です。
+
 
 ## コンテナの起動
 
