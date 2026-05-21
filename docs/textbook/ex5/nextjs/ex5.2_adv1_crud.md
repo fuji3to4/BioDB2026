@@ -1,4 +1,4 @@
-# 演習5 発展1 (Next.js版): CRUDの実装
+﻿# 演習5 発展1 (Next.js版): CRUDの実装
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -13,7 +13,7 @@ Server Actionsとは、Next.jsでサーバー側の処理（DB書き込みなど
 
 (1) 演習環境の **my-app/src/app/example/proteins/** フォルダのファイル群を確認する。
 
-* [`page.tsx`](../../../../my-app/src/app/example/page.tsx)：タンパク質一覧の表示と削除・Favボタン（Server Component）
+* [`page.tsx`](/my-app/src/app/example/page.tsx)：タンパク質一覧の表示と削除・Favボタン（Server Component）
 * `actions.ts`：`"use server"` ディレクティブを持つServer Actions。`deleteProteinAction`・`incrementProteinFavAction` などのDB書き込み処理を定義。
 * `protein-create-form.tsx`：データ追加フォーム（Client Component）
 * `delete-protein-dialog.tsx`：削除確認ダイアログ（Client Component）

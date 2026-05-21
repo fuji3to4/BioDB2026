@@ -1,10 +1,10 @@
-# 演習1: SQL基礎
+﻿# 演習1: SQL基礎
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
 
 (1) setting.sqlファイルをダウンロードし、SQLファイルを保存してください。保存ファイル名はsetting.sqlにします。
-（[setting.sql](../../../SQL/setting.sql) - リポジトリの `./SQL/` フォルダ内）
+（[setting.sql](/SQL/setting.sql) - リポジトリの `./SQL/` フォルダ内）
 
 Docker環境の `./SQL/` フォルダに元々入っています。
 

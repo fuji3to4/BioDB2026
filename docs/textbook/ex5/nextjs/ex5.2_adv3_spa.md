@@ -1,4 +1,4 @@
-# 演習5 発展3 (Next.js版): SPAの実装
+﻿# 演習5 発展3 (Next.js版): SPAの実装
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -7,11 +7,11 @@
 
 ex5.2のServer Componentではフォーム送信のたびにページ全体がサーバーから送られてきましたが、SPA版では検索フォームへの入力中に自動で検索結果が更新されます。
 
-例題は <http://localhost:3000/example-spa>（[my-app/src/app/example-spa/](../../../../my-app/src/app/example-spa/)）です。
+例題は <http://localhost:3000/example-spa>（[my-app/src/app/example-spa/](/my-app/src/app/example-spa/)）です。
 
 ## 演習5.2-adv3の手順：
 
-(1) 演習環境の **[my-app/src/app/example-spa/](../../../../my-app/src/app/example-spa/)** フォルダのファイル群を確認する。
+(1) 演習環境の **[my-app/src/app/example-spa/](/my-app/src/app/example-spa/)** フォルダのファイル群を確認する。
 
 * `page.tsx`：`"use client"` ディレクティブを持つClient Componentのシェル。Reactの `useState`・`useEffect` でクライアント側の状態を管理する。
 * `actions.ts`：Server Actions。`searchPdbAction` がクライアントから呼ばれるたびにサーバー側でDB検索を行う。

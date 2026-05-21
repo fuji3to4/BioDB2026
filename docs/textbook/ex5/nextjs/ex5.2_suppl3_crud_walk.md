@@ -1,11 +1,11 @@
-# 演習5 補足3 (Next.js版): CRUDコードの解説
+﻿# 演習5 補足3 (Next.js版): CRUDコードの解説
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
 
 ここでは `my-app/src/app/example/proteins/` フォルダ（タンパク質の登録・削除・お気に入り操作）と
 `example/pdb/[pdbid]/`（詳細ページ）の実装を解説します。
-検索ページ（[example/page.tsx](../../../../my-app/src/app/example/page.tsx)）の解説は別ページを参照してください。
+検索ページ（[example/page.tsx](/my-app/src/app/example/page.tsx)）の解説は別ページを参照してください。
 
 ---
 
@@ -216,7 +216,7 @@ export function DeleteProteinDialog({ proteinId, deleteAction }) {
 
 ---
 
-## ７．[src/lib/proteins.ts](../../../../my-app/src/lib/proteins.ts) の SQL（CRUD操作）
+## ７．[src/lib/proteins.ts](/my-app/src/lib/proteins.ts) の SQL（CRUD操作）
 
 4種類のCRUD操作をすべて確認します。
 

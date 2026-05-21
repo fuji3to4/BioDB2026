@@ -1,10 +1,10 @@
-# 演習5 補足1 (Next.js版): コードリーディング
+﻿# 演習5 補足1 (Next.js版): コードリーディング
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
 
-ここでは [my-app/src/app/example/page.tsx](../../../../my-app/src/app/example/page.tsx) に関して順番に解説します。
-演習4.2の例題（[search-pdb-simple/page.tsx](../../../../my-app/src/app/search-pdb-simple/page.tsx)）との違いに注目してください。
+ここでは [my-app/src/app/example/page.tsx](/my-app/src/app/example/page.tsx) に関して順番に解説します。
+演習4.2の例題（[search-pdb-simple/page.tsx](/my-app/src/app/search-pdb-simple/page.tsx)）との違いに注目してください。
 
 ```tsx
 import Link from "next/link";
@@ -68,7 +68,7 @@ export default async function ExampleHomePage({ searchParams }: HomeProps) {
 **① import文**
 
 `Link`（Next.jsのリンクコンポーネント）と、ライブラリ関数2つを読み込んでいます。
-`fetchPdbSearchResults`：検索条件を受け取りDBを検索する関数（[src/lib/pdb.ts](../../../../my-app/src/lib/pdb.ts) で定義）
+`fetchPdbSearchResults`：検索条件を受け取りDBを検索する関数（[src/lib/pdb.ts](/my-app/src/lib/pdb.ts) で定義）
 `normalizeSearchFilters`：URLパラメータの文字列を検索条件オブジェクトに変換する関数
 
 **② searchParams プロパティ**
@@ -170,7 +170,7 @@ function parseResolutionInput(value) {
 * `?? ""`：`null`/`undefined` の場合は空文字を使う（ヌル合体演算子）
 * `resolution` のみ数値型に変換。未入力なら `null`（条件なし＝全件対象）
 
-**fetchPdbSearchResults（[src/lib/pdb.ts](../../../../my-app/src/lib/pdb.ts)）**
+**fetchPdbSearchResults（[src/lib/pdb.ts](/my-app/src/lib/pdb.ts)）**
 
 検索条件を受け取り、SQLで複数テーブルをJOINして検索します。
 
@@ -201,7 +201,7 @@ export async function fetchPdbSearchResults(filters) {
 
 ※PHPの `WHERE pdbid LIKE :id` + `bindValue` に相当します。Drizzle ORMのテンプレートリテラルが自動でエスケープ処理を行います。
 
-**fetchPdbDetail（[src/lib/pdb.ts](../../../../my-app/src/lib/pdb.ts)）**
+**fetchPdbDetail（[src/lib/pdb.ts](/my-app/src/lib/pdb.ts)）**
 
 PDBIDを指定して1件の詳細データを取得します。
 

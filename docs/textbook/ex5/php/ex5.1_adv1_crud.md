@@ -1,4 +1,4 @@
-# 演習5 発展1 (PHP版): CRUDの実装
+﻿# 演習5 発展1 (PHP版): CRUDの実装
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -7,11 +7,11 @@
 
 **CRUD**とは Create（作成）・Read（読み取り）・Update（更新）・Delete（削除）の頭文字をとったもので、Webアプリケーションの基本操作です。
 
-例題は [`html/example/proteins.php`](../../../../html/example/proteins.php) です。
+例題は [`html/example/proteins.php`](/html/example/proteins.php) です。
 
 ## 演習5.1-adv1の手順：
 
-(1) 演習環境の **[`html/example/proteins.php`](../../../../html/example/proteins.php)** を確認する。
+(1) 演習環境の **[`html/example/proteins.php`](/html/example/proteins.php)** を確認する。
 
 コードのポイント：
 
@@ -33,4 +33,4 @@ http://localhost/example/proteins.php
 
 * 自分のテーブルの列に合わせてフォームとSQL文を変更してください。
 * INSERT文・DELETE文を使ってデータを追加・削除できるようにしてください。
-* ※[`html/example/lib/protein_queries.php`](../../../../html/example/lib/protein_queries.php) も合わせて確認してください。DB操作を関数として分離している例です。
+* ※[`html/example/lib/protein_queries.php`](/html/example/lib/protein_queries.php) も合わせて確認してください。DB操作を関数として分離している例です。

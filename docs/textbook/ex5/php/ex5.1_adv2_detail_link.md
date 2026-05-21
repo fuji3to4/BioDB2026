@@ -1,4 +1,4 @@
-# 演習5 発展2 (PHP版): 詳細ページのリンク
+﻿# 演習5 発展2 (PHP版): 詳細ページのリンク
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -9,7 +9,7 @@
 
 ## １．仕組みの概要
 
-[`search.php`](../../../../html/example/search.php)（一覧ページ）でPDBIDのセルにリンクを貼り、クリックすると [`pdb_detail.php`](../../../../html/example/pdb_detail.php)（詳細ページ）にPDBIDをGETパラメータとして渡します。
+[`search.php`](/html/example/search.php)（一覧ページ）でPDBIDのセルにリンクを貼り、クリックすると [`pdb_detail.php`](/html/example/pdb_detail.php)（詳細ページ）にPDBIDをGETパラメータとして渡します。
 
 ```
 [ブラウザ]

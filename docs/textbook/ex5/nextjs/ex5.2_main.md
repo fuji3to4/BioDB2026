@@ -1,4 +1,4 @@
-# 演習5 (Next.js版): データベース操作Webアプリの完成
+﻿# 演習5 (Next.js版): データベース操作Webアプリの完成
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -25,7 +25,7 @@ docker exec -it biodb-nextjs bash
 npm run dev
 ```
 
-(1) 演習環境の **[my-app/src/app/example/page.tsx](../../../../my-app/src/app/example/page.tsx)** を確認する。
+(1) 演習環境の **[my-app/src/app/example/page.tsx](/my-app/src/app/example/page.tsx)** を確認する。
 
 コードのポイント：
 

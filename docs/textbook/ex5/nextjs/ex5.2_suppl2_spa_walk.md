@@ -1,9 +1,9 @@
-# 演習5 補足2 (Next.js版): SPAコードの解説
+﻿# 演習5 補足2 (Next.js版): SPAコードの解説
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
 
-ここでは演習5.2の発展課題（SPA版）のサンプルプログラム [my-app/src/app/example-spa/](../../../../my-app/src/app/example-spa/) を解説します。
+ここでは演習5.2の発展課題（SPA版）のサンプルプログラム [my-app/src/app/example-spa/](/my-app/src/app/example-spa/) を解説します。
 演習4.2・5.2の例題（Server Component）との違いに注目してください。
 
 ---
@@ -136,7 +136,7 @@ function SearchForm({ filters, onChange }) {
 
 ---
 
-## ８．[src/lib/pdb.ts](../../../../my-app/src/lib/pdb.ts) の SQL（actions.ts から呼ばれる処理）
+## ８．[src/lib/pdb.ts](/my-app/src/lib/pdb.ts) の SQL（actions.ts から呼ばれる処理）
 
 `actions.ts` の Server Action は `@/lib/pdb.ts` の関数を呼び出してDBを検索します。
 その実際のSQL処理を確認します。

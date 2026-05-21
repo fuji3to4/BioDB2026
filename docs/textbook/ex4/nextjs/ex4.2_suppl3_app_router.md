@@ -1,4 +1,4 @@
-# 演習4 補足3 (Next.js版): App Router
+﻿# 演習4 補足3 (Next.js版): App Router
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -28,7 +28,7 @@ my-app/
 
 ## ２．page.tsx と layout.tsx の役割
 
-* **[`page.tsx`](../../../../my-app/src/app/search-pdb-simple/page.tsx)**：そのURLにアクセスしたときに表示されるページのコンポーネント。必ず `export default function` を含む。
+* **[`page.tsx`](/my-app/src/app/search-pdb-simple/page.tsx)**：そのURLにアクセスしたときに表示されるページのコンポーネント。必ず `export default function` を含む。
 * **layout.tsx**：複数のページで共通するレイアウト（ヘッダー、フッターなど）を定義する。すべてのページに自動的に適用される。
 
 ## ３．Server ComponentとClient Componentの違い

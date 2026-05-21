@@ -1,4 +1,4 @@
-# 演習5 発展2 (Next.js版): 詳細ページのリンク
+﻿# 演習5 発展2 (Next.js版): 詳細ページのリンク
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -36,7 +36,7 @@ my-app/src/app/
 フォルダ名 `[pdbid]` の角括弧が動的ルートのしるしです。
 `/example/pdb/1AGW` にアクセスすると、`pdbid` に `"1AGW"` がセットされます。
 
-## ３．一覧ページのリンク生成（[example/page.tsx](../../../../my-app/src/app/example/page.tsx)）
+## ３．一覧ページのリンク生成（[example/page.tsx](/my-app/src/app/example/page.tsx)）
 
 検索結果テーブルのPDBIDセルに、`Link` コンポーネントで詳細ページへのリンクを埋め込みます。
 

@@ -1,4 +1,4 @@
-# 演習4 (Next.js版): Webデータベース検索インターフェイスの作成
+﻿# 演習4 (Next.js版): Webデータベース検索インターフェイスの作成
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
@@ -9,7 +9,7 @@ Next.jsではReactの**Server Component**という仕組みを使うことで、
 
 ## 演習4.2の手順：
 
-例題は [`my-app/src/app/search-pdb-simple/page.tsx`](../../../../my-app/src/app/search-pdb-simple/page.tsx) です。
+例題は [`my-app/src/app/search-pdb-simple/page.tsx`](/my-app/src/app/search-pdb-simple/page.tsx) です。
 `demo`データベースから3つのテーブルを繋ぎ合わせ、PDBID・Resolution・Protein name・Organismの列を取り出して表示させるプログラムです。
 
 (1)**nextjsコンテナ**は開発コンテナとして用意されています。VS Code Remote / Dev Containers で実行中の nextjs コンテナに接続し、`/app` で作業してください。
@@ -29,7 +29,7 @@ cp .env.example .env
 npm install
 ```
 
-(2) 演習環境の [`my-app/src/app/search-pdb-simple/page.tsx`](../../../../my-app/src/app/search-pdb-simple/page.tsx) を確認してください。
+(2) 演習環境の [`my-app/src/app/search-pdb-simple/page.tsx`](/my-app/src/app/search-pdb-simple/page.tsx) を確認してください。
 
 コードのポイント：
 

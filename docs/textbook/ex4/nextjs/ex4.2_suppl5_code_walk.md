@@ -1,9 +1,9 @@
-# 演習4 補足5 (Next.js版): コードの読み方
+﻿# 演習4 補足5 (Next.js版): コードの読み方
 
 > **対象環境:** Docker Compose (PostgreSQL 17 + PHP/Apache + Next.js 15)
 > リポジトリをクローンして `docker compose up` で起動できます。
 
-ここでは演習4.2の例題プログラム [`my-app/src/app/search-pdb-simple/page.tsx`](../../../../my-app/src/app/search-pdb-simple/page.tsx) を順番に解説します。
+ここでは演習4.2の例題プログラム [`my-app/src/app/search-pdb-simple/page.tsx`](/my-app/src/app/search-pdb-simple/page.tsx) を順番に解説します。
 
 ```tsx
 import { sql } from "drizzle-orm";
