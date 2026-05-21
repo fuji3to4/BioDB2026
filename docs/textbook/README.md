@@ -89,13 +89,13 @@
 
 | ファイル/フォルダ | 説明 |
 |----------------|------|
-| [`../../SQL/demo.sql`](/SQL/demo.sql) | デモデータベース（PDB タンパク質データ） |
-| [`../../SQL/`](/SQL/) | SQL セットアップファイル一式 |
-| [`../../html/example/`](/html/example/) | PHP サンプルファイル一式 |
-| [`../../my-app/src/app/example/page.tsx`](/my-app/src/app/example/page.tsx) | Next.js サンプルページ |
-| [`../../my-app/src/app/example-spa/`](/my-app/src/app/example-spa/) | Next.js SPA サンプル |
-| [`../../my-app/src/lib/pdb.ts`](/my-app/src/lib/pdb.ts) | PDB データ取得ライブラリ |
-| [`../../my-app/src/lib/proteins.ts`](/my-app/src/lib/proteins.ts) | タンパク質データ操作ライブラリ |
+| [`SQL/demo.sql`](/SQL/demo.sql) | デモデータベース（PDB タンパク質データ） |
+| [`SQL/`](/SQL/) | SQL セットアップファイル一式 |
+| [`html/example/`](/html/example/) | PHP サンプルファイル一式 |
+| [`my-app/src/app/example/page.tsx`](/my-app/src/app/example/page.tsx) | Next.js サンプルページ |
+| [`my-app/src/app/example-spa/`](/my-app/src/app/example-spa/) | Next.js SPA サンプル |
+| [`my-app/src/lib/pdb.ts`](/my-app/src/lib/pdb.ts) | PDB データ取得ライブラリ |
+| [`my-app/src/lib/proteins.ts`](/my-app/src/lib/proteins.ts) | タンパク質データ操作ライブラリ |
 
 ## 環境情報
 
