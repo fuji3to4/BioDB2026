@@ -4,7 +4,7 @@
 > リポジトリをクローンして `docker compose up` で起動できます。
 
 このディレクトリには、データベースプログラミング演習のテキストが Markdown 形式で収録されています。
-各ファイルは `docs/textbook4moodle/` 内の HTML ファイルから変換されたものです。
+各ファイルは `docs/textbook4moodle/` 内の HTML ファイルと同じ内容になります。
 
 ## 演習一覧
 
