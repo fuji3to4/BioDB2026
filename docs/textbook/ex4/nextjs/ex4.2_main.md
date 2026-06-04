@@ -19,7 +19,7 @@ Next.jsではReactの**Server Component**という仕組みを使うことで、
 もしくは**nextjsコンテナ**に接続し、開発サーバーにbashで接続してもよい。
 
 ```bash
-docker exec -it biodb-nextjs bash
+docker compose exec -it nextjs bash
 ```
 
 初めてNext.js起動するときに、コンテナ内で以下を行う：

@@ -232,7 +232,7 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
   (0) <strong>nextjsコンテナ</strong>に接続し、開発サーバーを起動する（まだ起動していない場合）。
 </p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
-  docker exec -it biodb-nextjs bash
+  docker compose exec -it nextjs bash
 </p>
 <p>コンテナ内で：</p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
@@ -538,7 +538,7 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
   (0) <strong>nextjsコンテナ</strong>で開発サーバーが起動していることを確認する（まだの場合は起動する）。
 </p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">
-  docker exec -it biodb-nextjs bash
+  docker compose exec -it nextjs bash
 </p>
 <p>コンテナ内で：</p>
 <p style="padding: 10px 15px; background: #1f1f1f; color: #fafafa">

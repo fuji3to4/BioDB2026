@@ -102,7 +102,7 @@ docs/textbook/
 手順:
 - (0) nextjsコンテナに接続し `npm run dev` を実行
   ```
-  docker exec -it biodb-nextjs bash
+  docker compose exec -it nextjs bash
   # コンテナ内で:
   npm run dev
   ```

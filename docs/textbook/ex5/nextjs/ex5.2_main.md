@@ -16,7 +16,7 @@
 (0) **nextjsコンテナ**で開発サーバーが起動していることを確認する（まだの場合は起動する）。
 
 ```bash
-docker exec -it biodb-nextjs bash
+docker compose exec -it nextjs bash
 ```
 
 コンテナ内で：
