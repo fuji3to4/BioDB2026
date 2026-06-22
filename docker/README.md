@@ -103,8 +103,18 @@ postgres:
 
 ```dockerfile
 FROM postgres:17                              # PostgreSQL 17 をベースに
-RUN apt-get install -y locales                # 日本語ロケールをインストール
+
+RUN apt-get update \                          # 日本語ロケールを入れるための準備
+    && apt-get install -y locales \
+    && sed -i -e 's/# ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV LANG=ja_JP.UTF-8                          # 日本語環境に設定
+ENV LANGUAGE=ja_JP:ja
+ENV LC_ALL=ja_JP.UTF-8
+
 COPY ./init.sql /docker-entrypoint-initdb.d/  # 初期化SQL（初回起動時に自動実行）
 WORKDIR /home/user/SQL                        # 作業ディレクトリ
 ```
@@ -140,10 +150,20 @@ php:
 
 ```dockerfile
 FROM php:8.3-apache-bookworm       # PHP 8.3 + Apache が入ったイメージ
+
 ENV TZ=Asia/Tokyo                  # タイムゾーンを日本に設定
+
 COPY php.ini /usr/local/etc/php/   # PHPの設定ファイルをコピー
 COPY 000-default.conf /etc/apache2/sites-available/  # Apacheの設定
-RUN docker-php-ext-install pdo_pgsql pgsql mbstring  # PostgreSQL接続用の拡張モジュール
+
+RUN apt-get update \                # PostgreSQL接続用の拡張モジュール
+    && apt-get install -y libpq-dev libonig-dev \
+    && docker-php-ext-install pdo_pgsql pgsql mbstring \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* 
+
+WORKDIR /html
+RUN rm -rf /var/www/html
 RUN ln -s /html /var/www/html      # /html を Web 公開フォルダにリンク
 ```
 
@@ -207,7 +227,9 @@ nextjs:
 
 ```dockerfile
 FROM node:24-slim                  # Node.js 24 の最小限イメージ
+
 WORKDIR /app                       # 作業ディレクトリ
+
 CMD ["tail", "-f", "/dev/null"]    # 待機（何もしない）
 ```
 
