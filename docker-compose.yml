@@ -25,6 +25,15 @@ services:
       - "127.0.0.1:80:80"
     volumes:
       - ./html:/html
+      # セッション・Apacheログをメモリ上に配置（WSL2 VHDXへの書き込みを防止）
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 134217728  # 128MB
+      - type: tmpfs
+        target: /var/log/apache2
+        tmpfs:
+          size: 67108864  # 64MB
     depends_on:
       - postgres
     restart: always
