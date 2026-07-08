@@ -11,6 +11,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Apache最適化: KeepAlive有効化、不要モジュール無効化
 RUN a2enmod deflate expires headers rewrite && \
     a2dismod --force status cgid && \
